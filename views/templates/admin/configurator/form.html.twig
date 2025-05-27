@@ -86,6 +86,14 @@
 
             document.getElementById('product-choices-collection-' + stepIdx).insertAdjacentHTML('beforeend', tpl)
             this.idx++
+          },
+          uncheckOthers(event) {
+            const container = event.target.closest('.step-block')
+            const checkboxes = container.querySelectorAll('input[type=checkbox][name*="[isDefault]"]')
+
+            checkboxes.forEach(cb => {
+              if (cb !== event.target) cb.checked = false
+            })
           }
         }
       }

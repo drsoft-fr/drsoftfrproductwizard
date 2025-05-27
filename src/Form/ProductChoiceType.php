@@ -29,6 +29,9 @@ final class ProductChoiceType extends AbstractType
             ->add('isDefault', CheckboxType::class, [
                 'label' => 'Choix par défaut',
                 'required' => false,
+                'attr' => [
+                    '@change' => 'uncheckOthers($event)'
+                ],
             ])
             ->add('allowQuantity', CheckboxType::class, [
                 'label' => 'Quantité modifiable par le client',
