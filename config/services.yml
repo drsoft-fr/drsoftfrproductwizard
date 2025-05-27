@@ -4,3 +4,8 @@ imports:
 services:
   DrSoftFr\Module\ProductWizard\Controller\Admin\ConfiguratorController:
     tags: [ 'controller.service_arguments' ]
+
+  DrSoftFr\Module\ProductWizard\Form\ConfiguratorType:
+    tags:
+      - { name: form.type }
+    parent: 'form.type.translatable.aware'

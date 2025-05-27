@@ -24,21 +24,21 @@ class Choice
      * @ORM\Column(name="id_choice", type="integer", nullable=false, options={"unsigned"=true})
      * @ORM\GeneratedValue(strategy="AUTO")
      */
-    private $id;
+    private $id = 0;
 
     /**
      * @var bool $active
      *
      * @ORM\Column(name="active", type="boolean", nullable=false, options={"default":1, "unsigned"=true})
      */
-    private $active;
+    private $active = true;
 
     /**
      * @var string $label
      *
      * @ORM\Column(name="label", type="string", length=255, nullable=false)
      */
-    private $label;
+    private $label = '';
 
     /**
      * @var int $productId
