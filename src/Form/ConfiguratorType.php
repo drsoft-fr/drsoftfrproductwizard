@@ -35,11 +35,10 @@ final class ConfiguratorType extends TranslatorAwareType
             ])
             ->add('steps', CollectionType::class, [
                 'entry_type' => StepType::class,
-                'label' => 'Étapes',
                 'allow_add' => true,
                 'allow_delete' => true,
                 'by_reference' => false,
-                'prototype' => true,
+                'label' => 'Étapes',
                 'prototype_name' => '__step__',
             ])
             ->add('save', SubmitType::class, [

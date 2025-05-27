@@ -6,7 +6,11 @@ namespace DrSoftFr\Module\ProductWizard\Controller\Admin;
 
 use Doctrine\ORM\EntityManagerInterface;
 use DrSoftFr\Module\ProductWizard\Entity\Configurator;
+use DrSoftFr\Module\ProductWizard\Entity\ProductChoice;
+use DrSoftFr\Module\ProductWizard\Entity\Step;
 use DrSoftFr\Module\ProductWizard\Form\ConfiguratorType;
+use DrSoftFr\Module\ProductWizard\Form\ProductChoiceType;
+use DrSoftFr\Module\ProductWizard\Form\StepType;
 use DrSoftFr\Module\ProductWizard\Repository\ConfiguratorRepository;
 use drsoftfrproductwizard;
 use PrestaShopBundle\Controller\Admin\FrameworkBundleAdminController;
@@ -68,6 +72,14 @@ final class ConfiguratorController extends FrameworkBundleAdminController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+
+            foreach ($configurator->getSteps() as $step) {
+                $step->setConfigurator($configurator);
+                foreach ($step->getProductChoices() as $choice) {
+                    $choice->setStep($step);
+                }
+            }
+
             $em->persist($configurator);
             $em->flush();
 
@@ -104,6 +116,14 @@ final class ConfiguratorController extends FrameworkBundleAdminController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+
+            foreach ($configurator->getSteps() as $step) {
+                $step->setConfigurator($configurator);
+                foreach ($step->getProductChoices() as $choice) {
+                    $choice->setStep($step);
+                }
+            }
+
             $em->flush();
 
             $this->addFlash('success', 'Scénario modifié.');
@@ -116,7 +136,6 @@ final class ConfiguratorController extends FrameworkBundleAdminController
             'module' => $this->getModule(),
         ]);
     }
-
 
     /**
      * Delete Configurator
@@ -141,6 +160,54 @@ final class ConfiguratorController extends FrameworkBundleAdminController
             $this->addFlash('success', 'Scénario supprimé.');
         }
         return $this->redirectToRoute(self::PAGE_INDEX_ROUTE);
+    }
+
+    /**
+     * @AdminSecurity(
+     *     "is_granted('delete', request.get('_legacy_controller'))",
+     *     redirectRoute="admin_drsoft_fr_product_wizard_configurator_index",
+     *     message="You do not have permission to delete this."
+     * )
+     *
+     * @param Request $request
+     *
+     * @return Response
+     */
+    public function stepFragmentAction(Request $request)
+    {
+        $index = (int)$request->query->get('index');
+        $step = new Step();
+        $stepForm = $this->createForm(StepType::class, $step, [
+            'block_name' => 'steps[' . $index . ']'
+        ]);
+        return $this->render(self::TEMPLATE_FOLDER . '_step_form.html.twig', [
+            'form' => $stepForm->createView(),
+            'index' => $index,
+        ]);
+    }
+
+    /**
+     * @AdminSecurity(
+     *     "is_granted('delete', request.get('_legacy_controller'))",
+     *     redirectRoute="admin_drsoft_fr_product_wizard_configurator_index",
+     *     message="You do not have permission to delete this."
+     * )
+     *
+     * @param Request $request
+     *
+     * @return Response
+     */
+    public function productChoiceFragmentAction(Request $request)
+    {
+        $index = (int)$request->query->get('index');
+        $choice = new ProductChoice();
+        $choiceForm = $this->createForm(ProductChoiceType::class, $choice, [
+            'block_name' => 'productChoices[' . $index . ']'
+        ]);
+        return $this->render(self::TEMPLATE_FOLDER . '_product_choice_form.html.twig', [
+            'form' => $choiceForm->createView(),
+            'index' => $index,
+        ]);
     }
 
     /**

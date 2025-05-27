@@ -1,0 +1,27 @@
+<div class="card mb-3 p-3" x-data="{ open: true }" id="step-{{ index }}">
+    <div class="d-flex justify-content-between">
+        <h4>Étape {{ index + 1 }}</h4>
+        <button type="button" class="btn btn-danger btn-sm" @click="$el.closest('.card').remove()">Supprimer</button>
+    </div>
+    {{ form_row(form.label) }}
+    {{ form_row(form.position) }}
+    {{ form_row(form.active) }}
+    <h5>Choix produits</h5>
+    <div x-data="{
+        choices: {{ form.productChoices|length }},
+        addChoice() {
+          let idx = this.choices++;
+          htmx.ajax('GET', '{{ path('admin_drsoft_fr_product_wizard_configurator_product_choice_fragment', {'step': index}) }}&index=' + idx, {target: '#choices-step-' + {{ index }}, swap: 'beforeend'});
+        }
+      }"
+    >
+        <div id="choices-step-{{ index }}">
+            {% for choiceForm in form.productChoices %}
+                {% include '@Modules/drsoftfrproductwizard/admin/configurator/_product_choice_form.html.twig' with { 'form': choiceForm, 'index': loop.index0 } %}
+            {% endfor %}
+        </div>
+        <button type="button" class="btn btn-outline-secondary btn-sm mt-1" @click="addChoice">Ajouter un choix
+            produit
+        </button>
+    </div>
+</div>

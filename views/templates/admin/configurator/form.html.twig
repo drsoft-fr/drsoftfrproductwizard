@@ -5,7 +5,24 @@
     {{ form_start(form) }}
     {{ form_row(form.name) }}
     {{ form_row(form.active) }}
+
+    <h2>Étapes du scénario</h2>
+    <div id="steps-collection"
+         x-data="{ steps: {{ form.steps|length }}, addStep() { let idx = this.steps++; htmx.ajax('GET', '{{ path('admin_drsoft_fr_product_wizard_configurator_step_fragment') }}&index=' + idx, { target: '#steps-collection', swap: 'beforeend' }); }}">
+        {# Affichage initial #}
+        {% for stepForm in form.steps %}
+            {% include '@Modules/drsoftfrproductwizard/admin/configurator/_step_form.html.twig' with { 'form': stepForm, 'index': loop.index0 } %}
+        {% endfor %}
+
+        <button type="button" class="btn btn-info mt-2" @click="addStep">Ajouter une étape</button>
+    </div>
     <button class="btn btn-success">{{ form.vars.value.id ? 'Enregistrer' : 'Créer' }}</button>
     <a class="btn btn-secondary" href="{{ path('admin_drsoft_fr_product_wizard_configurator_index') }}">Retour</a>
     {{ form_end(form) }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="https://cdn.jsdelivr.net/npm/htmx.org@1.9.12"></script>
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
 {% endblock %}

@@ -1,0 +1,9 @@
+<div class="mb-2 border p-2" id="productchoice-{{ index }}">
+    {{ form_row(form.label) }}
+    {{ form_row(form.productId) }}
+    {{ form_row(form.isDefault) }}
+    {{ form_row(form.allowQuantity) }}
+    {{ form_row(form.forcedQuantity) }}
+    {{ form_row(form.active) }}
+    <button type="button" class="btn btn-link text-danger p-0" @click="$el.closest('.mb-2').remove()">Supprimer</button>
+</div>

@@ -41,7 +41,7 @@ class ProductChoice
     private $label = '';
 
     /**
-     * @var int $productId
+     * @var ?int $productId
      *
      * @ORM\Column(name="id_product", type="integer", length=10, nullable=true, options={"unsigned"=true})
      */
@@ -62,7 +62,7 @@ class ProductChoice
     private $allowQuantity = true;
 
     /**
-     * @var int $forcedQuantity
+     * @var ?int $forcedQuantity
      *
      * @ORM\Column(name="forced_quantity", type="integer", nullable=true, options={"default":null, "unsigned"=true})
      */
@@ -163,7 +163,7 @@ class ProductChoice
         return $this;
     }
 
-    public function getProductId(): int
+    public function getProductId(): ?int
     {
         return $this->productId;
     }
@@ -196,7 +196,7 @@ class ProductChoice
         return $this;
     }
 
-    public function getForcedQuantity(): int
+    public function getForcedQuantity(): ?int
     {
         return $this->forcedQuantity;
     }

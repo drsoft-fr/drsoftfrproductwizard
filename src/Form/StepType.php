@@ -26,13 +26,12 @@ final class StepType extends AbstractType
                 'label' => 'Actif',
                 'required' => false,
             ])
-            ->add('choices', CollectionType::class, [
+            ->add('productChoices', CollectionType::class, [
                 'entry_type' => ProductChoiceType::class,
-                'label' => 'Choix possibles',
                 'allow_add' => true,
                 'allow_delete' => true,
                 'by_reference' => false,
-                'prototype' => true,
+                'label' => 'Choix produits',
                 'prototype_name' => '__step__',
             ]);
     }
