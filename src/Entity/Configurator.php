@@ -77,8 +77,28 @@ class Configurator
      */
     public function addStep(Step $step): Configurator
     {
+        if (true === $this->steps->contains($step)) {
+            return $this;
+        }
+
         $step->setConfigurator($this);
         $this->steps->add($step);
+
+        return $this;
+    }
+
+    /**
+     * @param Step $step
+     *
+     * @return $this
+     */
+    public function removeStep(Step $step): Configurator
+    {
+        if (false === $this->steps->contains($step)) {
+            return $this;
+        }
+
+        $this->steps->removeElement($step);
 
         return $this;
     }
@@ -168,7 +188,14 @@ class Configurator
      */
     public function setSteps(Collection $steps): Configurator
     {
-        $this->steps = $steps;
+        foreach ($this->steps as $step) {
+            $this->removeStep($step);
+        }
+
+        foreach ($steps as $step) {
+            $this->addStep($step);
+        }
+
         return $this;
     }
 

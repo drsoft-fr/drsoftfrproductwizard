@@ -91,8 +91,28 @@ class Step
      */
     public function addProductChoice(ProductChoice $productChoice): Step
     {
+        if (true === $this->productChoices->contains($productChoice)) {
+            return $this;
+        }
+
         $productChoice->setStep($this);
         $this->productChoices->add($productChoice);
+
+        return $this;
+    }
+
+    /**
+     * @param ProductChoice $productChoice
+     *
+     * @return $this
+     */
+    public function removeProductChoice(ProductChoice $productChoice): Step
+    {
+        if (false === $this->productChoices->contains($productChoice)) {
+            return $this;
+        }
+
+        $this->productChoices->removeElement($productChoice);
 
         return $this;
     }
@@ -196,7 +216,14 @@ class Step
      */
     public function setProductChoices(Collection $productChoices): Step
     {
-        $this->productChoices = $productChoices;
+        foreach ($this->productChoices as $productChoice) {
+            $this->removeProductChoice($productChoice);
+        }
+
+        foreach ($productChoices as $productChoice) {
+            $this->addProductChoice($productChoice);
+        }
+
         return $this;
     }
 
