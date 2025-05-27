@@ -6,37 +6,6 @@
     {{ parent() }}
 
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-
-    <style>
-        /* Style de base pour les éléments de la liste */
-        .sortable-list > * {
-            transition: all 0.3s ease;
-            overflow: hidden;
-        }
-
-        /* Style pour l'élément fantôme (emplacement où l'item sera déposé) */
-        .sortable-ghost {
-            background-color: #f8f9fa !important;
-            border: 2px dashed #ccc !important;
-            opacity: 0.7 !important;
-        }
-
-        /* Style pour l'élément actuellement sélectionné et déplacé */
-        .sortable-chosen {
-            background-color: #fff !important;
-        }
-
-        /* Style pour l'élément en cours de déplacement */
-        .sortable-drag {
-            background-color: #fff !important;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2) !important;
-            opacity: 0.9 !important;
-            max-height: 50px !important;
-            overflow: hidden !important;
-            z-index: 9999 !important;
-            border-radius: 4px !important;
-        }
-    </style>
 {% endblock %}
 
 {% block content %}
@@ -49,7 +18,5 @@
 
 {% block javascripts %}
     {{ parent() }}
-
-    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
 {% endblock %}
 

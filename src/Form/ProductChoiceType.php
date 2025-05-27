@@ -1,6 +1,5 @@
 <?php
 
-
 namespace DrSoftFr\Module\ProductWizard\Form;
 
 use DrSoftFr\Module\ProductWizard\Entity\ProductChoice;
@@ -16,6 +15,25 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 final class ProductChoiceType extends AbstractType
 {
+    /**
+     * @var int
+     */
+    private $languageId;
+
+    /**
+     * @var int
+     */
+    private $shopId;
+
+    public function __construct(
+        int $languageId,
+        int $shopId
+    )
+    {
+        $this->languageId = $languageId;
+        $this->shopId = $shopId;
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
@@ -25,6 +43,9 @@ final class ProductChoiceType extends AbstractType
             ->add('productId', IntegerType::class, [
                 'label' => 'ID produit PrestaShop (optionnel)',
                 'required' => false,
+                'attr' => [
+                    'class' => 'product-select',
+                ],
             ])
             ->add('isDefault', CheckboxType::class, [
                 'label' => 'Choix par défaut',
@@ -56,6 +77,25 @@ final class ProductChoiceType extends AbstractType
 
         $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
             $productChoice = $event->getData();
+            $form = $event->getForm();
+            $productName = '';
+
+            if ($productChoice && $productChoice->getProductId()) {
+                $product = new \Product($productChoice->getProductId(), false, $this->languageId, $this->shopId);
+
+                if (true === \Validate::isLoadedObject($product)) {
+                    $productName = $product->name;
+                }
+            }
+
+            $form->add('productId', IntegerType::class, [
+                'label' => 'ID produit PrestaShop (optionnel)',
+                'required' => false,
+                'attr' => [
+                    'class' => 'product-select',
+                    'data-product-name' => $productName,
+                ],
+            ]);
 
             if ($productChoice === null) {
                 $productChoice = new ProductChoice();

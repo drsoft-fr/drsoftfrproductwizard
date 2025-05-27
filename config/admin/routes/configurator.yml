@@ -59,3 +59,11 @@ admin_drsoft_fr_product_wizard_configurator_product_choice_fragment:
       index: index
   requirements:
     index: \d+
+
+admin_drsoft_fr_product_wizard_configurator_product_search:
+  path: /product-search/
+  methods: [ GET ]
+  defaults:
+    _controller: DrSoftFr\Module\ProductWizard\Controller\Admin\ConfiguratorController::productSearchAction
+    _legacy_controller: AdminDrSoftFrProductWizardConfigurator
+    _legacy_link: AdminDrSoftFrProductWizardConfigurator:productSearch

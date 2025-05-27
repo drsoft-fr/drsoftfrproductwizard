@@ -9,7 +9,22 @@
     </div>
     <div class="p-2">
         {{ form_row(form.label) }}
-        {{ form_row(form.productId) }}
+        <div class="form-group row">
+            <label class="form-control-label" for="ts-{{ form.productId.vars.id }}">Produit</label>
+            <div class="col-sm">
+                <input type="text"
+                       class="form-control product-selector"
+                       id="ts-{{ form.productId.vars.id }}"
+                       data-target="#{{ form.productId.vars.id }}"
+                       value="{{ attribute(form.productId.vars.attr, 'data-product-name')|default('') }}"
+                       autocomplete="off"
+                       placeholder="Rechercher un produit...">
+                <div style="display:none">
+                    {{ form_widget(form.productId) }}
+                </div>
+            </div>
+        </div>
+
         {{ form_row(form.isDefault) }}
         {{ form_row(form.allowQuantity) }}
         {{ form_row(form.forcedQuantity) }}
