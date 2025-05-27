@@ -8,7 +8,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use DrSoftFr\Module\ProductWizard\Entity\Configurator;
 use DrSoftFr\Module\ProductWizard\Form\ConfiguratorType;
 use DrSoftFr\Module\ProductWizard\Repository\ConfiguratorRepository;
-use DrsoftFrProductWizard;
+use drsoftfrproductwizard;
 use PrestaShopBundle\Controller\Admin\FrameworkBundleAdminController;
 use PrestaShopBundle\Security\Annotation\AdminSecurity;
 use PrestaShopBundle\Security\Annotation\ModuleActivated;
@@ -144,11 +144,11 @@ final class ConfiguratorController extends FrameworkBundleAdminController
     }
 
     /**
-     * @return DrsoftFrProductWizard
+     * @return drsoftfrproductwizard
      */
-    protected function getModule(): DrsoftFrProductWizard
+    protected function getModule(): drsoftfrproductwizard
     {
-        /** @type DrsoftFrProductWizard */
+        /** @type drsoftfrproductwizard */
         return $this->get('drsoft_fr.module.product_wizard.module');
     }
 

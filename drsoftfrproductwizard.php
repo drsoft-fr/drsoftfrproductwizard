@@ -19,9 +19,9 @@ if (file_exists($autoloadPath)) {
 }
 
 /**
- * Class DrsoftFrProductWizard
+ * Class drsoftfrproductwizard
  */
-class DrsoftFrProductWizard extends Module
+class drsoftfrproductwizard extends Module
 {
     /**
      * @var string $authorEmail Author email
