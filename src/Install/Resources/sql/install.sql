@@ -28,25 +28,25 @@ CREATE TABLE IF NOT EXISTS `_DB_PREFIX_drsoft_fr_product_wizard_step`
   DEFAULT CHARSET = utf8mb4
   AUTO_INCREMENT = 1;
 
-CREATE TABLE IF NOT EXISTS `_DB_PREFIX_drsoft_fr_product_wizard_choice`
+CREATE TABLE IF NOT EXISTS `_DB_PREFIX_drsoft_fr_product_wizard_product_choice`
 (
-    `id_choice`       INT(10) UNSIGNED    NOT NULL AUTO_INCREMENT,
-    `id_step`         INT(10) UNSIGNED    NOT NULL,
-    `label`           VARCHAR(255)        NOT NULL,
-    `id_product`      INT(10) UNSIGNED             DEFAULT NULL,
-    `is_default`      TINYINT(1) UNSIGNED NOT NULL DEFAULT 0,
-    `allow_quantity`  TINYINT(1) UNSIGNED NOT NULL DEFAULT 1,
-    `forced_quantity` INT UNSIGNED                 DEFAULT NULL,
-    `active`          TINYINT(1) UNSIGNED NOT NULL DEFAULT 1,
-    `date_add`        DATETIME            NOT NULL,
-    `date_upd`        DATETIME            NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    PRIMARY KEY (`id_choice`),
+    `id_product_choice` INT(10) UNSIGNED    NOT NULL AUTO_INCREMENT,
+    `id_step`           INT(10) UNSIGNED    NOT NULL,
+    `label`             VARCHAR(255)        NOT NULL,
+    `id_product`        INT(10) UNSIGNED             DEFAULT NULL,
+    `is_default`        TINYINT(1) UNSIGNED NOT NULL DEFAULT 0,
+    `allow_quantity`    TINYINT(1) UNSIGNED NOT NULL DEFAULT 1,
+    `forced_quantity`   INT UNSIGNED                 DEFAULT NULL,
+    `active`            TINYINT(1) UNSIGNED NOT NULL DEFAULT 1,
+    `date_add`          DATETIME            NOT NULL,
+    `date_upd`          DATETIME            NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (`id_product_choice`),
     KEY `idx_dfpwc_step` (`id_step`),
     KEY `idx_dfpwc_product` (`id_product`),
-    CONSTRAINT `fk_dfpwc_choice_step`
+    CONSTRAINT `fk_dfpwc_product_choice_step`
         FOREIGN KEY (`id_step`) REFERENCES `_DB_PREFIX_drsoft_fr_product_wizard_step` (`id_step`)
             ON DELETE CASCADE ON UPDATE CASCADE,
-    CONSTRAINT `fk_dfpwc_choice_product`
+    CONSTRAINT `fk_dfpwc_product_choice_product`
         FOREIGN KEY (`id_product`) REFERENCES `_DB_PREFIX_product` (`id_product`)
             ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE = _MYSQL_ENGINE_

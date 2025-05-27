@@ -15,8 +15,8 @@ services:
     arguments:
       - DrSoftFr\Module\ProductWizard\Entity\Step
 
-  drsoft_fr.module.product_wizard.repository.choice_repository:
-    class: DrSoftFr\Module\ProductWizard\Repository\ChoiceRepository
+  drsoft_fr.module.product_wizard.repository.product_choice_repository:
+    class: DrSoftFr\Module\ProductWizard\Repository\ProductChoiceRepository
     factory: [ '@doctrine.orm.default_entity_manager', getRepository ]
     arguments:
-      - DrSoftFr\Module\ProductWizard\Entity\Choice
+      - DrSoftFr\Module\ProductWizard\Entity\ProductChoice

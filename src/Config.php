@@ -15,7 +15,7 @@ final class Config
 {
     const CONFIGURATOR_TABLE_NAME = _DB_PREFIX_ . 'drsoft_fr_product_wizard_configurator';
     const STEP_TABLE_NAME = _DB_PREFIX_ . 'drsoft_fr_product_wizard_step';
-    const CHOICE_TABLE_NAME = _DB_PREFIX_ . 'drsoft_fr_product_wizard_choice';
+    const PRODUCT_CHOICE_TABLE_NAME = _DB_PREFIX_ . 'drsoft_fr_product_wizard_product_choice';
 
     const ERROR_MESSAGE_PATTERN = 'drsoftfrproductwizard - %s - %d - Throwable #%d - %s.';
 

@@ -7,11 +7,11 @@ namespace DrSoftFr\Module\ProductWizard\Repository;
 use Doctrine\ORM\EntityRepository;
 
 /**
- * Class ChoiceRepository
+ * Class ProductChoiceRepository
  *
- * This class represents a repository for Choice entities.
+ * This class represents a repository for ProductChoice entities.
  * It extends the EntityRepository class to inherit common entity repository functionality.
  */
-class ChoiceRepository extends EntityRepository
+class ProductChoiceRepository extends EntityRepository
 {
 }

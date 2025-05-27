@@ -51,11 +51,11 @@ class Step
     private $configurator;
 
     /**
-     * @var Collection<Choice> $choices
+     * @var Collection<ProductChoice> $productChoices
      *
-     * @ORM\OneToMany(targetEntity="DrSoftFr\Module\ProductWizard\Entity\Choice", cascade={"persist", "remove"}, orphanRemoval=true, mappedBy="step")
+     * @ORM\OneToMany(targetEntity="DrSoftFr\Module\ProductWizard\Entity\ProductChoice", cascade={"persist", "remove"}, orphanRemoval=true, mappedBy="step")
      */
-    private $choices;
+    private $productChoices;
 
     /**
      * @var int $position
@@ -80,19 +80,19 @@ class Step
 
     public function __construct()
     {
-        $this->choices = new ArrayCollection();
+        $this->productChoices = new ArrayCollection();
         $this->dateAdd = new \DateTimeImmutable();
     }
 
     /**
-     * @param Choice $choice
+     * @param ProductChoice $productChoice
      *
      * @return $this
      */
-    public function addChoice(Choice $choice): Step
+    public function addProductChoice(ProductChoice $productChoice): Step
     {
-        $choice->setStep($this);
-        $this->choices->add($choice);
+        $productChoice->setStep($this);
+        $this->productChoices->add($productChoice);
 
         return $this;
     }
@@ -102,12 +102,12 @@ class Step
      */
     public function toArray(): array
     {
-        /** @var Choice[] $choices */
-        $choices = [];
+        /** @var ProductChoice[] $productChoices */
+        $productChoices = [];
 
-        /** @var Choice $choice */
-        foreach ($this->getChoices() as $choice) {
-            $choices[] = $choice->toArray();
+        /** @var ProductChoice $productChoice */
+        foreach ($this->getProductChoices() as $productChoice) {
+            $productChoices[] = $productChoice->toArray();
         }
 
         return [
@@ -119,7 +119,7 @@ class Step
             'date_upd' => $this->getDateUpd(),
             'label' => $this->getLabel(),
             'position' => $this->getPosition(),
-            'choices' => $choices,
+            'product_choices' => $productChoices,
         ];
     }
 
@@ -185,18 +185,18 @@ class Step
     /**
      * @return Collection
      */
-    public function getChoices(): Collection
+    public function getProductChoices(): Collection
     {
-        return $this->choices;
+        return $this->productChoices;
     }
 
     /**
-     * @param Collection $choices
+     * @param Collection $productChoices
      * @return Step
      */
-    public function setChoices(Collection $choices): Step
+    public function setProductChoices(Collection $productChoices): Step
     {
-        $this->choices = $choices;
+        $this->productChoices = $productChoices;
         return $this;
     }
 

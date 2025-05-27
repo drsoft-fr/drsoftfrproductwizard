@@ -9,11 +9,11 @@ use DrSoftFr\Module\ProductWizard\Config as Configuration;
 use DrSoftFr\PrestaShopModuleHelper\Traits\ClassHydrateTrait;
 
 /**
- * @ORM\Table(name=Configuration::CHOICE_TABLE_NAME)
- * @ORM\Entity(repositoryClass="DrSoftFr\Module\ProductWizard\Repository\ChoiceRepository")
+ * @ORM\Table(name=Configuration::PRODUCT_CHOICE_TABLE_NAME)
+ * @ORM\Entity(repositoryClass="DrSoftFr\Module\ProductWizard\Repository\ProductChoiceRepository")
  * @ORM\HasLifecycleCallbacks
  */
-class Choice
+class ProductChoice
 {
     use ClassHydrateTrait;
 
@@ -71,7 +71,7 @@ class Choice
     /**
      * @var Step $step
      *
-     * @ORM\ManyToOne(targetEntity="DrSoftFr\Module\ProductWizard\Entity\Step", inversedBy="choices")
+     * @ORM\ManyToOne(targetEntity="DrSoftFr\Module\ProductWizard\Entity\Step", inversedBy="productChoices")
      * @ORM\JoinColumn(name="id_step", referencedColumnName="id_step", nullable=false, onDelete="CASCADE")
      */
     private $step;
@@ -135,7 +135,7 @@ class Choice
         return $this->id;
     }
 
-    public function setId(int $id): Choice
+    public function setId(int $id): ProductChoice
     {
         $this->id = $id;
         return $this;
@@ -146,7 +146,7 @@ class Choice
         return $this->active;
     }
 
-    public function setActive(bool $active): Choice
+    public function setActive(bool $active): ProductChoice
     {
         $this->active = $active;
         return $this;
@@ -157,7 +157,7 @@ class Choice
         return $this->label;
     }
 
-    public function setLabel(string $label): Choice
+    public function setLabel(string $label): ProductChoice
     {
         $this->label = $label;
         return $this;
@@ -168,7 +168,7 @@ class Choice
         return $this->productId;
     }
 
-    public function setProductId(int $productId): Choice
+    public function setProductId(int $productId): ProductChoice
     {
         $this->productId = $productId;
         return $this;
@@ -179,7 +179,7 @@ class Choice
         return $this->isDefault;
     }
 
-    public function setIsDefault(bool $isDefault): Choice
+    public function setIsDefault(bool $isDefault): ProductChoice
     {
         $this->isDefault = $isDefault;
         return $this;
@@ -190,7 +190,7 @@ class Choice
         return $this->allowQuantity;
     }
 
-    public function setAllowQuantity(bool $allowQuantity): Choice
+    public function setAllowQuantity(bool $allowQuantity): ProductChoice
     {
         $this->allowQuantity = $allowQuantity;
         return $this;
@@ -201,7 +201,7 @@ class Choice
         return $this->forcedQuantity;
     }
 
-    public function setForcedQuantity(int $forcedQuantity): Choice
+    public function setForcedQuantity(int $forcedQuantity): ProductChoice
     {
         $this->forcedQuantity = $forcedQuantity;
         return $this;
@@ -212,7 +212,7 @@ class Choice
         return $this->step;
     }
 
-    public function setStep(Step $step): Choice
+    public function setStep(Step $step): ProductChoice
     {
         $this->step = $step;
         return $this;
@@ -228,7 +228,7 @@ class Choice
 
     /**
      * @param DateTimeInterface $dateAdd
-     * @return Choice
+     * @return ProductChoice
      */
     public function setDateAdd(DateTimeInterface $dateAdd)
     {
@@ -241,7 +241,7 @@ class Choice
         return $this->dateUpd;
     }
 
-    public function setDateUpd(DateTimeInterface $dateUpd): Choice
+    public function setDateUpd(DateTimeInterface $dateUpd): ProductChoice
     {
         $this->dateUpd = $dateUpd;
         return $this;
