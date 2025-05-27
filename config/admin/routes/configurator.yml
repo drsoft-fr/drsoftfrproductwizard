@@ -27,3 +27,15 @@ admin_drsoft_fr_product_wizard_configurator_edit:
       id: id
   requirements:
     id: \d+
+
+admin_drsoft_fr_product_wizard_configurator_delete:
+  path: /{id}/delete
+  methods: [ GET, POST ]
+  defaults:
+    _controller: DrSoftFr\Module\ProductWizard\Controller\Admin\ConfiguratorController::deleteAction
+    _legacy_controller: AdminDrSoftFrProductWizardConfigurator
+    _legacy_link: AdminDrSoftFrProductWizardConfigurator:delete
+    _legacy_parameters:
+      id: id
+  requirements:
+    id: \d+

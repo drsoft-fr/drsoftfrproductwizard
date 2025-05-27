@@ -12,6 +12,7 @@ use DrsoftFrProductWizard;
 use PrestaShopBundle\Controller\Admin\FrameworkBundleAdminController;
 use PrestaShopBundle\Security\Annotation\AdminSecurity;
 use PrestaShopBundle\Security\Annotation\ModuleActivated;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -82,7 +83,7 @@ final class ConfiguratorController extends FrameworkBundleAdminController
     }
 
     /**
-     * Edit AdapterCustomer
+     * Edit Configurator
      *
      * @AdminSecurity(
      *     "is_granted('update', request.get('_legacy_controller'))",
@@ -116,16 +117,31 @@ final class ConfiguratorController extends FrameworkBundleAdminController
         ]);
     }
 
-//    #[Route('/{id}/delete', name: 'admin_drsoft_fr_product_wizard_configurator_delete', methods: ['POST'])]
-//    public function deleteAction(Configurator $configurator, EntityManagerInterface $em, Request $request): Response
-//    {
-//        if ($this->isCsrfTokenValid('delete' . $configurator->getId(), $request->request->get('_token'))) {
-//            $em->remove($configurator);
-//            $em->flush();
-//            $this->addFlash('success', 'Scénario supprimé.');
-//        }
-//        return $this->redirectToRoute('admin_drsoft_fr_product_wizard_configurator_index');
-//    }
+
+    /**
+     * Delete Configurator
+     *
+     * @AdminSecurity(
+     *     "is_granted('delete', request.get('_legacy_controller'))",
+     *     redirectRoute="admin_drsoft_fr_product_wizard_configurator_index",
+     *     message="You do not have permission to delete this."
+     * )
+     *
+     * @param Configurator $configurator
+     * @param EntityManagerInterface $em
+     * @param Request $request
+     *
+     * @return RedirectResponse
+     */
+    public function deleteAction(Configurator $configurator, EntityManagerInterface $em, Request $request): Response
+    {
+        if ($this->isCsrfTokenValid('delete' . $configurator->getId(), $request->request->get('_token'))) {
+            $em->remove($configurator);
+            $em->flush();
+            $this->addFlash('success', 'Scénario supprimé.');
+        }
+        return $this->redirectToRoute(self::PAGE_INDEX_ROUTE);
+    }
 
     /**
      * @return DrsoftFrProductWizard
