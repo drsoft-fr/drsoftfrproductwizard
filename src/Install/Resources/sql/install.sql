@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS `drsoft_fr_product_wizard_configurator`
+CREATE TABLE IF NOT EXISTS `_DB_PREFIX_drsoft_fr_product_wizard_configurator`
 (
     `id_configurator` INT(10) UNSIGNED    NOT NULL AUTO_INCREMENT,
     `name`            VARCHAR(255)        NOT NULL,
@@ -10,16 +10,16 @@ CREATE TABLE IF NOT EXISTS `drsoft_fr_product_wizard_configurator`
   DEFAULT CHARSET = utf8mb4
   AUTO_INCREMENT = 1;
 
-CREATE TABLE IF NOT EXISTS `drsoft_fr_product_wizard_step`
+CREATE TABLE IF NOT EXISTS `_DB_PREFIX_drsoft_fr_product_wizard_step`
 (
-    `id`              INT(10) UNSIGNED    NOT NULL AUTO_INCREMENT,
+    `id_step`         INT(10) UNSIGNED    NOT NULL AUTO_INCREMENT,
     `id_configurator` INT(10) UNSIGNED    NOT NULL,
     `label`           VARCHAR(255)        NOT NULL,
     `position`        INT UNSIGNED        NOT NULL DEFAULT 0,
     `active`          TINYINT(1) UNSIGNED NOT NULL DEFAULT 1,
     `date_add`        DATETIME            NOT NULL,
     `date_upd`        DATETIME            NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    PRIMARY KEY (`id`),
+    PRIMARY KEY (`id_step`),
     KEY `idx_dfpws_configurator` (`id_configurator`),
     CONSTRAINT `fk_dfpws_step_configurator`
         FOREIGN KEY (`id_configurator`) REFERENCES `_DB_PREFIX_drsoft_fr_product_wizard_configurator` (`id_configurator`)
@@ -28,9 +28,9 @@ CREATE TABLE IF NOT EXISTS `drsoft_fr_product_wizard_step`
   DEFAULT CHARSET = utf8mb4
   AUTO_INCREMENT = 1;
 
-CREATE TABLE IF NOT EXISTS `drsoft_fr_product_wizard_choice`
+CREATE TABLE IF NOT EXISTS `_DB_PREFIX_drsoft_fr_product_wizard_choice`
 (
-    `id`              INT(10) UNSIGNED    NOT NULL AUTO_INCREMENT,
+    `id_choice`       INT(10) UNSIGNED    NOT NULL AUTO_INCREMENT,
     `id_step`         INT(10) UNSIGNED    NOT NULL,
     `label`           VARCHAR(255)        NOT NULL,
     `id_product`      INT(10) UNSIGNED             DEFAULT NULL,
@@ -40,7 +40,7 @@ CREATE TABLE IF NOT EXISTS `drsoft_fr_product_wizard_choice`
     `active`          TINYINT(1) UNSIGNED NOT NULL DEFAULT 1,
     `date_add`        DATETIME            NOT NULL,
     `date_upd`        DATETIME            NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    PRIMARY KEY (`id`),
+    PRIMARY KEY (`id_choice`),
     KEY `idx_dfpwc_step` (`id_step`),
     KEY `idx_dfpwc_product` (`id_product`),
     CONSTRAINT `fk_dfpwc_choice_step`
