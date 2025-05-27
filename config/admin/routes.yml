@@ -1,0 +1,2 @@
+_admin_drsoft_fr_product_wizard_configurator_routing:
+  resource: "routes/configurator.yml"

@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use DrSoftFr\Module\ProductWizard\Config;
+use DrSoftFr\Module\ProductWizard\Controller\Admin\ConfiguratorController;
 use DrSoftFr\Module\ProductWizard\Install\Factory\InstallerFactory;
 use DrSoftFr\Module\ProductWizard\Install\Installer;
 use PrestaShop\PrestaShop\Core\Cache\Clearer\CacheClearerChain;
@@ -49,7 +50,15 @@ class DrsoftFrProductWizard extends Module
             'max' => _PS_VERSION_
         ];
         $this->tab = 'content_management';
-        $this->tabs = [];
+        $this->tabs = [
+            [
+                'class_name' => ConfiguratorController::TAB_CLASS_NAME,
+                'name' => 'Product Wizard',
+                'parent_class_name' => 'AdminCatalog',
+                'route_name' => 'admin_drsoft_fr_product_wizard_configurator_index',
+                'visible' => true,
+            ],
+        ];
         $this->version = '1.0.0';
         $this->authorEmail = 'contact@drsoft.fr';
         $this->moduleGithubRepositoryUrl = 'https://github.com/drsoft-fr/drsoftfrproductwizard';
@@ -143,6 +152,18 @@ class DrsoftFrProductWizard extends Module
         }
 
         return $cacheClearerChain;
+    }
+
+    /**
+     * Redirects the admin user to the ValidateCustomerPro controller in the admin panel.
+     *
+     * @return void
+     */
+    public function getContent(): void
+    {
+        Tools::redirectAdmin(
+            $this->context->link->getAdminLink(ConfiguratorController::TAB_CLASS_NAME)
+        );
     }
 
     /**

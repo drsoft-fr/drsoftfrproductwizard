@@ -1,0 +1,9 @@
+admin_drsoft_fr_product_wizard_configurator_index:
+    path: /
+    methods: [ GET ]
+    defaults:
+        _controller: DrSoftFr\Module\ProductWizard\Controller\Admin\ConfiguratorController::indexAction
+        _legacy_controller: AdminDrSoftFrProductWizardConfigurator
+        _legacy_link:
+            - AdminDrSoftFrProductWizardConfigurator
+            - AdminDrSoftFrProductWizardConfigurator:index
