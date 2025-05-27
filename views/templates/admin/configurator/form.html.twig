@@ -7,6 +7,7 @@
                 <h1 class="card-header">{{ form.vars.value.id ? 'Éditer le scénario' : 'Créer un scénario' }}</h1>
                 <div class="card-body">
                     {{ form_start(form) }}
+                    {{ form_errors(form) }}
                     <div class="form-group mb-3">
                         {{ form_row(form.name) }}
                         {{ form_row(form.active) }}
