@@ -36,7 +36,7 @@ final class StepType extends AbstractType
                 'by_reference' => false,
                 'label' => 'Choix produits',
                 'prototype' => true,
-                'prototype_name' => '__step__',
+                'prototype_name' => '__choice__',
             ])
             ->add('remove', ButtonType::class, [
                 'label' => 'Supprimer',
