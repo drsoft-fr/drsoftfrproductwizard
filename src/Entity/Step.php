@@ -53,7 +53,7 @@ class Step
     /**
      * @var Collection<Choice> $choices
      *
-     * @ORM\OneToMany(targetEntity="DrSoftFr\Module\ProductWizard\Entity\Choice", cascade={"persist", "remove"}, mappedBy="step")
+     * @ORM\OneToMany(targetEntity="DrSoftFr\Module\ProductWizard\Entity\Choice", cascade={"persist", "remove"}, orphanRemoval=true, mappedBy="step")
      */
     private $choices;
 
