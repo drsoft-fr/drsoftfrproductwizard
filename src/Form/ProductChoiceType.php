@@ -4,9 +4,9 @@
 namespace DrSoftFr\Module\ProductWizard\Form;
 
 use DrSoftFr\Module\ProductWizard\Entity\ProductChoice;
-use PrestaShopBundle\Form\Admin\Type\SwitchType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ButtonType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
@@ -26,11 +26,11 @@ final class ProductChoiceType extends AbstractType
                 'label' => 'ID produit PrestaShop (optionnel)',
                 'required' => false,
             ])
-            ->add('isDefault', SwitchType::class, [
+            ->add('isDefault', CheckboxType::class, [
                 'label' => 'Choix par défaut',
                 'required' => false,
             ])
-            ->add('allowQuantity', SwitchType::class, [
+            ->add('allowQuantity', CheckboxType::class, [
                 'label' => 'Quantité modifiable par le client',
                 'required' => false,
             ])
@@ -38,7 +38,7 @@ final class ProductChoiceType extends AbstractType
                 'label' => 'Quantité imposée (optionnel, vide = non imposée)',
                 'required' => false,
             ])
-            ->add('active', SwitchType::class, [
+            ->add('active', CheckboxType::class, [
                 'label' => 'Actif',
                 'required' => false,
             ])
