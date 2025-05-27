@@ -3,7 +3,7 @@ imports:
 
 services:
   drsoft_fr.module.product_wizard.module:
-    class: drsoftfrproductwizard
+    class: DrsoftFrProductWizard
     public: true
 
   drsoft_fr.module.product_wizard.install.factory.installer_factory:
