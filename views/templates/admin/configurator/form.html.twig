@@ -1,0 +1,11 @@
+{% extends '@Modules/drsoftfrproductwizard/views/templates/admin/base.html.twig' %}
+
+{% block main %}
+    <h1>{{ form.vars.value.id ? 'Éditer le scénario' : 'Créer un nouveau scénario' }}</h1>
+    {{ form_start(form) }}
+    {{ form_row(form.name) }}
+    {{ form_row(form.active) }}
+    <button class="btn btn-success">{{ form.vars.value.id ? 'Enregistrer' : 'Créer' }}</button>
+    <a class="btn btn-secondary" href="{{ path('admin_drsoft_fr_product_wizard_configurator_index') }}">Retour</a>
+    {{ form_end(form) }}
+{% endblock %}
