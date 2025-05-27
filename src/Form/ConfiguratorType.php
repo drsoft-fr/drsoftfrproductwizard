@@ -39,6 +39,7 @@ final class ConfiguratorType extends TranslatorAwareType
                 'allow_delete' => true,
                 'by_reference' => false,
                 'label' => 'Étapes',
+                'prototype' => true,
                 'prototype_name' => '__step__',
             ])
             ->add('save', SubmitType::class, [

@@ -32,6 +32,7 @@ final class StepType extends AbstractType
                 'allow_delete' => true,
                 'by_reference' => false,
                 'label' => 'Choix produits',
+                'prototype' => true,
                 'prototype_name' => '__step__',
             ]);
     }
