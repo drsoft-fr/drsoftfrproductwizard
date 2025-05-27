@@ -1,7 +1,11 @@
-<div class="border rounded px-2 py-1 mb-2 product-choice-block position-relative bg-light">
-    <div class="d-flex align-items-center justify-content-between mb-2 p-2">
-        <strong>Choix produit</strong>&nbsp;<span
-                class="badge bg-secondary">{% if choice_idx is defined and choice_idx matches '/^\\d+$/' %}{{ (choice_idx + 0) + 1 }}{% endif %}</span>
+<div class="border rounded p-2 mb-2 product-choice-block position-relative bg-light">
+    <div class="d-flex align-items-center justify-content-between">
+        <div>
+            <strong>Choix produit</strong>
+        </div>
+        <div>
+            <span class="badge bg-secondary">{% if choice_idx is defined and choice_idx matches '/^\\d+$/' %}{{ (choice_idx + 0) + 1 }}{% endif %}</span>
+        </div>
     </div>
     <div class="p-2">
         {{ form_row(form.label) }}

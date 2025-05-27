@@ -21,6 +21,9 @@ final class StepType extends AbstractType
         $builder
             ->add('label', TextType::class, [
                 'label' => 'Nom de l’étape',
+                'attr' => [
+                    'x-sync-label' => ''
+                ],
             ])
             ->add('position', IntegerType::class, [
                 'label' => 'Ordre',

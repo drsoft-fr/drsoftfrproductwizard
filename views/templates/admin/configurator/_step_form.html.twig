@@ -1,7 +1,13 @@
 <div class="card mb-3 shadow-sm border-primary position-relative step-block">
     <div class="card-header d-flex align-items-center justify-content-between">
-        <strong>Étape</strong>&nbsp;<span
-                class="badge bg-primary">{% if idx is defined and idx matches '/^\\d+$/' %}{{ (idx + 0) + 1 }}{% endif %}</span>
+        <div>
+            <span class="step-drag-handle" style="cursor: grab;"><i
+                        class="material-icons">drag_indicator</i></span>
+            <strong>Étape <span class="js-label"></span></strong>
+        </div>
+        <div>
+            <span class="badge bg-primary">{% if idx is defined and idx matches '/^\\d+$/' %}{{ (idx + 0) + 1 }}{% endif %}</span>
+        </div>
     </div>
     <div class="card-body">
         {{ form_row(form.label) }}

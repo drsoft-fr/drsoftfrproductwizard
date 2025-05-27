@@ -6,6 +6,55 @@
     {{ parent() }}
 
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+    <style>
+        /* Style de base pour les éléments de la liste */
+        .sortable-list > * {
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+
+        /* Quand le drag est actif, réduire tous les éléments */
+        body.dragging-active .sortable-list > * {
+            max-height: 50px !important;
+            overflow: hidden !important;
+            padding-top: 5px !important;
+            padding-bottom: 5px !important;
+        }
+
+        /* Cacher certains contenus pendant le drag pour alléger l'affichage */
+        body.dragging-active .sortable-list > * .card-body {
+            display: none !important;
+        }
+
+        /* Afficher uniquement les titres/en-têtes */
+        body.dragging-active .sortable-list > * .card-header{
+            margin: 0 !important;
+        }
+
+        /* Style pour l'élément fantôme (emplacement où l'item sera déposé) */
+        .sortable-ghost {
+            background-color: #f8f9fa !important;
+            border: 2px dashed #ccc !important;
+            opacity: 0.7 !important;
+        }
+
+        /* Style pour l'élément actuellement sélectionné et déplacé */
+        .sortable-chosen {
+            background-color: #fff !important;
+        }
+
+        /* Style pour l'élément en cours de déplacement */
+        .sortable-drag {
+            background-color: #fff !important;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2) !important;
+            opacity: 0.9 !important;
+            max-height: 50px !important;
+            overflow: hidden !important;
+            z-index: 9999 !important;
+            border-radius: 4px !important;
+        }
+    </style>
 {% endblock %}
 
 {% block content %}

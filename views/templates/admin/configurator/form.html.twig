@@ -14,7 +14,7 @@
 
                     <div x-data="stepManager({{ form.steps|length }})">
                         <h2 class="mb-2">Étapes du scénario</h2>
-                        <div id="steps-collection">
+                        <div id="steps-collection" class="sortable-list">
                             {% for stepForm in form.steps %}
                                 {% include '@Modules/drsoftfrproductwizard/views/templates/admin/configurator/_step_form.html.twig' with { 'form': stepForm, 'idx': loop.index0 } %}
                             {% endfor %}
@@ -42,6 +42,13 @@
             </div>
         </div>
     </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
 
     <script>
       function stepManager(initialIdx) {
@@ -65,5 +72,59 @@
           }
         }
       }
+
+      document.addEventListener('alpine:init', () => {
+        Alpine.directive('sync-label', (el, { expression }, { evaluate }) => {
+          const container = el.closest('.sortable-item, .card, .step-block')
+          if (!container) return
+
+          const labelSpan = container.querySelector('.js-label')
+          if (!labelSpan) return
+
+          labelSpan.textContent = el.value || 'Sans titre'
+
+          el.addEventListener('input', () => {
+            labelSpan.textContent = el.value || 'Sans titre'
+          })
+        })
+      })
+
+      document.addEventListener('DOMContentLoaded', function() {
+        const stepsList = document.getElementById('steps-collection')
+        if (stepsList) {
+          new Sortable(stepsList, {
+            animation: 150,
+            handle: '.step-drag-handle', // Met un handle visuel pour déplacer
+            ghostClass: 'sortable-ghost', // Classe CSS pour le fantôme durant le drag
+            chosenClass: 'sortable-chosen', // Classe CSS pour l'élément sélectionné
+            dragClass: 'sortable-drag', // Classe CSS pour l'élément en cours de drag
+            onEnd: function() {
+              // Après drag&drop, réindexe les champs 'position' si besoin
+              stepsList.querySelectorAll('.step-block').forEach(function(block, idx) {
+                let posInput = block.querySelector('input[name*="[position]"]')
+                if (posInput) {
+                  posInput.value = idx
+                }
+              })
+              document.body.classList.remove('dragging-active')
+              document.querySelectorAll('.sortable-list').forEach(l => {
+                l.classList.remove('inactive-list', 'active-list')
+              })
+
+            },
+            // Personnaliser l'élément fantôme
+            onStart: function(evt) {
+              document.body.classList.add('dragging-active')
+
+              // Identifier quelle liste est active
+              document.querySelectorAll('.sortable-list').forEach(l => {
+                l.classList.add('inactive-list')
+              })
+              evt.from.classList.remove('inactive-list')
+              evt.from.classList.add('active-list')
+            }
+          })
+        }
+      })
     </script>
 {% endblock %}
