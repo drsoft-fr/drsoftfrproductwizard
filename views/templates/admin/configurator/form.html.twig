@@ -1,28 +1,69 @@
 {% extends '@Modules/drsoftfrproductwizard/views/templates/admin/base.html.twig' %}
 
 {% block main %}
-    <h1>{{ form.vars.value.id ? 'Éditer le scénario' : 'Créer un nouveau scénario' }}</h1>
-    {{ form_start(form) }}
-    {{ form_row(form.name) }}
-    {{ form_row(form.active) }}
+    <div class="row justify-content-center">
+        <div class="col">
+            <div class="card">
+                <h1 class="card-header">{{ form.vars.value.id ? 'Éditer le scénario' : 'Créer un scénario' }}</h1>
+                <div class="card-body">
+                    {{ form_start(form) }}
+                    <div class="form-group mb-3">
+                        {{ form_row(form.name) }}
+                        {{ form_row(form.active) }}
+                    </div>
 
-    <h2>Étapes du scénario</h2>
-    <div id="steps-collection"
-         x-data="{ steps: {{ form.steps|length }}, addStep() { let idx = this.steps++; htmx.ajax('GET', '{{ path('admin_drsoft_fr_product_wizard_configurator_step_fragment') }}&index=' + idx, { target: '#steps-collection', swap: 'beforeend' }); }}">
-        {# Affichage initial #}
-        {% for stepForm in form.steps %}
-            {% include '@Modules/drsoftfrproductwizard/admin/configurator/_step_form.html.twig' with { 'form': stepForm, 'index': loop.index0 } %}
-        {% endfor %}
+                    <div x-data="stepManager({{ form.steps|length }})">
+                        <h2 class="mb-2">Étapes du scénario</h2>
+                        <div id="steps-collection">
+                            {% for stepForm in form.steps %}
+                                {% include '@Modules/drsoftfrproductwizard/views/templates/admin/configurator/_step_form.html.twig' with { 'form': stepForm, 'idx': loop.index0 } %}
+                            {% endfor %}
+                        </div>
 
-        <button type="button" class="btn btn-info mt-2" @click="addStep">Ajouter une étape</button>
+                        <template id="step-prototype">
+                            {% include '@Modules/drsoftfrproductwizard/views/templates/admin/configurator/_step_form.html.twig' with { 'form': form.steps.vars.prototype, 'idx': '__step__' } %}
+                        </template>
+                        <button type="button" class="btn btn-outline-primary mt-2" @click="addStep">Ajouter une étape
+                        </button>
+                    </div>
+
+                    <div class="mt-4">
+                        <button type="submit" class="btn btn-success">Enregistrer</button>
+                        <a class="btn btn-secondary"
+                           href="{{ path('admin_drsoft_fr_product_wizard_configurator_index') }}">Retour</a>
+                    </div>
+
+                    {% if form._token is defined %}
+                        {{ form_widget(form._token) }}
+                    {% endif %}
+
+                    {{ form_end(form, {render_rest: false}) }}
+                </div>
+            </div>
+        </div>
     </div>
-    <button class="btn btn-success">{{ form.vars.value.id ? 'Enregistrer' : 'Créer' }}</button>
-    <a class="btn btn-secondary" href="{{ path('admin_drsoft_fr_product_wizard_configurator_index') }}">Retour</a>
-    {{ form_end(form) }}
-{% endblock %}
 
-{% block javascripts %}
-    {{ parent() }}
-    <script src="https://cdn.jsdelivr.net/npm/htmx.org@1.9.12"></script>
-    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <script>
+      function stepManager(initialIdx) {
+        return {
+          idx: initialIdx,
+          addStep() {
+            let tpl = document.getElementById('step-prototype').innerHTML.replace(/__step__/g, this.idx)
+            document.getElementById('steps-collection').insertAdjacentHTML('beforeend', tpl)
+            this.idx++
+          }
+        }
+      }
+
+      function productChoiceManager(initialIdx, stepIdx) {
+        return {
+          idx: initialIdx,
+          addProductChoice() {
+            let tpl = document.getElementById('product-choice-prototype-' + stepIdx).innerHTML.replace(/__choice__/g, this.idx)
+            document.getElementById('product-choices-collection-' + stepIdx).insertAdjacentHTML('beforeend', tpl)
+            this.idx++
+          }
+        }
+      }
+    </script>
 {% endblock %}

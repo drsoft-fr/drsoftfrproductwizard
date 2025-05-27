@@ -3,12 +3,13 @@
 namespace DrSoftFr\Module\ProductWizard\Form;
 
 use DrSoftFr\Module\ProductWizard\Entity\Step;
+use PrestaShopBundle\Form\Admin\Type\SwitchType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ButtonType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
-use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 final class StepType extends AbstractType
@@ -22,7 +23,7 @@ final class StepType extends AbstractType
             ->add('position', IntegerType::class, [
                 'label' => 'Ordre',
             ])
-            ->add('active', CheckboxType::class, [
+            ->add('active', SwitchType::class, [
                 'label' => 'Actif',
                 'required' => false,
             ])
@@ -34,6 +35,14 @@ final class StepType extends AbstractType
                 'label' => 'Choix produits',
                 'prototype' => true,
                 'prototype_name' => '__step__',
+            ])
+            ->add('remove', ButtonType::class, [
+                'label' => 'Supprimer',
+                'attr' => [
+                    'class' => 'btn btn-danger btn-sm',
+                    '@click' => '$el.closest(\'.step-block\').remove()',
+                    'title' => 'Supprimer cette étape',
+                ],
             ]);
     }
 

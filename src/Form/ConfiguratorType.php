@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace DrSoftFr\Module\ProductWizard\Form;
 
 use DrSoftFr\Module\ProductWizard\Entity\Configurator;
+use PrestaShopBundle\Form\Admin\Type\SwitchType;
 use PrestaShopBundle\Form\Admin\Type\TranslatorAwareType;
-use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -29,7 +29,7 @@ final class ConfiguratorType extends TranslatorAwareType
             ->add('name', TextType::class, [
                 'label' => 'Nom du scénario',
             ])
-            ->add('active', CheckboxType::class, [
+            ->add('active', SwitchType::class, [
                 'label' => 'Actif',
                 'required' => false,
             ])

@@ -4,10 +4,11 @@
 namespace DrSoftFr\Module\ProductWizard\Form;
 
 use DrSoftFr\Module\ProductWizard\Entity\ProductChoice;
+use PrestaShopBundle\Form\Admin\Type\SwitchType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ButtonType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -23,11 +24,11 @@ final class ProductChoiceType extends AbstractType
                 'label' => 'ID produit PrestaShop (optionnel)',
                 'required' => false,
             ])
-            ->add('isDefault', CheckboxType::class, [
+            ->add('isDefault', SwitchType::class, [
                 'label' => 'Choix par défaut',
                 'required' => false,
             ])
-            ->add('allowQuantity', CheckboxType::class, [
+            ->add('allowQuantity', SwitchType::class, [
                 'label' => 'Quantité modifiable par le client',
                 'required' => false,
             ])
@@ -35,9 +36,17 @@ final class ProductChoiceType extends AbstractType
                 'label' => 'Quantité imposée (optionnel, vide = non imposée)',
                 'required' => false,
             ])
-            ->add('active', CheckboxType::class, [
+            ->add('active', SwitchType::class, [
                 'label' => 'Actif',
                 'required' => false,
+            ])
+            ->add('remove', ButtonType::class, [
+                'label' => 'Supprimer',
+                'attr' => [
+                    'class' => 'btn btn-link text-danger btn-sm p-0',
+                    '@click' => '$el.closest(\'.product-choice-block\').remove()',
+                    'title' => 'Supprimer ce choix',
+                ],
             ]);
     }
 

@@ -1,9 +1,17 @@
-<div class="mb-2 border p-2" id="productchoice-{{ index }}">
-    {{ form_row(form.label) }}
-    {{ form_row(form.productId) }}
-    {{ form_row(form.isDefault) }}
-    {{ form_row(form.allowQuantity) }}
-    {{ form_row(form.forcedQuantity) }}
-    {{ form_row(form.active) }}
-    <button type="button" class="btn btn-link text-danger p-0" @click="$el.closest('.mb-2').remove()">Supprimer</button>
+<div class="border rounded px-2 py-1 mb-2 product-choice-block position-relative bg-light">
+    <div class="d-flex align-items-center justify-content-between mb-2 p-2">
+        <strong>Choix produit</strong>&nbsp;<span
+                class="badge bg-secondary">{% if choice_idx is defined and choice_idx matches '/^\\d+$/' %}{{ (choice_idx + 0) + 1 }}{% endif %}</span>
+    </div>
+    <div class="p-2">
+        {{ form_row(form.label) }}
+        {{ form_row(form.productId) }}
+        {{ form_row(form.isDefault) }}
+        {{ form_row(form.allowQuantity) }}
+        {{ form_row(form.forcedQuantity) }}
+        {{ form_row(form.active) }}
+        <div class="text-right">
+            {{ form_widget(form.remove) }}
+        </div>
+    </div>
 </div>
