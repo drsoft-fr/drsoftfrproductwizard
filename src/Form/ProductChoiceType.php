@@ -10,6 +10,8 @@ use Symfony\Component\Form\Extension\Core\Type\ButtonType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 final class ProductChoiceType extends AbstractType
@@ -48,12 +50,54 @@ final class ProductChoiceType extends AbstractType
                     'title' => 'Supprimer ce choix',
                 ],
             ]);
+
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
+            $productChoice = $event->getData();
+
+            if ($productChoice === null) {
+                $productChoice = new ProductChoice();
+                $productChoice->setLabel('Nouveau choix');
+                $productChoice->setActive(true);
+                $productChoice->setIsDefault(false);
+                $productChoice->setAllowQuantity(true);
+                $event->setData($productChoice);
+                return;
+            }
+
+            if (method_exists($productChoice, 'getId') && $productChoice->getId() === null) {
+                if (method_exists($productChoice, 'getLabel') && $productChoice->getLabel() === null) {
+                    $productChoice->setLabel('Nouveau choix');
+                }
+
+                if (method_exists($productChoice, 'getActive') && $productChoice->getActive() === null) {
+                    $productChoice->setActive(true);
+                }
+
+                if (method_exists($productChoice, 'getIsDefault') && $productChoice->getIsDefault() === null) {
+                    $productChoice->setIsDefault(false);
+                }
+
+                if (method_exists($productChoice, 'getAllowQuantity') && $productChoice->getAllowQuantity() === null) {
+                    $productChoice->setAllowQuantity(true);
+                }
+            }
+        });
+
     }
 
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
             'data_class' => ProductChoice::class,
+            'empty_data' => function () {
+                $productChoice = new ProductChoice();
+                $productChoice->setLabel('Nouveau choix');
+                $productChoice->setActive(true);
+                $productChoice->setIsDefault(false);
+                $productChoice->setAllowQuantity(true);
+                return $productChoice;
+            },
+
         ]);
     }
 }
