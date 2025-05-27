@@ -2,6 +2,10 @@
 
 {% trans_default_domain "Modules.Drsoftfrproductwizard.Admin" %}
 
+{% block stylesheets %}
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+{% endblock %}
+
 {% block content %}
     {{ block('main') }}
 {% endblock %}
@@ -9,3 +13,10 @@
 {% block content_footer %}
     {% include '@Modules/drsoftfrproductwizard/views/templates/admin/common/layout/_footer.html.twig' %}
 {% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+{% endblock %}
+
