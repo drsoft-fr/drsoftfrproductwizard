@@ -2,6 +2,9 @@
 
 declare(strict_types=1);
 
+use DrSoftFr\Module\ProductWizard\Config;
+use DrSoftFr\Module\ProductWizard\Install\Factory\InstallerFactory;
+use DrSoftFr\Module\ProductWizard\Install\Installer;
 use PrestaShop\PrestaShop\Core\Cache\Clearer\CacheClearerChain;
 
 if (!defined('_PS_VERSION_') || !defined('_CAN_LOAD_FILES_')) {
@@ -69,10 +72,24 @@ class DrsoftFrProductWizard extends Module
      */
     public function disable($force_all = false)
     {
-        $this->_clearCache('*');
-
         if (!parent::disable($force_all)) {
+            $this->handleException(
+                new Exception(
+                    $this->trans(
+                        'An error has occurred when deactivating the module.',
+                        [],
+                        'Modules.Drsoftfrproductwizard.Error'
+                    )
+                )
+            );
+
             return false;
+        }
+
+        try {
+            $this->getCacheClearerChain()->clear();
+        } catch (Throwable $t) {
+            $this->handleException($t);
         }
 
         return true;
@@ -87,13 +104,61 @@ class DrsoftFrProductWizard extends Module
      */
     public function enable($force_all = false)
     {
-        $this->_clearCache('*');
-
         if (!parent::enable($force_all)) {
+            $this->handleException(
+                new Exception(
+                    $this->trans(
+                        'An error has occurred when activating the module.',
+                        [],
+                        'Modules.Drsoftfrproductwizard.Error'
+                    )
+                )
+            );
+
             return false;
         }
 
+        try {
+            $this->getCacheClearerChain()->clear();
+        } catch (Throwable $t) {
+            $this->handleException($t);
+        }
+
         return true;
+    }
+
+    /**
+     * Get the CacheClearerChain.
+     *
+     * @return CacheClearerChain
+     *
+     * @throws Exception
+     */
+    private function getCacheClearerChain(): CacheClearerChain
+    {
+        $cacheClearerChain = $this->get('prestashop.core.cache.clearer.cache_clearer_chain');
+
+        if (!($cacheClearerChain instanceof CacheClearerChain)) {
+            throw new Exception('The cacheClearerChain object must implement CacheClearerChain.');
+        }
+
+        return $cacheClearerChain;
+    }
+
+    /**
+     * Handles an exception by logging an error message.
+     *
+     * @param Throwable $t The exception to handle.
+     *
+     * @return void
+     */
+    private function handleException(Throwable $t): void
+    {
+        $errorMessage = Config::createErrorMessage(__METHOD__, __LINE__, $t);
+
+        PrestaShopLogger::addLog($errorMessage, 3);
+
+        $this->_errors[] = $errorMessage;
     }
 
     /**
@@ -110,11 +175,25 @@ class DrsoftFrProductWizard extends Module
         }
 
         if (!parent::install()) {
-            $this->_errors[] = $this->trans(
-                'There was an error during the installation.',
-                [],
-                'Modules.Drsoftfrproductwizard.Error'
+            $this->handleException(
+                new Exception(
+                    $this->trans(
+                        'There was an error during the installation.',
+                        [],
+                        'Modules.Drsoftfrproductwizard.Error'
+                    )
+                )
             );
+
+            return false;
+        }
+
+        try {
+            $installer = InstallerFactory::create();
+
+            $installer->install($this);
+        } catch (Throwable $t) {
+            $this->handleException($t);
 
             return false;
         }
@@ -122,7 +201,7 @@ class DrsoftFrProductWizard extends Module
         try {
             $this->getCacheClearerChain()->clear();
         } catch (Throwable $t) {
-            $this->_errors[] = $t->getMessage();
+            $this->handleException($t);
         }
 
         return true;
@@ -143,11 +222,26 @@ class DrsoftFrProductWizard extends Module
      */
     public function uninstall(): bool
     {
+        try {
+            /** @var Installer $installer */
+            $installer = $this->get(Config::INSTALLER_SERVICE);
+
+            $installer->uninstall($this);
+        } catch (Throwable $t) {
+            $this->handleException($t);
+
+            return false;
+        }
+
         if (!parent::uninstall()) {
-            $this->_errors[] = $this->trans(
-                'There was an error during the uninstallation.',
-                [],
-                'Modules.Drsoftfrproductwizard.Error'
+            $this->handleException(
+                new Exception(
+                    $this->trans(
+                        'There was an error during the uninstallation.',
+                        [],
+                        'Modules.Drsoftfrproductwizard.Error'
+                    )
+                )
             );
 
             return false;
@@ -156,27 +250,9 @@ class DrsoftFrProductWizard extends Module
         try {
             $this->getCacheClearerChain()->clear();
         } catch (Throwable $t) {
-            $this->_errors[] = $t->getMessage();
+            $this->handleException($t);
         }
 
-        return parent::uninstall();
-    }
-
-    /**
-     * Get the CacheClearerChain.
-     *
-     * @return CacheClearerChain
-     *
-     * @throws Exception
-     */
-    private function getCacheClearerChain(): CacheClearerChain
-    {
-        $cacheClearerChain = $this->get('prestashop.core.cache.clearer.cache_clearer_chain');
-
-        if (!($cacheClearerChain instanceof CacheClearerChain)) {
-            throw new Exception('The cacheClearerChain object must implement CacheClearerChain.');
-        }
-
-        return $cacheClearerChain;
+        return true;
     }
 }

@@ -1,0 +1,22 @@
+services:
+  _defaults:
+    public: true
+
+  # repository
+  drsoft_fr.module.product_wizard.repository.configurator_repository:
+    class: DrSoftFr\Module\ProductWizard\Repository\ConfiguratorRepository
+    factory: [ '@doctrine.orm.default_entity_manager', getRepository ]
+    arguments:
+      - DrSoftFr\Module\ProductWizard\Entity\Configurator
+
+  drsoft_fr.module.product_wizard.repository.step_repository:
+    class: DrSoftFr\Module\ProductWizard\Repository\StepRepository
+    factory: [ '@doctrine.orm.default_entity_manager', getRepository ]
+    arguments:
+      - DrSoftFr\Module\ProductWizard\Entity\Step
+
+  drsoft_fr.module.product_wizard.repository.choice_repository:
+    class: DrSoftFr\Module\ProductWizard\Repository\ChoiceRepository
+    factory: [ '@doctrine.orm.default_entity_manager', getRepository ]
+    arguments:
+      - DrSoftFr\Module\ProductWizard\Entity\Choice

@@ -1,0 +1,250 @@
+<?php
+
+namespace DrSoftFr\Module\ProductWizard\Entity;
+
+use DateTime;
+use DateTimeInterface;
+use Doctrine\ORM\Mapping as ORM;
+use DrSoftFr\Module\ProductWizard\Config as Configuration;
+use DrSoftFr\PrestaShopModuleHelper\Traits\ClassHydrateTrait;
+
+/**
+ * @ORM\Table(name=Configuration::CHOICE_TABLE_NAME)
+ * @ORM\Entity(repositoryClass="DrSoftFr\Module\ProductWizard\Repository\ChoiceRepository")
+ * @ORM\HasLifecycleCallbacks
+ */
+class Choice
+{
+    use ClassHydrateTrait;
+
+    /**
+     * @var int $id
+     *
+     * @ORM\Id
+     * @ORM\Column(name="id_choice", type="integer", nullable=false, options={"unsigned"=true})
+     * @ORM\GeneratedValue(strategy="AUTO")
+     */
+    private $id;
+
+    /**
+     * @var bool $active
+     *
+     * @ORM\Column(name="active", type="boolean", nullable=false, options={"default":1, "unsigned"=true})
+     */
+    private $active;
+
+    /**
+     * @var string $label
+     *
+     * @ORM\Column(name="label", type="string", length=255, nullable=false)
+     */
+    private $label;
+
+    /**
+     * @var int $productId
+     *
+     * @ORM\Column(name="id_product", type="integer", length=10, nullable=true, options={"unsigned"=true})
+     */
+    private $productId;
+
+    /**
+     * @var bool $isDefault
+     *
+     * @ORM\Column(name="is_default", type="boolean", nullable=false, options={"default":0, "unsigned"=true})
+     */
+    private $isDefault = false;
+
+    /**
+     * @var bool $allowQuantity
+     *
+     * @ORM\Column(name="allow_quantity", type="boolean", nullable=false, options={"default":1, "unsigned"=true})
+     */
+    private $allowQuantity = true;
+
+    /**
+     * @var int $forcedQuantity
+     *
+     * @ORM\Column(name="forced_quantity", type="integer", nullable=true, options={"default":null, "unsigned"=true})
+     */
+    private $forcedQuantity;
+
+    /**
+     * @var Step $step
+     *
+     * @ORM\Id
+     * @ORM\ManyToOne(targetEntity="DrSoftFr\Module\ProductWizard\Entity\Step", inversedBy="choices")
+     * @ORM\JoinColumn(name="id_step", referencedColumnName="id_step", nullable=false, onDelete="CASCADE")
+     */
+    private $step;
+
+    /**
+     * @var DateTimeInterface $dateAdd creation date
+     *
+     * @ORM\Column(name="date_add", type="datetime", nullable=false)
+     */
+    private $dateAdd;
+
+    /**
+     * @var DateTimeInterface $dateUpd last modification date
+     *
+     * @ORM\Column(name="date_upd", type="datetime", options={"default": "CURRENT_TIMESTAMP"}, nullable=false)
+     */
+    private $dateUpd;
+
+    public function __construct()
+    {
+        $this->dateAdd = new \DateTimeImmutable();
+    }
+
+    /**
+     * @return array
+     */
+    public function toArray(): array
+    {
+        return [
+            'id' => $this->getId(),
+            'id_choice' => $this->getId(),
+            'id_step' => $this->getStep()->getId(),
+            'active' => $this->isActive(),
+            'date_add' => $this->getDateAdd(),
+            'date_upd' => $this->getDateUpd(),
+            'label' => $this->getLabel(),
+            'product_id' => $this->getProductId(),
+            'is_default' => $this->isDefault(),
+            'allow_quantity' => $this->isAllowQuantity(),
+            'forced_quantity' => $this->getForcedQuantity(),
+        ];
+    }
+
+    /**
+     * Now we tell doctrine that before we persist or update, we call the updatedTimestamps() function.
+     *
+     * @ORM\PrePersist
+     * @ORM\PreUpdate
+     */
+    public function updatedTimestamps(): void
+    {
+        $this->setDateUpd(new DateTime());
+
+        if ($this->dateAdd === null) {
+            $this->setDateAdd(new DateTime());
+        }
+    }
+
+    public function getId(): int
+    {
+        return $this->id;
+    }
+
+    public function setId(int $id): Choice
+    {
+        $this->id = $id;
+        return $this;
+    }
+
+    public function isActive(): bool
+    {
+        return $this->active;
+    }
+
+    public function setActive(bool $active): Choice
+    {
+        $this->active = $active;
+        return $this;
+    }
+
+    public function getLabel(): string
+    {
+        return $this->label;
+    }
+
+    public function setLabel(string $label): Choice
+    {
+        $this->label = $label;
+        return $this;
+    }
+
+    public function getProductId(): int
+    {
+        return $this->productId;
+    }
+
+    public function setProductId(int $productId): Choice
+    {
+        $this->productId = $productId;
+        return $this;
+    }
+
+    public function isDefault(): bool
+    {
+        return $this->isDefault;
+    }
+
+    public function setIsDefault(bool $isDefault): Choice
+    {
+        $this->isDefault = $isDefault;
+        return $this;
+    }
+
+    public function isAllowQuantity(): bool
+    {
+        return $this->allowQuantity;
+    }
+
+    public function setAllowQuantity(bool $allowQuantity): Choice
+    {
+        $this->allowQuantity = $allowQuantity;
+        return $this;
+    }
+
+    public function getForcedQuantity(): int
+    {
+        return $this->forcedQuantity;
+    }
+
+    public function setForcedQuantity(int $forcedQuantity): Choice
+    {
+        $this->forcedQuantity = $forcedQuantity;
+        return $this;
+    }
+
+    public function getStep(): Step
+    {
+        return $this->step;
+    }
+
+    public function setStep(Step $step): Choice
+    {
+        $this->step = $step;
+        return $this;
+    }
+
+    /**
+     * @return DateTimeInterface
+     */
+    public function getDateAdd(): DateTimeInterface
+    {
+        return $this->dateAdd;
+    }
+
+    /**
+     * @param DateTimeInterface $dateAdd
+     * @return Choice
+     */
+    public function setDateAdd(DateTimeInterface $dateAdd)
+    {
+        $this->dateAdd = $dateAdd;
+        return $this;
+    }
+
+    public function getDateUpd(): DateTimeInterface
+    {
+        return $this->dateUpd;
+    }
+
+    public function setDateUpd(DateTimeInterface $dateUpd): Choice
+    {
+        $this->dateUpd = $dateUpd;
+        return $this;
+    }
+}
