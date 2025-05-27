@@ -7,9 +7,14 @@
         </div>
         <div>
             <span class="badge bg-primary">{% if idx is defined and idx matches '/^\\d+$/' %}{{ (idx + 0) + 1 }}{% endif %}</span>
+            <button class="btn btn-link" type="button" data-toggle="collapse"
+                    data-target="#step-{{ idx }}-body" aria-expanded="true"
+                    aria-controls="step-{{ idx }}-body">
+                <i class="material-icons">expand_more</i>
+            </button>
         </div>
     </div>
-    <div class="card-body">
+    <div class="card-body collapse show" id="step-{{ idx }}-body">
         {{ form_row(form.label) }}
         {{ form_row(form.position) }}
         {{ form_row(form.active) }}

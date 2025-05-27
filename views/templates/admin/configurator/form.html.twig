@@ -17,6 +17,8 @@
                         <div id="steps-collection" class="sortable-list">
                             {% for stepForm in form.steps %}
                                 {% include '@Modules/drsoftfrproductwizard/views/templates/admin/configurator/_step_form.html.twig' with { 'form': stepForm, 'idx': loop.index0 } %}
+                            {% else %}
+                                <div class="alert alert-info">Aucune étape définie pour ce scénario.</div>
                             {% endfor %}
                         </div>
 
@@ -56,6 +58,13 @@
           idx: initialIdx,
           addStep() {
             let tpl = document.getElementById('step-prototype').innerHTML.replace(/__step__/g, this.idx)
+
+            let alert = document.querySelector('#steps-collection .alert')
+
+            if (alert) {
+              alert.remove()
+            }
+
             document.getElementById('steps-collection').insertAdjacentHTML('beforeend', tpl)
             this.idx++
           }
@@ -67,6 +76,13 @@
           idx: initialIdx,
           addProductChoice() {
             let tpl = document.getElementById('product-choice-prototype-' + stepIdx).innerHTML.replace(/__choice__/g, this.idx)
+
+            let alert = document.querySelector('#product-choices-collection-' + stepIdx + ' .alert')
+
+            if (alert) {
+              alert.remove()
+            }
+
             document.getElementById('product-choices-collection-' + stepIdx).insertAdjacentHTML('beforeend', tpl)
             this.idx++
           }
@@ -119,6 +135,9 @@
               // Identifier quelle liste est active
               document.querySelectorAll('.sortable-list').forEach(l => {
                 l.classList.add('inactive-list')
+              })
+              document.querySelectorAll('.sortable-list .card-body.collapse.show').forEach(l => {
+                l.classList.remove('show')
               })
               evt.from.classList.remove('inactive-list')
               evt.from.classList.add('active-list')
