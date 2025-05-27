@@ -1,2 +1,6 @@
 imports:
   - { resource: ./common.yml }
+
+services:
+  DrSoftFr\Module\ProductWizard\Controller\Admin\ConfiguratorController:
+    tags: [ 'controller.service_arguments' ]
