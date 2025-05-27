@@ -9,3 +9,13 @@ services:
     tags:
       - { name: form.type }
     parent: 'form.type.translatable.aware'
+
+  DrSoftFr\Module\ProductWizard\Form\StepType:
+    tags:
+      - { name: form.type }
+    parent: 'form.type.translatable.aware'
+
+  DrSoftFr\Module\ProductWizard\Form\ProductChoiceType:
+    tags:
+      - { name: form.type }
+    parent: 'form.type.translatable.aware'

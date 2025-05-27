@@ -7,6 +7,7 @@ namespace DrSoftFr\Module\ProductWizard\Form;
 use DrSoftFr\Module\ProductWizard\Entity\Configurator;
 use PrestaShopBundle\Form\Admin\Type\TranslatorAwareType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -31,6 +32,15 @@ final class ConfiguratorType extends TranslatorAwareType
             ->add('active', CheckboxType::class, [
                 'label' => 'Actif',
                 'required' => false,
+            ])
+            ->add('steps', CollectionType::class, [
+                'entry_type' => StepType::class,
+                'label' => 'Étapes',
+                'allow_add' => true,
+                'allow_delete' => true,
+                'by_reference' => false,
+                'prototype' => true,
+                'prototype_name' => '__step__',
             ])
             ->add('save', SubmitType::class, [
                 'label' => 'Enregistrer',
