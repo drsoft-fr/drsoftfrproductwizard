@@ -18,7 +18,7 @@ if (file_exists($autoloadPath)) {
 }
 
 /**
- * Class drsoftfrproductwizard
+ * Class DrsoftFrProductWizard
  */
 class DrsoftFrProductWizard extends Module
 {
