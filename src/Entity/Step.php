@@ -45,7 +45,6 @@ class Step
     /**
      * @var Configurator $configurator
      *
-     * @ORM\Id
      * @ORM\ManyToOne(targetEntity="DrSoftFr\Module\ProductWizard\Entity\Configurator", inversedBy="steps")
      * @ORM\JoinColumn(name="id_configurator", referencedColumnName="id_configurator", nullable=false, onDelete="CASCADE")
      */
@@ -90,9 +89,9 @@ class Step
      *
      * @return $this
      */
-    public function addChoice(Choice $choice): Choice
+    public function addChoice(Choice $choice): Step
     {
-        $choice->setChoice($this);
+        $choice->setStep($this);
         $this->choices->add($choice);
 
         return $this;

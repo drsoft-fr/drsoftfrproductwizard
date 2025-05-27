@@ -71,7 +71,6 @@ class Choice
     /**
      * @var Step $step
      *
-     * @ORM\Id
      * @ORM\ManyToOne(targetEntity="DrSoftFr\Module\ProductWizard\Entity\Step", inversedBy="choices")
      * @ORM\JoinColumn(name="id_step", referencedColumnName="id_step", nullable=false, onDelete="CASCADE")
      */
