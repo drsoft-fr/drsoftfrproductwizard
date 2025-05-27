@@ -15,3 +15,15 @@ admin_drsoft_fr_product_wizard_configurator_new:
     _controller: DrSoftFr\Module\ProductWizard\Controller\Admin\ConfiguratorController::newAction
     _legacy_controller: AdminDrSoftFrProductWizardConfigurator
     _legacy_link: AdminDrSoftFrProductWizardConfigurator:new
+
+admin_drsoft_fr_product_wizard_configurator_edit:
+  path: /{id}/edit
+  methods: [ GET, POST ]
+  defaults:
+    _controller: DrSoftFr\Module\ProductWizard\Controller\Admin\ConfiguratorController::editAction
+    _legacy_controller: AdminDrSoftFrProductWizardConfigurator
+    _legacy_link: AdminDrSoftFrProductWizardConfigurator:edit
+    _legacy_parameters:
+      id: id
+  requirements:
+    id: \d+

@@ -2,13 +2,15 @@
 
 {% block main %}
     <h1>Scénarios de configuration</h1>
-    <a class="btn btn-primary mb-3" href="{{ path('admin_drsoft_fr_product_wizard_configurator_new') }}">Ajouter un scénario</a>
+    <a class="btn btn-primary mb-3" href="{{ path('admin_drsoft_fr_product_wizard_configurator_new') }}">Ajouter un
+        scénario</a>
     <table class="table">
         <thead>
         <tr>
             <th>Nom</th>
             <th>Actif</th>
             <th>Créé le</th>
+            <th>Actions</th>
         </tr>
         </thead>
         <tbody>
@@ -17,6 +19,10 @@
                 <td>{{ configurator.name }}</td>
                 <td>{% if configurator.active %}Oui{% else %}Non{% endif %}</td>
                 <td>{{ configurator.dateAdd|date('d/m/Y H:i') }}</td>
+                <td>
+                    <a href="{{ path('admin_drsoft_fr_product_wizard_configurator_edit', {id: configurator.id}) }}"
+                       class="btn btn-sm btn-warning">Éditer</a>
+                </td>
             </tr>
         {% else %}
             <tr>
