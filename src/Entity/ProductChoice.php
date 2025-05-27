@@ -21,7 +21,7 @@ class ProductChoice
      * @var int $id
      *
      * @ORM\Id
-     * @ORM\Column(name="id_choice", type="integer", nullable=false, options={"unsigned"=true})
+     * @ORM\Column(name="id_product_choice", type="integer", nullable=false, options={"unsigned"=true})
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     private $id = 0;
@@ -102,7 +102,7 @@ class ProductChoice
     {
         return [
             'id' => $this->getId(),
-            'id_choice' => $this->getId(),
+            'id_product_choice' => $this->getId(),
             'id_step' => $this->getStep()->getId(),
             'active' => $this->isActive(),
             'date_add' => $this->getDateAdd(),
