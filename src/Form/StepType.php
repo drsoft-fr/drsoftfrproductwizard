@@ -13,6 +13,8 @@ use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 final class StepType extends AbstractType
 {
@@ -91,7 +93,25 @@ final class StepType extends AbstractType
                 $step->setActive(true);
                 return $step;
             },
-
+            'constraints' => [
+                new Assert\Callback([$this, 'validateSingleDefaultChoice'])
+            ],
         ]);
+    }
+
+    public function validateSingleDefaultChoice($step, ExecutionContextInterface $context)
+    {
+        $defaults = 0;
+
+        foreach ($step->getProductChoices() as $choice) {
+            if (method_exists($choice, 'isDefault') && $choice->isDefault()) {
+                $defaults++;
+            }
+        }
+
+        if ($defaults > 1) {
+            $context->buildViolation('Vous ne pouvez avoir qu’un seul choix par défaut par étape.')
+                ->addViolation();
+        }
     }
 }
