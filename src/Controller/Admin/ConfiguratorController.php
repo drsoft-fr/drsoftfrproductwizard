@@ -121,6 +121,7 @@ final class ConfiguratorController extends FrameworkBundleAdminController
         return $this->render(self::TEMPLATE_FOLDER . 'form.html.twig', [
             'form' => $form->createView(),
             'module' => $this->getModule(),
+            'steps_choices' => $this->prepareStepChoices($configurator),
         ]);
     }
 
@@ -172,6 +173,7 @@ final class ConfiguratorController extends FrameworkBundleAdminController
         return $this->render(self::TEMPLATE_FOLDER . 'form.html.twig', [
             'form' => $form->createView(),
             'module' => $this->getModule(),
+            'steps_choices' => $this->prepareStepChoices($configurator),
         ]);
     }
 
@@ -284,6 +286,33 @@ final class ConfiguratorController extends FrameworkBundleAdminController
                 return ['id' => $p['id_product'], 'text' => $p['name']];
             }, $results)
         ]);
+    }
+
+    /**
+     * Prepare step choices for the configurator form.
+     *
+     * @param Configurator $configurator
+     *
+     * @return array
+     */
+    private function prepareStepChoices(Configurator $configurator): array
+    {
+        $stepsChoices = [];
+        foreach ($configurator->getSteps() as $stepIdx => $step) {
+            $stepsChoices[$stepIdx] = [
+                'label' => $step->getLabel(),
+                'choices' => []
+            ];
+
+            foreach ($step->getProductChoices() as $choiceIdx => $choice) {
+                $stepsChoices[$stepIdx]['choices'][] = [
+                    'idx' => $choiceIdx,
+                    'label' => $choice->getLabel()
+                ];
+            }
+        }
+
+        return $stepsChoices;
     }
 
     /**

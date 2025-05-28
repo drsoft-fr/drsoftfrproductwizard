@@ -24,6 +24,42 @@
                 </div>
             </div>
         </div>
+        <div x-data="{
+                    showConditions: {{ form.displayConditions|length > 0 ? 'true' : 'false' }},
+                    idx: {{ form.displayConditions|length }},
+                    addCondition() {
+                        let tpl = document.getElementById('condition-prototype-{{ choice_idx }}').innerHTML.replace(/__cond__/g, this.idx);
+                        document.getElementById('conditions-collection-{{ choice_idx }}').insertAdjacentHTML('beforeend', tpl);
+                        this.idx++;
+                    }
+                }"
+             class="border p-2 rounded mb-2 bg-light mt-2">
+
+            <div class="form-check">
+                <input type="checkbox" class="form-check-input me-1" x-model="showConditions"
+                       id="conditions-collection-{{ choice_idx }}-checkbox">
+                <label for="conditions-collection-{{ choice_idx }}-checkbox" class="form-check-label">Conditionner
+                    l’affichage de ce choix</label>
+            </div>
+
+            <template x-if="showConditions">
+                <div class="mt-2">
+                    <div id="conditions-collection-{{ choice_idx }}">
+                        {% for condForm in form.displayConditions %}
+                            {% include '@Modules/drsoftfrproductwizard/views/templates/admin/configurator/_condition_form.html.twig'
+                                with { 'form': condForm, 'cond_idx': loop.index0, 'steps_choices': steps_choices } %}
+                        {% endfor %}
+                    </div>
+                    <template id="condition-prototype-{{ choice_idx }}">
+                        {% include '@Modules/drsoftfrproductwizard/views/templates/admin/configurator/_condition_form.html.twig'
+                            with { 'form': form.displayConditions.vars.prototype, 'cond_idx': '__cond__', 'steps_choices': steps_choices } %}
+                    </template>
+                    <button type="button" class="btn btn-link btn-sm" @click="addCondition">
+                        <i class="material-icons">add</i> Ajouter une condition
+                    </button>
+                </div>
+            </template>
+        </div>
 
         {{ form_row(form.isDefault) }}
         {{ form_row(form.allowQuantity) }}

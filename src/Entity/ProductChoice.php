@@ -77,6 +77,11 @@ class ProductChoice
     private $step;
 
     /**
+     * @ORM\Column(name="display_conditions", type="json", nullable=true)
+     */
+    private $displayConditions = [];
+
+    /**
      * @var DateTimeInterface $dateAdd creation date
      *
      * @ORM\Column(name="date_add", type="datetime", nullable=false)
@@ -112,6 +117,7 @@ class ProductChoice
             'is_default' => $this->isDefault(),
             'allow_quantity' => $this->isAllowQuantity(),
             'forced_quantity' => $this->getForcedQuantity(),
+            'display_conditions' => $this->getDisplayConditions(),
         ];
     }
 
@@ -215,6 +221,17 @@ class ProductChoice
     public function setStep(Step $step): ProductChoice
     {
         $this->step = $step;
+        return $this;
+    }
+
+    public function getDisplayConditions(): array
+    {
+        return $this->displayConditions;
+    }
+
+    public function setDisplayConditions(array $displayConditions): ProductChoice
+    {
+        $this->displayConditions = $displayConditions;
         return $this;
     }
 

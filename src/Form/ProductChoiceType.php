@@ -6,6 +6,7 @@ use DrSoftFr\Module\ProductWizard\Entity\ProductChoice;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ButtonType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
@@ -61,6 +62,16 @@ final class ProductChoiceType extends AbstractType
             ->add('forcedQuantity', IntegerType::class, [
                 'label' => 'Quantité imposée (optionnel, vide = non imposée)',
                 'required' => false,
+            ])
+            ->add('displayConditions', CollectionType::class, [
+                'entry_type' => ConditionType::class,
+                'allow_add' => true,
+                'allow_delete' => true,
+                'required' => false,
+                'by_reference' => false,
+                'label' => 'Conditions d\'affichage',
+                'prototype' => true,
+                'prototype_name' => '__cond__',
             ])
             ->add('active', CheckboxType::class, [
                 'label' => 'Actif',
@@ -125,7 +136,6 @@ final class ProductChoiceType extends AbstractType
                 }
             }
         });
-
     }
 
     public function configureOptions(OptionsResolver $resolver)
