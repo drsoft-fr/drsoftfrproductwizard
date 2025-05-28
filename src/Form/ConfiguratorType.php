@@ -11,6 +11,9 @@ use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormError;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
@@ -45,6 +48,60 @@ final class ConfiguratorType extends TranslatorAwareType
             ->add('save', SubmitType::class, [
                 'label' => 'Enregistrer',
             ]);
+
+        $builder->addEventListener(
+            FormEvents::POST_SUBMIT,
+            function (FormEvent $event) {
+                /** @var Configurator $configurator */
+                $configurator = $event->getData();
+                $form = $event->getForm();
+
+                $stepMap = [];
+                foreach ($configurator->getSteps() as $step) {
+                    $stepMap[$step->getId()] = $step;
+                }
+
+                foreach ($configurator->getSteps() as $step) {
+                    $currentStepPosition = $step->getPosition();
+
+                    foreach ($step->getProductChoices() as $productChoice) {
+                        $displayConditions = $productChoice->getDisplayConditions() ?: [];
+
+                        foreach ($displayConditions as $condIdx => $cond) {
+                            $condStepId = $cond['step'] ?? null;
+                            $condChoiceId = $cond['choice'] ?? null;
+
+                            if (!$condStepId || !isset($stepMap[$condStepId])) {
+                                $form->addError(new FormError(
+                                    "L'étape référencée dans une condition n'existe plus."
+                                ));
+                                continue;
+                            }
+                            $condStep = $stepMap[$condStepId];
+
+                            if ($condStep->getPosition() >= $currentStepPosition) {
+                                $form->addError(new FormError(
+                                    "Condition invalide : l'étape référencée n'est plus antérieure à l'étape courante."
+                                ));
+                            }
+
+                            $found = false;
+                            foreach ($condStep->getProductChoices() as $choice) {
+                                if ($choice->getId() == $condChoiceId) {
+                                    $found = true;
+                                    break;
+                                }
+                            }
+                            if (!$found) {
+                                $form->addError(new FormError(
+                                    "Le choix référencé dans une condition n'existe plus."
+                                ));
+                            }
+                        }
+                    }
+                }
+            }
+        );
     }
 
     /**

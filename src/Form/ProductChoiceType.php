@@ -146,7 +146,6 @@ final class ProductChoiceType extends AbstractType
                 $productChoice->setAllowQuantity(true);
                 return $productChoice;
             },
-
         ]);
     }
 }
