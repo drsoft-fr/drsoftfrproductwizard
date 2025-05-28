@@ -298,15 +298,25 @@ final class ConfiguratorController extends FrameworkBundleAdminController
     private function prepareStepChoices(Configurator $configurator): array
     {
         $stepsChoices = [];
-        foreach ($configurator->getSteps() as $stepIdx => $step) {
-            $stepsChoices[$stepIdx] = [
+        /**
+         * @var int $stepIdx
+         * @var Step $step
+         */
+        foreach ($configurator->getSteps() as $step) {
+            $stepsChoices[$step->getId()] = [
+                'idx' => $step->getId(),
                 'label' => $step->getLabel(),
-                'choices' => []
+                'choices' => [],
+                'position' => $step->getPosition(),
             ];
 
-            foreach ($step->getProductChoices() as $choiceIdx => $choice) {
-                $stepsChoices[$stepIdx]['choices'][] = [
-                    'idx' => $choiceIdx,
+            /**
+             * @var int $choiceIdx
+             * @var ProductChoice $choice
+             */
+            foreach ($step->getProductChoices() as $choice) {
+                $stepsChoices[$step->getId()]['choices'][] = [
+                    'idx' => $choice->getId(),
                     'label' => $choice->getLabel()
                 ];
             }

@@ -1,4 +1,10 @@
-<div class="row align-items-end mb-2 js-condition-block"
+{% set currentStepPosition = step_form.vars.value is not null ? step_form.vars.value.position : 0 %}
+{% set selectedStep = steps_choices|filter(s => s.idx == form.step.vars.value)|first|default(null) %}
+{% set isInvalidStep = selectedStep is null or (selectedStep.position >= currentStepPosition) %}
+{% set selectedChoice = selectedStep is not null ? (selectedStep.choices|filter(c => c.idx == form.choice.vars.value)|first) : null %}
+{% set isInvalidChoice = isInvalidStep or selectedChoice is not defined %}
+
+<div class="row align-items-end mb-2 js-condition-block {{ isInvalidStep or isInvalidChoice ? 'border border-danger bg-light text-danger' : '' }}"
      x-data="{
         stepIdx: '{{ form.step.vars.value is not null ? form.step.vars.value : '' }}',
         choiceIdx: '{{ form.choice.vars.value is not null ? form.choice.vars.value : '' }}',
@@ -38,13 +44,23 @@
      data-steps-choices='{{ steps_choices|json_encode|e('html_attr') }}'
      id="step-{{ step_idx }}__product-choice-{{ choice_idx }}__condition">
     <div class="col-md-5">
-        <select class="form-select custom-select step-select" x-model="stepIdx" x-on:change="updateChoices">
+        <select class="form-select custom-select js-step-select"
+                x-model="stepIdx"
+                x-on:change="updateChoices"
+                :class="{'border-danger text-danger': {{ isInvalidStep ? 'true' : 'false' }} }">
             <option value="">Étape...</option>
             {% for stepIdx, step in steps_choices %}
-                <option value="{{ stepIdx }}" {% if form.step.vars.value == stepIdx %}selected{% endif %}>
-                    {{ step.label }}
-                </option>
+                {% if step.position < currentStepPosition %}
+                    <option value="{{ stepIdx }}" {% if form.step.vars.value == stepIdx %}selected{% endif %}>
+                        {{ step.label }}
+                    </option>
+                {% endif %}
             {% endfor %}
+            {% if isInvalidStep and form.step.vars.value %}
+                <option value="{{ form.step.vars.value }}" selected style="color:red;">
+                    [Étape supprimée/invalide]
+                </option>
+            {% endif %}
         </select>
         <div class="d-none">
             {{ form_widget(form.step, {attr: {'type':'hidden'}}) }}
@@ -53,14 +69,20 @@
     <div class="col-md-5">
         <select class="form-select custom-select js-choice-select"
                 x-model="choiceIdx"
-                x-on:change="syncChoice">
+                x-on:change="syncChoice"
+                :class="{'border-danger text-danger': {{ isInvalidChoice ? 'true' : 'false' }} }">
             <option value="">Choix requis...</option>
-            {% if form.step.vars.value is not null and steps_choices[form.step.vars.value] is defined %}
-                {% for ch in steps_choices[form.step.vars.value].choices %}
+            {% if selectedStep is not null %}
+                {% for ch in selectedStep.choices %}
                     <option value="{{ ch.idx }}" {% if form.choice.vars.value == ch.idx %}selected{% endif %}>
                         {{ ch.label }}
                     </option>
                 {% endfor %}
+            {% endif %}
+            {% if isInvalidChoice and form.choice.vars.value %}
+                <option value="{{ form.choice.vars.value }}" selected style="color:red;">
+                    [Choix supprimé/invalide]
+                </option>
             {% endif %}
         </select>
         <div class="d-none">
@@ -76,3 +98,8 @@
         </button>
     </div>
 </div>
+{% if isInvalidStep or isInvalidChoice %}
+    <div class="text-danger small mb-2">Cette condition ne pointe plus sur une étape ou un choix valide. Modifiez-la ou
+        supprimez-la.
+    </div>
+{% endif %}

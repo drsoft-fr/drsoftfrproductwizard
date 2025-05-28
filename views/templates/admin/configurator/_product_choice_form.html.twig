@@ -55,12 +55,12 @@
                     <div id="step-{{ step_idx }}__product-choice-{{ choice_idx }}__conditions-collection">
                         {% for condForm in form.displayConditions %}
                             {% include '@Modules/drsoftfrproductwizard/views/templates/admin/configurator/_condition_form.html.twig'
-                                with { 'form': condForm, 'step_idx': step_idx, 'cond_idx': loop.index0, 'steps_choices': steps_choices } %}
+                                with { 'step_form': step_form, 'product_choices_form': product_choices_form, 'product_choice_form': form, 'form_step': 0, 'form': condForm, 'step_idx': step_idx, 'cond_idx': loop.index0, 'steps_choices': steps_choices } %}
                         {% endfor %}
                     </div>
                     <template id="step-{{ step_idx }}__product-choice-{{ choice_idx }}__condition-prototype">
                         {% include '@Modules/drsoftfrproductwizard/views/templates/admin/configurator/_condition_form.html.twig'
-                            with { 'form': form.displayConditions.vars.prototype, 'step_idx': step_idx, 'cond_idx': '__cond__', 'steps_choices': steps_choices } %}
+                            with { 'step_form': step_form, 'product_choices_form': product_choices_form, 'product_choice_form': form, 'form_step': 0, 'form': form.displayConditions.vars.prototype, 'step_idx': step_idx, 'cond_idx': '__cond__', 'steps_choices': steps_choices } %}
                     </template>
                     <button type="button" class="btn btn-link btn-sm"
                             @click="addCondition">
