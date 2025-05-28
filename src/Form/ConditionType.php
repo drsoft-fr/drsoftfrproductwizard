@@ -6,7 +6,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\FormBuilderInterface;
 
-class ConditionType extends AbstractType
+final class ConditionType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
