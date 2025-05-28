@@ -19,6 +19,8 @@
                        class="form-control js-product-selector"
                        id="step-{{ step_idx }}__product-choice-{{ choice_idx }}__{{ form.productId.vars.id }}-ts"
                        data-target="#{{ form.productId.vars.id }}"
+                       data-product-id="{{ form.productId.vars.value }}"
+                       data-product-name="{{ attribute(form.productId.vars.attr, 'data-product-name')|default('') }}"
                        value="{{ attribute(form.productId.vars.attr, 'data-product-name')|default('') }}"
                        autocomplete="off"
                        placeholder="Rechercher un produit...">

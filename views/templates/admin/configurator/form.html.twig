@@ -109,6 +109,8 @@
           }
 
           try {
+            let selectedId = input.getAttribute('data-product-id')
+            let selectedName = input.getAttribute('data-product-name')
             let options = {
               valueField: 'id',
               labelField: 'text',
@@ -129,6 +131,12 @@
               }
             }
             let ts = new TomSelect(input, options)
+
+            if (selectedId && selectedName) {
+              ts.addOption({ id: selectedId, text: selectedName })
+              ts.setValue(selectedId)
+              ts.clearOptions()
+            }
 
             input.setAttribute('data-ts-initialized', '1')
           } catch (e) {
