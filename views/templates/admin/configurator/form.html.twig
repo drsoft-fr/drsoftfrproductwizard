@@ -159,15 +159,15 @@
         return {
           idx: initialIdx,
           addProductChoice() {
-            let tpl = document.getElementById('product-choice-prototype-' + stepIdx).innerHTML.replace(/__choice__/g, this.idx)
+            let tpl = document.getElementById('step-' + stepIdx + '__product-choice-prototype').innerHTML.replace(/__choice__/g, this.idx)
 
-            let alert = document.querySelector('#product-choices-collection-' + stepIdx + ' .alert')
+            let alert = document.querySelector('#step-' + stepIdx + '__product-choices-collection .alert')
 
             if (alert) {
               alert.remove()
             }
 
-            document.getElementById('product-choices-collection-' + stepIdx).insertAdjacentHTML('beforeend', tpl)
+            document.getElementById('step-' + stepIdx + '__product-choices-collection').insertAdjacentHTML('beforeend', tpl)
             setTimeout(initProductSelectors, 100)
             this.idx++
           },

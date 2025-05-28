@@ -1,25 +1,27 @@
-<div x-data="productChoiceManager({{ form|length }}, '{{ step_idx }}')" class="mb-2">
+<div x-data="productChoiceManager({{ form|length }}, '{{ step_idx }}')"
+     class="mb-2"
+     id="step-{{ step_idx }}__product-choices-collection-card">
     <div class="d-flex align-items-center justify-content-between">
         <div>
             <h5 class="mb-2">Choix produits</h5>
         </div>
         <div>
             <button class="btn btn-link" type="button" data-toggle="collapse"
-                    data-target="#product-choices-collection-{{ step_idx }}-collapser" aria-expanded="true"
-                    aria-controls="product-choices-collection-{{ step_idx }}-collapser">
+                    data-target="#step-{{ step_idx }}__product-choices-collection-collapser" aria-expanded="true"
+                    aria-controls="step-{{ step_idx }}__product-choices-collection-collapser">
                 <i class="material-icons">expand_more</i> Gérer les choix
             </button>
         </div>
     </div>
-    <div id="product-choices-collection-{{ step_idx }}-collapser" class="collapse show">
-        <div id="product-choices-collection-{{ step_idx }}">
+    <div id="step-{{ step_idx }}__product-choices-collection-collapser" class="collapse show">
+        <div id="step-{{ step_idx }}__product-choices-collection">
             {% for choiceForm in form %}
                 {% include '@Modules/drsoftfrproductwizard/views/templates/admin/configurator/_product_choice_form.html.twig' with { 'form': choiceForm, 'choice_idx': loop.index0, 'step_idx': step_idx } %}
             {% else %}
                 <div class="alert alert-info">Aucun choix produit défini pour cette étape.</div>
             {% endfor %}
         </div>
-        <template id="product-choice-prototype-{{ step_idx }}">
+        <template id="step-{{ step_idx }}__product-choice-prototype">
             {% include '@Modules/drsoftfrproductwizard/views/templates/admin/configurator/_product_choice_form.html.twig' with { 'form': form.vars.prototype, 'choice_idx': '__choice__', 'step_idx': step_idx } %}
         </template>
         <button type="button" class="btn btn-outline-secondary btn-sm mt-1" @click="addProductChoice">
