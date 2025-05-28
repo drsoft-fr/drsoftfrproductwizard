@@ -1,41 +1,42 @@
-<div class="row align-items-end mb-2 condition-block"
+<div class="row align-items-end mb-2 js-condition-block"
      x-data="{
         stepIdx: '{{ form.step.vars.value is not null ? form.step.vars.value : '' }}',
         choiceIdx: '{{ form.choice.vars.value is not null ? form.choice.vars.value : '' }}',
         updateChoices() {
             // Synchronise l’étape sélectionnée avec le champ caché
-            $el.querySelector('input[name=\'{{ form.step.vars.full_name }}\']').value = this.stepIdx;
+            $el.querySelector('input[name=\'{{ form.step.vars.full_name }}\']').value = this.stepIdx
 
-            let select = $el.querySelector('.choice-select');
-            let steps = JSON.parse(this.$root.getAttribute('data-steps-choices'));
-            let selectedStepIdx = this.stepIdx;
+            let select = $el.querySelector('.js-choice-select')
+            let steps = JSON.parse(this.$root.getAttribute('data-steps-choices'))
+            let selectedStepIdx = this.stepIdx
 
-            select.innerHTML = '';
-            let opt = document.createElement('option');
-            opt.value = '';
-            opt.textContent = 'Choix requis...';
-            select.appendChild(opt);
+            select.innerHTML = ''
+            let opt = document.createElement('option')
+            opt.value = ''
+            opt.textContent = 'Choix requis...'
+            select.appendChild(opt)
 
             if (selectedStepIdx !== '' && steps[selectedStepIdx] && steps[selectedStepIdx].choices) {
                 steps[selectedStepIdx].choices.forEach(function(choice) {
-                    let option = document.createElement('option');
-                    option.value = choice.idx;
-                    option.textContent = choice.label;
-                    select.appendChild(option);
-                });
+                    let option = document.createElement('option')
+                    option.value = choice.idx
+                    option.textContent = choice.label
+                    select.appendChild(option)
+                })
 
                 // Reset la valeur du choix quand on change d’étape
-                this.choiceIdx = '';
+                this.choiceIdx = ''
                 setTimeout(() => {
-                  $el.querySelector('input[name=\'{{ form.choice.vars.full_name }}\']').value = '';
-                }, 0);
+                  $el.querySelector('input[name=\'{{ form.choice.vars.full_name }}\']').value = ''
+                }, 0)
             }
         },
         syncChoice(e) {
-            $el.querySelector('input[name=\'{{ form.choice.vars.full_name }}\']').value = e.target.value;
+            $el.querySelector('input[name=\'{{ form.choice.vars.full_name }}\']').value = e.target.value
         }
      }"
-     data-steps-choices='{{ steps_choices|json_encode|e('html_attr') }}'>
+     data-steps-choices='{{ steps_choices|json_encode|e('html_attr') }}'
+     id="step-{{ step_idx }}__product-choice-{{ choice_idx }}__condition">
     <div class="col-md-5">
         <select class="form-select custom-select step-select" x-model="stepIdx" x-on:change="updateChoices">
             <option value="">Étape...</option>
@@ -50,7 +51,7 @@
         </div>
     </div>
     <div class="col-md-5">
-        <select class="form-select custom-select choice-select"
+        <select class="form-select custom-select js-choice-select"
                 x-model="choiceIdx"
                 x-on:change="syncChoice">
             <option value="">Choix requis...</option>
@@ -69,7 +70,7 @@
     <div class="col-md-2">
         <button type="button"
                 class="btn btn-link text-danger p-0 ms-1"
-                @click="$el.closest('.condition-block').remove()"
+                @click="$el.closest('.js-condition-block').remove()"
                 title="Supprimer cette condition">
             <i class="material-icons">delete</i> Supprimer
         </button>

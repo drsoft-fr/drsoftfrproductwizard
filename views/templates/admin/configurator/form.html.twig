@@ -93,7 +93,7 @@
 
     <script>
       function initProductSelectors() {
-        const elms = document.querySelectorAll('input.product-selector:not([data-ts-initialized])')
+        const elms = document.querySelectorAll('input.js-product-selector:not([data-ts-initialized])')
 
         if (!elms.length) {
           return
@@ -172,7 +172,7 @@
             this.idx++
           },
           uncheckOthers(event) {
-            const container = event.target.closest('.step-block')
+            const container = event.target.closest('.js-step-block')
             const checkboxes = container.querySelectorAll('input[type=checkbox][name*="[isDefault]"]')
 
             checkboxes.forEach(cb => {
@@ -184,7 +184,7 @@
 
       document.addEventListener('alpine:init', () => {
         Alpine.directive('sync-label', (el, { expression }, { evaluate }) => {
-          const container = el.closest('.sortable-item, .card, .step-block')
+          const container = el.closest('.sortable-item, .card, .js-step-block')
           if (!container) return
 
           const labelSpan = container.querySelector('.js-label')
@@ -209,7 +209,7 @@
             dragClass: 'sortable-drag', // Classe CSS pour l'élément en cours de drag
             onEnd: function() {
               // Après drag&drop, réindexe les champs 'position' si besoin
-              stepsList.querySelectorAll('.step-block').forEach(function(block, idx) {
+              stepsList.querySelectorAll('.js-step-block').forEach(function(block, idx) {
                 let posInput = block.querySelector('input[name*="[position]"]')
                 if (posInput) {
                   posInput.value = idx

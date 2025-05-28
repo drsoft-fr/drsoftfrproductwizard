@@ -47,7 +47,7 @@ final class StepType extends AbstractType
                 'label' => 'Supprimer',
                 'attr' => [
                     'class' => 'btn btn-danger btn-sm',
-                    '@click' => '$el.closest(\'.step-block\').remove()',
+                    '@click' => '$el.closest(\'.js-step-block\').remove()',
                     'title' => 'Supprimer cette étape',
                 ],
             ]);

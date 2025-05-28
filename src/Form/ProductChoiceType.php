@@ -44,9 +44,6 @@ final class ProductChoiceType extends AbstractType
             ->add('productId', IntegerType::class, [
                 'label' => 'ID produit PrestaShop (optionnel)',
                 'required' => false,
-                'attr' => [
-                    'class' => 'product-select',
-                ],
             ])
             ->add('isDefault', CheckboxType::class, [
                 'label' => 'Choix par défaut',
@@ -103,7 +100,6 @@ final class ProductChoiceType extends AbstractType
                 'label' => 'ID produit PrestaShop (optionnel)',
                 'required' => false,
                 'attr' => [
-                    'class' => 'product-select',
                     'data-product-name' => $productName,
                 ],
             ]);
