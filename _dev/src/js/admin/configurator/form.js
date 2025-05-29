@@ -193,10 +193,10 @@ window.drsoftfrproductwizard.alpine = {
   },
 
   // Gestionnaire des conditions
-  conditionManager: function (initialIdx, productChoiceIdx, stepIdx) {
+  conditionsManager: function (initialIdx, productChoiceIdx, stepIdx) {
     return {
       idx: initialIdx,
-      showConditions: initialIdx > 0 ? 'true' : 'false',
+      showConditions: initialIdx > 0 ? true : false,
       addCondition() {
         let tpl = document
           .getElementById(
@@ -218,6 +218,46 @@ window.drsoftfrproductwizard.alpine = {
 
         this.idx++
       },
+    }
+  },
+
+  // Gestionnaire de condition
+  conditionManager: function (conditionStepIdx, conditionChoiceIdx, productChoiceIdx, stepIdx) {
+    return {
+      conditionStepIdx: conditionStepIdx,
+      conditionChoiceIdx: conditionChoiceIdx,
+      updateChoices() {
+        // Synchronise l’étape sélectionnée avec le champ caché
+        $el.querySelector('input[name=\'{{ condition_form.step.vars.full_name }}\']').value = this.conditionStepIdx
+
+        let select = $el.querySelector('.js-choice-select')
+        let steps = JSON.parse(this.$root.getAttribute('data-steps-choices'))
+        let selectedStepIdx = this.conditionStepIdx
+
+        select.innerHTML = ''
+        let opt = document.createElement('option')
+        opt.value = ''
+        opt.textContent = 'Choix requis...'
+        select.appendChild(opt)
+
+        if (selectedStepIdx !== '' && steps[selectedStepIdx] && steps[selectedStepIdx].choices) {
+          steps[selectedStepIdx].choices.forEach(function(choice) {
+            let option = document.createElement('option')
+            option.value = choice.idx
+            option.textContent = choice.label
+            select.appendChild(option)
+          })
+
+          // Reset la valeur du choix quand on change d’étape
+          this.conditionChoiceIdx = ''
+          setTimeout(() => {
+            $el.querySelector('input[name=\'{{ condition_form.choice.vars.full_name }}\']').value = ''
+          }, 0)
+        }
+      },
+      syncChoice(e) {
+        $el.querySelector('input[name=\'{{ condition_form.choice.vars.full_name }}\']').value = e.target.value
+      }
     }
   },
 
