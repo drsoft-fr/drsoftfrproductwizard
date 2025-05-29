@@ -5,7 +5,7 @@
         <div>
             <span class="step-drag-handle"
                   style="cursor: grab;"><i class="material-icons">drag_indicator</i></span>
-            <strong>Étape #{{ step_id }} <span class="js-label"></span></strong>
+            <strong>Étape #{{ step_id }} <span x-text="$store.wizardData.getStep({{ step_id }}).label"></span></strong>
         </div>
         <div>
             <span class="badge bg-primary js-badge-position">{% if step_iteration is defined and step_iteration matches '/^\\d+$/' %}{{ (step_iteration + 0) + 1 }}{% endif %}</span>
@@ -21,9 +21,9 @@
     </div>
     <div class="card-body collapse show"
          id="step-{{ step_id }}-body">
-        {{ form_row(step_form.label) }}
-        {{ form_row(step_form.position) }}
-        {{ form_row(step_form.active) }}
+        {{ form_row(step_form.label, { attr: { 'x-model': '$store.wizardData.getStep(' ~ step_id ~ ').label' } }) }}
+        {{ form_row(step_form.position, { attr: { 'x-model.number': '$store.wizardData.getStep(' ~ step_id ~ ').position' } }) }}
+        {{ form_row(step_form.active, { attr: { 'x-model.boolean': '$store.wizardData.getStep(' ~ step_id ~ ').active' } }) }}
         <div class="text-right">
             <button type="button" class="btn btn-danger btn-sm" @click="removeStep({{ step_id }})"
                     title="Supprimer cette étape">Supprimer

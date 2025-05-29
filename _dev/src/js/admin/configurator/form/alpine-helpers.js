@@ -108,6 +108,11 @@ window.drsoftfrproductwizard.alpine = {
 
   // Store Alpine pour accéder aux données globales
   initStore: function () {
+    // Rendre l'objet global réactif
+    window.drsoftfrproductwizard.data = window.Alpine.reactive(
+      window.drsoftfrproductwizard.data,
+    )
+
     if (window.Alpine) {
       window.Alpine.store('wizardData', {
         get data() {
@@ -116,14 +121,17 @@ window.drsoftfrproductwizard.alpine = {
         updateName(value) {
           window.drsoftfrproductwizard.data.name = value
         },
+        getStep(stepId) {
+          return this.data.steps.find((s) => s.id === stepId) || {}
+        },
         updateStep(stepId, property, value) {
-          const step = this.data.steps.find((s) => s.id === stepId)
+          const step = this.getStep(stepId)
           if (step) {
             step[property] = value
           }
         },
         updateProductChoice(stepId, choiceId, property, value) {
-          const step = this.data.steps.find((s) => s.id === stepId)
+          const step = this.getStep(stepId)
           if (step) {
             const choice = step.product_choices.find((c) => c.id === choiceId)
             if (choice) {
@@ -134,40 +142,12 @@ window.drsoftfrproductwizard.alpine = {
       })
     }
   },
-
-  // Directive pour synchroniser les étiquettes
-  syncLabelDirective: function (el, { expression }, { evaluate }) {
-    const container = el.closest('.sortable-item, .card, .js-step-block')
-    if (!container) return
-
-    const labelSpan = container.querySelector('.js-label')
-    if (!labelSpan) return
-
-    labelSpan.textContent = el.value || 'Sans titre'
-
-    el.addEventListener('input', () => {
-      labelSpan.textContent = el.value || 'Sans titre'
-    })
-  },
-}
-
-// Fonction pour initialiser les directives Alpine personnalisées
-window.drsoftfrproductwizard.alpine.initDirectives = function () {
-  if (window.Alpine) {
-    window.Alpine.directive(
-      'sync-label',
-      window.drsoftfrproductwizard.alpine.syncLabelDirective,
-    )
-  } else {
-    console.warn("Alpine.js n'est pas disponible")
-  }
 }
 
 // Exporter une fonction globale pour initialiser Alpine
 export function initAlpine() {
   document.addEventListener('alpine:init', () => {
     window.drsoftfrproductwizard.alpine.initStore()
-    window.drsoftfrproductwizard.alpine.initDirectives()
   })
 }
 

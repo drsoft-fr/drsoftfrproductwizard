@@ -39,7 +39,7 @@ final class ConfiguratorType extends TranslatorAwareType
                 'label' => 'Actif',
                 'required' => false,
                 'attr' => [
-                    'x-model' => '$store.wizardData.data.active',
+                    'x-model.boolean' => '$store.wizardData.data.active',
                 ],
             ])
             ->add('steps', CollectionType::class, [
