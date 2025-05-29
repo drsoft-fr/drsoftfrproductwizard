@@ -122,6 +122,7 @@ class Configurator
             'active' => $this->isActive(),
             'date_add' => $this->getDateAdd(),
             'date_upd' => $this->getDateUpd(),
+            'name' => $this->getName(),
             'steps' => $steps,
         ];
     }
