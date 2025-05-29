@@ -1,12 +1,4 @@
-<div x-data="{
-                    showConditions: {{ product_choice_form.displayConditions|length > 0 ? 'true' : 'false' }},
-                    idx: {{ product_choice_form.displayConditions|length }},
-                    addCondition() {
-                        let tpl = document.getElementById('step-{{ step_id }}__product-choice-{{ product_choice_id }}__condition-prototype').innerHTML.replace(/__cond__/g, this.idx)
-                        document.getElementById('step-{{ step_id }}__product-choice-{{ product_choice_id }}__conditions-collection').insertAdjacentHTML('beforeend', tpl)
-                        this.idx++
-                    }
-                }"
+<div x-data="window.drsoftfrproductwizard.alpine.conditionManager({{ product_choice_form.displayConditions|length }}, {{ product_choice_id }}, {{ step_id }})"
      class="border p-2 rounded mb-2 bg-light mt-2">
     <div class="form-check">
         <input type="checkbox"

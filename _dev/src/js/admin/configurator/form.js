@@ -192,6 +192,35 @@ window.drsoftfrproductwizard.alpine = {
     }
   },
 
+  // Gestionnaire des conditions
+  conditionManager: function (initialIdx, productChoiceIdx, stepIdx) {
+    return {
+      idx: initialIdx,
+      showConditions: initialIdx > 0 ? 'true' : 'false',
+      addCondition() {
+        let tpl = document
+          .getElementById(
+            `step-${stepIdx}__product-choice-${productChoiceIdx}__condition-prototype`,
+          )
+          .innerHTML.replace(/__cond__/g, this.idx)
+        document
+          .getElementById(
+            `step-${stepIdx}__product-choice-${productChoiceIdx}__conditions-collection`,
+          )
+          .insertAdjacentHTML('beforeend', tpl)
+
+        Alpine.store('wizardData')
+          .getProductChoice(stepIdx, productChoiceIdx)
+          .display_conditions.push({
+            step: 0,
+            choice: 0,
+          })
+
+        this.idx++
+      },
+    }
+  },
+
   // Store Alpine pour accéder aux données globales
   initStore: function () {
     // Rendre l'objet global réactif
