@@ -16,6 +16,10 @@ export default defineConfig({
           __dirname,
           'src/js/admin/configurator/form/head.js',
         ),
+        'admin-configurator-form-css': resolve(
+          __dirname,
+          'src/css/admin/configurator/form.scss',
+        ),
       },
       output: {
         assetFileNames: (assetInfo) => {

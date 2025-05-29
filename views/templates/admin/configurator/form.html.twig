@@ -12,38 +12,9 @@
     {% if manifest is defined %}
         <script src="{{ asset('../modules/drsoftfrproductwizard/views/' ~ manifest.url('src/js/admin/configurator/form/head.js')['file']) }}"
                 async defer></script>
+        <link href="{{ asset('../modules/drsoftfrproductwizard/views/' ~ manifest.url('src/css/admin/configurator/form.scss')['file']) }}"
+              rel="stylesheet">
     {% endif %}
-
-    <style>
-        /* Style de base pour les éléments de la liste */
-        .sortable-list > * {
-            transition: all 0.3s ease;
-            overflow: hidden;
-        }
-
-        /* Style pour l'élément fantôme (emplacement où l'item sera déposé) */
-        .sortable-ghost {
-            background-color: #f8f9fa !important;
-            border: 2px dashed #ccc !important;
-            opacity: 0.7 !important;
-        }
-
-        /* Style pour l'élément actuellement sélectionné et déplacé */
-        .sortable-chosen {
-            background-color: #fff !important;
-        }
-
-        /* Style pour l'élément en cours de déplacement */
-        .sortable-drag {
-            background-color: #fff !important;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2) !important;
-            opacity: 0.9 !important;
-            max-height: 50px !important;
-            overflow: hidden !important;
-            z-index: 9999 !important;
-            border-radius: 4px !important;
-        }
-    </style>
 {% endblock %}
 
 {% block main %}
