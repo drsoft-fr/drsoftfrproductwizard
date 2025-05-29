@@ -78,7 +78,6 @@ final class ProductChoiceType extends AbstractType
                 'label' => 'Supprimer',
                 'attr' => [
                     'class' => 'btn btn-link text-danger btn-sm p-0',
-                    '@click' => '$el.closest(\'.product-choice-block\').remove()',
                     'title' => 'Supprimer ce choix',
                 ],
             ]);

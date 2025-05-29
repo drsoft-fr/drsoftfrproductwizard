@@ -27,7 +27,7 @@
         {{ form_row(product_choice_form.forcedQuantity, { attr: { 'x-model.number': '$store.wizardData.getProductChoice(' ~ step_id ~ ', ' ~ product_choice_id ~ ').forced_quantity' } }) }}
         {{ form_row(product_choice_form.active, { attr: { 'x-model.boolean': '$store.wizardData.getProductChoice(' ~ step_id ~ ', ' ~ product_choice_id ~ ').active' } }) }}
         <div class="text-right">
-            {{ form_widget(product_choice_form.remove) }}
+            {{ form_widget(product_choice_form.remove, { attr: { '@click': 'removeProductChoice(' ~ step_id ~ ', ' ~ product_choice_id ~ ')' } }) }}
         </div>
     </div>
 </div>

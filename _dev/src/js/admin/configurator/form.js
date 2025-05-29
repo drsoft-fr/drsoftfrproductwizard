@@ -161,6 +161,18 @@ window.drsoftfrproductwizard.alpine = {
         setTimeout(initProductSelectors, 100)
         this.idx++
       },
+      removeProductChoice(stepId, productChoiceId) {
+        const elm = document.getElementById(
+          `step-${stepId}__product-choice-${productChoiceId}-card`,
+        )
+
+        Alpine.store('wizardData').getStep(stepId).product_choices =
+          Alpine.store('wizardData')
+            .getStep(stepId)
+            .product_choices.filter((c) => c.id !== productChoiceId)
+
+        elm.remove()
+      },
       uncheckOthers(event) {
         const targetStepId = parseInt(event.target.dataset.stepId || '')
         const targetProductChoiceId = parseInt(
