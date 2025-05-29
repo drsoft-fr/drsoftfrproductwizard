@@ -8,17 +8,9 @@ export default defineConfig({
     rollupOptions: {
       external: ['prestashop', '$', 'jquery', 'vue'],
       input: {
-        'admin-configurator-form-footer': resolve(
+        'admin-configurator-form': resolve(
           __dirname,
-          'src/js/admin/configurator/form/footer.js',
-        ),
-        'admin-configurator-form-head': resolve(
-          __dirname,
-          'src/js/admin/configurator/form/head.js',
-        ),
-        'admin-configurator-form-css': resolve(
-          __dirname,
-          'src/css/admin/configurator/form.scss',
+          'src/js/admin/configurator/form.js',
         ),
       },
       output: {
