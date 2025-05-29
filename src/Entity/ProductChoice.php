@@ -82,14 +82,14 @@ class ProductChoice
     private $displayConditions = [];
 
     /**
-     * @var DateTimeInterface $dateAdd creation date
+     * @var ?DateTimeInterface $dateAdd creation date
      *
      * @ORM\Column(name="date_add", type="datetime", nullable=false)
      */
     private $dateAdd;
 
     /**
-     * @var DateTimeInterface $dateUpd last modification date
+     * @var ?DateTimeInterface $dateUpd last modification date
      *
      * @ORM\Column(name="date_upd", type="datetime", options={"default": "CURRENT_TIMESTAMP"}, nullable=false)
      */
@@ -238,7 +238,7 @@ class ProductChoice
     /**
      * @return DateTimeInterface
      */
-    public function getDateAdd(): DateTimeInterface
+    public function getDateAdd(): ?DateTimeInterface
     {
         return $this->dateAdd;
     }
@@ -253,7 +253,7 @@ class ProductChoice
         return $this;
     }
 
-    public function getDateUpd(): DateTimeInterface
+    public function getDateUpd(): ?DateTimeInterface
     {
         return $this->dateUpd;
     }

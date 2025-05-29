@@ -65,14 +65,14 @@ class Step
     private $position = 0;
 
     /**
-     * @var DateTimeInterface $dateAdd creation date
+     * @var ?DateTimeInterface $dateAdd creation date
      *
      * @ORM\Column(name="date_add", type="datetime", nullable=false)
      */
     private $dateAdd;
 
     /**
-     * @var DateTimeInterface $dateUpd last modification date
+     * @var ?DateTimeInterface $dateUpd last modification date
      *
      * @ORM\Column(name="date_upd", type="datetime", options={"default": "CURRENT_TIMESTAMP"}, nullable=false)
      */
@@ -238,7 +238,7 @@ class Step
         return $this;
     }
 
-    public function getDateAdd(): DateTimeInterface
+    public function getDateAdd(): ?DateTimeInterface
     {
         return $this->dateAdd;
     }
@@ -249,7 +249,7 @@ class Step
         return $this;
     }
 
-    public function getDateUpd(): DateTimeInterface
+    public function getDateUpd(): ?DateTimeInterface
     {
         return $this->dateUpd;
     }
