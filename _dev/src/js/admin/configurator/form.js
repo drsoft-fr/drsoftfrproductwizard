@@ -162,14 +162,20 @@ window.drsoftfrproductwizard.alpine = {
         this.idx++
       },
       uncheckOthers(event) {
-        const container = event.target.closest('.js-step-block')
-        const checkboxes = container.querySelectorAll(
-          'input[type=checkbox][name*="[isDefault]"]',
+        const targetStepId = parseInt(event.target.dataset.stepId || '')
+        const targetProductChoiceId = parseInt(
+          event.target.dataset.productChoiceId || '',
         )
 
-        checkboxes.forEach((cb) => {
-          if (cb !== event.target) cb.checked = false
-        })
+        Alpine.store('wizardData')
+          .getStep(targetStepId)
+          .product_choices.forEach((c) => {
+            const productChoiceId = c.id
+
+            if (productChoiceId !== targetProductChoiceId) {
+              c.is_default = false
+            }
+          })
       },
     }
   },
@@ -197,6 +203,13 @@ window.drsoftfrproductwizard.alpine = {
           if (step) {
             step[property] = value
           }
+        },
+        getProductChoice(stepId, productChoiceId) {
+          return (
+            this.getStep(stepId).product_choices.find(
+              (p) => p.id === productChoiceId,
+            ) || {}
+          )
         },
         updateProductChoice(stepId, choiceId, property, value) {
           const step = this.getStep(stepId)
