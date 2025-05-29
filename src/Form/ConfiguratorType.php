@@ -31,10 +31,16 @@ final class ConfiguratorType extends TranslatorAwareType
         $builder
             ->add('name', TextType::class, [
                 'label' => 'Nom du scénario',
+                'attr' => [
+                    'x-model' => '$store.wizardData.data.name',
+                ],
             ])
             ->add('active', SwitchType::class, [
                 'label' => 'Actif',
                 'required' => false,
+                'attr' => [
+                    'x-model' => '$store.wizardData.data.active',
+                ],
             ])
             ->add('steps', CollectionType::class, [
                 'entry_type' => StepType::class,

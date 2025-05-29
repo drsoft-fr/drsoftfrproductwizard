@@ -12,10 +12,11 @@ use DrSoftFr\Module\ProductWizard\Form\ConfiguratorType;
 use DrSoftFr\Module\ProductWizard\Form\ProductChoiceType;
 use DrSoftFr\Module\ProductWizard\Form\StepType;
 use DrSoftFr\Module\ProductWizard\Repository\ConfiguratorRepository;
+use DrSoftFr\PrestaShopModuleHelper\Domain\Asset\Package;
+use DrSoftFr\PrestaShopModuleHelper\Domain\Asset\VersionStrategy\JsonManifestVersionStrategy;
 use drsoftfrproductwizard;
 use PrestaShop\PrestaShop\Adapter\Product\Repository\ProductRepository;
 use PrestaShop\PrestaShop\Core\Domain\Language\ValueObject\LanguageId;
-use PrestaShop\PrestaShop\Core\Domain\Shop\Exception\ShopException;
 use PrestaShop\PrestaShop\Core\Domain\Shop\ValueObject\ShopId;
 use PrestaShopBundle\Controller\Admin\FrameworkBundleAdminController;
 use PrestaShopBundle\Security\Annotation\AdminSecurity;
@@ -45,12 +46,23 @@ final class ConfiguratorController extends FrameworkBundleAdminController
      */
     private $shopId;
 
+    /**
+     * @var Package
+     */
+    private $manifest;
+
     public function __construct(int $languageId, int $shopId)
     {
         parent::__construct();
 
         $this->languageId = $languageId;
         $this->shopId = $shopId;
+
+        $this->manifest = new Package(
+            new JsonManifestVersionStrategy(
+                _PS_MODULE_DIR_ . '/drsoftfrproductwizard/views/.vite/manifest.json'
+            )
+        );
     }
 
     /**
@@ -71,6 +83,7 @@ final class ConfiguratorController extends FrameworkBundleAdminController
             'enableSidebar' => true,
             'help_link' => $this->generateSidebarLink($request->attributes->get('_legacy_controller')),
             'module' => $this->getModule(),
+            'manifest' => $this->manifest,
         ]);
     }
 
@@ -117,6 +130,7 @@ final class ConfiguratorController extends FrameworkBundleAdminController
             'form' => $form->createView(),
             'module' => $this->getModule(),
             'steps_choices' => $this->prepareStepChoices($configurator),
+            'manifest' => $this->manifest,
         ]);
     }
 
@@ -163,6 +177,7 @@ final class ConfiguratorController extends FrameworkBundleAdminController
             'form' => $form->createView(),
             'module' => $this->getModule(),
             'steps_choices' => $this->prepareStepChoices($configurator),
+            'manifest' => $this->manifest,
         ]);
     }
 
