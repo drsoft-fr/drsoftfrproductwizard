@@ -93,7 +93,7 @@
 
     <script>
       window.drsoftfrproductwizard = window.drsoftfrproductwizard || {}
-      window.drsoftfrproductwizard.data = window.drsoftfrproductwizard.data || {}
+      window.drsoftfrproductwizard.data = window.drsoftfrproductwizard.data || { steps: [] }
       window.drsoftfrproductwizard.routes = window.drsoftfrproductwizard.routes || {}
 
       function initProductSelectors() {
@@ -162,7 +162,25 @@
             }
 
             document.getElementById('steps-collection').insertAdjacentHTML('beforeend', tpl)
+
+            window.drsoftfrproductwizard.data.steps.push({
+              id: this.idx,
+              active: true,
+              label: 'Nouvelle étape',
+              position: this.idx,
+              product_choices: []
+            })
+
             this.idx++
+          },
+          removeStep(stepId) {
+            const elm = document.getElementById('step-' + stepId + '-card')
+
+            if (window.drsoftfrproductwizard.data.steps && window.drsoftfrproductwizard.data.steps.find(s => s.id === stepId)) {
+              window.drsoftfrproductwizard.data.steps = window.drsoftfrproductwizard.data.steps.filter(s => s.id !== stepId)
+            }
+
+            elm.remove()
           }
         }
       }

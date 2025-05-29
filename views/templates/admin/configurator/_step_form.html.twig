@@ -25,7 +25,9 @@
         {{ form_row(step_form.position) }}
         {{ form_row(step_form.active) }}
         <div class="text-right">
-            {{ form_widget(step_form.remove) }}
+            <button type="button" class="btn btn-danger btn-sm" @click="removeStep({{ step_id }})"
+                    title="Supprimer cette étape">Supprimer
+            </button>
         </div>
         <hr>
         {% include '@Modules/drsoftfrproductwizard/views/templates/admin/configurator/_product_choices_collection.html.twig' with { step_form, 'product_choices_form': step_form.productChoices, step_id  } %}

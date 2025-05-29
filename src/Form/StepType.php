@@ -42,14 +42,6 @@ final class StepType extends AbstractType
                 'label' => 'Choix produits',
                 'prototype' => true,
                 'prototype_name' => '__choice__',
-            ])
-            ->add('remove', ButtonType::class, [
-                'label' => 'Supprimer',
-                'attr' => [
-                    'class' => 'btn btn-danger btn-sm',
-                    '@click' => '$el.closest(\'.js-step-block\').remove()',
-                    'title' => 'Supprimer cette étape',
-                ],
             ]);
 
         $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
