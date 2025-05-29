@@ -10,7 +10,8 @@
                data-product-name="{{ attribute(product_choice_form.productId.vars.attr, 'data-product-name')|default('') }}"
                value="{{ attribute(product_choice_form.productId.vars.attr, 'data-product-name')|default('') }}"
                autocomplete="off"
-               placeholder="Rechercher un produit...">
+               placeholder="Rechercher un produit..."
+               x-model.number="$store.wizardData.getProductChoice({{ step_id }}, {{ product_choice_id }}).product_id">
         <div style="display:none">
             {{ form_widget(product_choice_form.productId) }}
         </div>
