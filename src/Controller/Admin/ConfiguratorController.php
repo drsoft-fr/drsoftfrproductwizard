@@ -88,15 +88,17 @@ final class ConfiguratorController extends FrameworkBundleAdminController
      */
     public function newAction(Request $request, EntityManagerInterface $em): Response
     {
+        $configurator = new Configurator();
+
         \Media::addJsDef([
             'drsoftfrproductwizard' => [
                 'routes' => [
                     'product_search' => $this->generateUrl('admin_drsoft_fr_product_wizard_configurator_product_search'),
                 ],
+                'data' => $configurator->toArray(),
             ],
         ]);
 
-        $configurator = new Configurator();
         $form = $this->createForm(ConfiguratorType::class, $configurator);
 
         $form->handleRequest($request);
@@ -147,6 +149,7 @@ final class ConfiguratorController extends FrameworkBundleAdminController
                 'routes' => [
                     'product_search' => $this->generateUrl('admin_drsoft_fr_product_wizard_configurator_product_search'),
                 ],
+                'data' => $configurator->toArray(),
             ],
         ]);
 

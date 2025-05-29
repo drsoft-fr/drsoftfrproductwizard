@@ -1,81 +1,26 @@
 <div class="border rounded p-2 mb-2 product-choice-block position-relative bg-light"
-     id="step-{{ step_idx }}__product-choice-{{ choice_idx }}-card">
+     id="step-{{ step_id }}__product-choice-{{ product_choice_id }}-card">
     <div class="d-flex align-items-center justify-content-between">
         <div>
             <strong>Choix produit</strong>
         </div>
         <div>
-            <span class="badge bg-secondary">{% if choice_idx is defined and choice_idx matches '/^\\d+$/' %}{{ (choice_idx + 0) + 1 }}{% endif %}</span>
+            <span class="badge bg-secondary">{% if product_choice_iteration is defined and product_choice_iteration matches '/^\\d+$/' %}{{ (product_choice_iteration + 0) + 1 }}{% endif %}</span>
         </div>
     </div>
     <div class="p-2"
-         id="step-{{ step_idx }}__product-choice-{{ choice_idx }}-body">
-        {{ form_row(form.label) }}
-        <div class="form-group row">
-            <label class="form-control-label"
-                   for="step-{{ step_idx }}__product-choice-{{ choice_idx }}__{{ form.productId.vars.id }}-ts">Produit</label>
-            <div class="col-sm">
-                <input type="text"
-                       class="form-control js-product-selector"
-                       id="step-{{ step_idx }}__product-choice-{{ choice_idx }}__{{ form.productId.vars.id }}-ts"
-                       data-target="#{{ form.productId.vars.id }}"
-                       data-product-id="{{ form.productId.vars.value }}"
-                       data-product-name="{{ attribute(form.productId.vars.attr, 'data-product-name')|default('') }}"
-                       value="{{ attribute(form.productId.vars.attr, 'data-product-name')|default('') }}"
-                       autocomplete="off"
-                       placeholder="Rechercher un produit...">
-                <div style="display:none">
-                    {{ form_widget(form.productId) }}
-                </div>
-            </div>
-        </div>
-        <div x-data="{
-                    showConditions: {{ form.displayConditions|length > 0 ? 'true' : 'false' }},
-                    idx: {{ form.displayConditions|length }},
-                    addCondition() {
-                        let tpl = document.getElementById('step-{{ step_idx }}__product-choice-{{ choice_idx }}__condition-prototype').innerHTML.replace(/__cond__/g, this.idx);
-                        document.getElementById('step-{{ step_idx }}__product-choice-{{ choice_idx }}__conditions-collection').insertAdjacentHTML('beforeend', tpl);
-                        this.idx++;
-                    }
-                }"
-             class="border p-2 rounded mb-2 bg-light mt-2">
-
-            <div class="form-check">
-                <input type="checkbox"
-                       class="form-check-input me-1"
-                       x-model="showConditions"
-                       id="step-{{ step_idx }}__product-choice-{{ choice_idx }}__conditions-collection-checkbox">
-                <label for="step-{{ step_idx }}__product-choice-{{ choice_idx }}__conditions-collection-checkbox"
-                       class="form-check-label">Conditionner
-                    l’affichage de ce choix</label>
-            </div>
-
-            <template x-if="showConditions">
-                <div class="mt-2">
-                    <div id="step-{{ step_idx }}__product-choice-{{ choice_idx }}__conditions-collection">
-                        {% for condForm in form.displayConditions %}
-                            {% include '@Modules/drsoftfrproductwizard/views/templates/admin/configurator/_condition_form.html.twig'
-                                with { 'step_form': step_form, 'product_choices_form': product_choices_form, 'product_choice_form': form, 'form_step': 0, 'form': condForm, 'step_idx': step_idx, 'cond_idx': loop.index0, 'steps_choices': steps_choices } %}
-                        {% endfor %}
-                    </div>
-                    <template id="step-{{ step_idx }}__product-choice-{{ choice_idx }}__condition-prototype">
-                        {% include '@Modules/drsoftfrproductwizard/views/templates/admin/configurator/_condition_form.html.twig'
-                            with { 'step_form': step_form, 'product_choices_form': product_choices_form, 'product_choice_form': form, 'form_step': 0, 'form': form.displayConditions.vars.prototype, 'step_idx': step_idx, 'cond_idx': '__cond__', 'steps_choices': steps_choices } %}
-                    </template>
-                    <button type="button" class="btn btn-link btn-sm"
-                            @click="addCondition">
-                        <i class="material-icons">add</i> Ajouter une condition
-                    </button>
-                </div>
-            </template>
-        </div>
-
-        {{ form_row(form.isDefault) }}
-        {{ form_row(form.allowQuantity) }}
-        {{ form_row(form.forcedQuantity) }}
-        {{ form_row(form.active) }}
+         id="step-{{ step_id }}__product-choice-{{ product_choice_id }}-body">
+        {{ form_row(product_choice_form.label) }}
+        {% include '@Modules/drsoftfrproductwizard/views/templates/admin/configurator/_product_choice_product_field.html.twig'
+            with { step_form, product_choice_form, step_id, product_choice_id } %}
+        {% include '@Modules/drsoftfrproductwizard/views/templates/admin/configurator/_product_choice_condition_field.html.twig'
+            with { product_choice_form, step_id, product_choice_id } %}
+        {{ form_row(product_choice_form.isDefault) }}
+        {{ form_row(product_choice_form.allowQuantity) }}
+        {{ form_row(product_choice_form.forcedQuantity) }}
+        {{ form_row(product_choice_form.active) }}
         <div class="text-right">
-            {{ form_widget(form.remove) }}
+            {{ form_widget(product_choice_form.remove) }}
         </div>
     </div>
 </div>

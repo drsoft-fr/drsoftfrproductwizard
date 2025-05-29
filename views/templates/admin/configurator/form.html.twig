@@ -57,15 +57,15 @@
                     <div x-data="stepManager({{ form.steps|length }})">
                         <h2 class="mb-2">Étapes du scénario</h2>
                         <div id="steps-collection" class="sortable-list">
-                            {% for stepForm in form.steps %}
-                                {% include '@Modules/drsoftfrproductwizard/views/templates/admin/configurator/_step_form.html.twig' with { 'form': stepForm, 'idx': loop.index0 } %}
+                            {% for step_form in form.steps %}
+                                {% include '@Modules/drsoftfrproductwizard/views/templates/admin/configurator/_step_form.html.twig' with { step_form, 'step_id': step_form.vars.value.id, 'step_iteration': loop.index0 } %}
                             {% else %}
                                 <div class="alert alert-info">Aucune étape définie pour ce scénario.</div>
                             {% endfor %}
                         </div>
 
                         <template id="step-prototype">
-                            {% include '@Modules/drsoftfrproductwizard/views/templates/admin/configurator/_step_form.html.twig' with { 'form': form.steps.vars.prototype, 'idx': '__step__' } %}
+                            {% include '@Modules/drsoftfrproductwizard/views/templates/admin/configurator/_step_form.html.twig' with { 'step_form': form.steps.vars.prototype, 'step_id': '__step__', 'step_iteration': '__step__' } %}
                         </template>
                         <button type="button" class="btn btn-outline-primary mt-2" @click="addStep">Ajouter une étape
                         </button>
@@ -92,6 +92,10 @@
     {{ parent() }}
 
     <script>
+      window.drsoftfrproductwizard = window.drsoftfrproductwizard || {}
+      window.drsoftfrproductwizard.data = window.drsoftfrproductwizard.data || {}
+      window.drsoftfrproductwizard.routes = window.drsoftfrproductwizard.routes || {}
+
       function initProductSelectors() {
         const elms = document.querySelectorAll('input.js-product-selector:not([data-ts-initialized])')
 
@@ -219,8 +223,16 @@
               // Après drag&drop, réindexe les champs 'position' si besoin
               stepsList.querySelectorAll('.js-step-block').forEach(function(block, idx) {
                 let posInput = block.querySelector('input[name*="[position]"]')
+                let badgeElm = block.querySelector('.js-badge-position')
+                let stepIdx = parseInt(block.dataset.stepId || '')
                 if (posInput) {
                   posInput.value = idx
+                }
+                if (badgeElm) {
+                  badgeElm.textContent = idx + 1
+                }
+                if (window.drsoftfrproductwizard.data && window.drsoftfrproductwizard.data.steps) {
+                  window.drsoftfrproductwizard.data.steps.find(s => s.id === stepIdx).position = idx
                 }
               })
               document.body.classList.remove('dragging-active')

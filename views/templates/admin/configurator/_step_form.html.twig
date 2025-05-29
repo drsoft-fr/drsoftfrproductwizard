@@ -1,32 +1,33 @@
 <div class="card mb-3 shadow-sm border-primary position-relative js-step-block"
-     id="step-{{ idx }}-card">
+     id="step-{{ step_id }}-card"
+     data-step-id="{{ step_id }}">
     <div class="card-header d-flex align-items-center justify-content-between">
         <div>
             <span class="step-drag-handle"
                   style="cursor: grab;"><i class="material-icons">drag_indicator</i></span>
-            <strong>Étape <span class="js-label"></span></strong>
+            <strong>Étape #{{ step_id }} <span class="js-label"></span></strong>
         </div>
         <div>
-            <span class="badge bg-primary">{% if idx is defined and idx matches '/^\\d+$/' %}{{ (idx + 0) + 1 }}{% endif %}</span>
+            <span class="badge bg-primary js-badge-position">{% if step_iteration is defined and step_iteration matches '/^\\d+$/' %}{{ (step_iteration + 0) + 1 }}{% endif %}</span>
             <button class="btn btn-link"
                     type="button"
                     data-toggle="collapse"
-                    data-target="#step-{{ idx }}-body"
+                    data-target="#step-{{ step_id }}-body"
                     aria-expanded="true"
-                    aria-controls="step-{{ idx }}-body">
+                    aria-controls="step-{{ step_id }}-body">
                 <i class="material-icons">expand_more</i>
             </button>
         </div>
     </div>
     <div class="card-body collapse show"
-         id="step-{{ idx }}-body">
-        {{ form_row(form.label) }}
-        {{ form_row(form.position) }}
-        {{ form_row(form.active) }}
+         id="step-{{ step_id }}-body">
+        {{ form_row(step_form.label) }}
+        {{ form_row(step_form.position) }}
+        {{ form_row(step_form.active) }}
         <div class="text-right">
-            {{ form_widget(form.remove) }}
+            {{ form_widget(step_form.remove) }}
         </div>
         <hr>
-        {% include '@Modules/drsoftfrproductwizard/views/templates/admin/configurator/_product_choices_collection.html.twig' with { 'step_form': form, 'form': form.productChoices, 'step_idx': idx } %}
+        {% include '@Modules/drsoftfrproductwizard/views/templates/admin/configurator/_product_choices_collection.html.twig' with { step_form, 'product_choices_form': step_form.productChoices, step_id  } %}
     </div>
 </div>

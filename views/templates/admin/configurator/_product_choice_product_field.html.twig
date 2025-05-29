@@ -1,0 +1,18 @@
+<div class="form-group row">
+    <label class="form-control-label"
+           for="step-{{ step_id }}__product-choice-{{ product_choice_id }}__{{ product_choice_form.productId.vars.id }}-ts">Produit</label>
+    <div class="col-sm">
+        <input type="text"
+               class="form-control js-product-selector"
+               id="step-{{ step_id }}__product-choice-{{ product_choice_id }}__{{ product_choice_form.productId.vars.id }}-ts"
+               data-target="#{{ product_choice_form.productId.vars.id }}"
+               data-product-id="{{ product_choice_form.productId.vars.value }}"
+               data-product-name="{{ attribute(product_choice_form.productId.vars.attr, 'data-product-name')|default('') }}"
+               value="{{ attribute(product_choice_form.productId.vars.attr, 'data-product-name')|default('') }}"
+               autocomplete="off"
+               placeholder="Rechercher un produit...">
+        <div style="display:none">
+            {{ form_widget(product_choice_form.productId) }}
+        </div>
+    </div>
+</div>

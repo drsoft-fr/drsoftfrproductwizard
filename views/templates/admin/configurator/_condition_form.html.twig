@@ -1,16 +1,16 @@
 {% set currentStepPosition = step_form.vars.value is not null ? step_form.vars.value.position : 0 %}
-{% set selectedStep = steps_choices|filter(s => s.idx == form.step.vars.value)|first|default(null) %}
+{% set selectedStep = steps_choices|filter(s => s.idx == condition_form.step.vars.value)|first|default(null) %}
 {% set isInvalidStep = selectedStep is null or (selectedStep.position >= currentStepPosition) %}
-{% set selectedChoice = selectedStep is not null ? (selectedStep.choices|filter(c => c.idx == form.choice.vars.value)|first) : null %}
+{% set selectedChoice = selectedStep is not null ? (selectedStep.choices|filter(c => c.idx == condition_form.choice.vars.value)|first) : null %}
 {% set isInvalidChoice = isInvalidStep or selectedChoice is not defined %}
 
 <div class="row align-items-end mb-2 js-condition-block {{ isInvalidStep or isInvalidChoice ? 'border border-danger bg-light text-danger' : '' }}"
      x-data="{
-        stepIdx: '{{ form.step.vars.value is not null ? form.step.vars.value : '' }}',
-        choiceIdx: '{{ form.choice.vars.value is not null ? form.choice.vars.value : '' }}',
+        stepIdx: '{{ condition_form.step.vars.value is not null ? condition_form.step.vars.value : '' }}',
+        choiceIdx: '{{ condition_form.choice.vars.value is not null ? condition_form.choice.vars.value : '' }}',
         updateChoices() {
             // Synchronise l’étape sélectionnée avec le champ caché
-            $el.querySelector('input[name=\'{{ form.step.vars.full_name }}\']').value = this.stepIdx
+            $el.querySelector('input[name=\'{{ condition_form.step.vars.full_name }}\']').value = this.stepIdx
 
             let select = $el.querySelector('.js-choice-select')
             let steps = JSON.parse(this.$root.getAttribute('data-steps-choices'))
@@ -33,16 +33,16 @@
                 // Reset la valeur du choix quand on change d’étape
                 this.choiceIdx = ''
                 setTimeout(() => {
-                  $el.querySelector('input[name=\'{{ form.choice.vars.full_name }}\']').value = ''
+                  $el.querySelector('input[name=\'{{ condition_form.choice.vars.full_name }}\']').value = ''
                 }, 0)
             }
         },
         syncChoice(e) {
-            $el.querySelector('input[name=\'{{ form.choice.vars.full_name }}\']').value = e.target.value
+            $el.querySelector('input[name=\'{{ condition_form.choice.vars.full_name }}\']').value = e.target.value
         }
      }"
      data-steps-choices='{{ steps_choices|json_encode|e('html_attr') }}'
-     id="step-{{ step_idx }}__product-choice-{{ choice_idx }}__condition">
+     id="step-{{ step_id }}__product-choice-{{ product_choice_id }}__condition">
     <div class="col-md-5">
         <select class="form-select custom-select js-step-select"
                 x-model="stepIdx"
@@ -51,19 +51,19 @@
             <option value="">Étape...</option>
             {% for stepIdx, step in steps_choices %}
                 {% if step.position < currentStepPosition %}
-                    <option value="{{ stepIdx }}" {% if form.step.vars.value == stepIdx %}selected{% endif %}>
+                    <option value="{{ stepIdx }}" {% if condition_form.step.vars.value == stepIdx %}selected{% endif %}>
                         {{ step.label }}
                     </option>
                 {% endif %}
             {% endfor %}
-            {% if isInvalidStep and form.step.vars.value %}
-                <option value="{{ form.step.vars.value }}" selected style="color:red;">
+            {% if isInvalidStep and condition_form.step.vars.value %}
+                <option value="{{ condition_form.step.vars.value }}" selected style="color:red;">
                     [Étape supprimée/invalide]
                 </option>
             {% endif %}
         </select>
         <div class="d-none">
-            {{ form_widget(form.step, {attr: {'type':'hidden'}}) }}
+            {{ form_widget(condition_form.step, {attr: {'type':'hidden'}}) }}
         </div>
     </div>
     <div class="col-md-5">
@@ -74,19 +74,19 @@
             <option value="">Choix requis...</option>
             {% if selectedStep is not null %}
                 {% for ch in selectedStep.choices %}
-                    <option value="{{ ch.idx }}" {% if form.choice.vars.value == ch.idx %}selected{% endif %}>
+                    <option value="{{ ch.idx }}" {% if condition_form.choice.vars.value == ch.idx %}selected{% endif %}>
                         {{ ch.label }}
                     </option>
                 {% endfor %}
             {% endif %}
-            {% if isInvalidChoice and form.choice.vars.value %}
-                <option value="{{ form.choice.vars.value }}" selected style="color:red;">
+            {% if isInvalidChoice and condition_form.choice.vars.value %}
+                <option value="{{ condition_form.choice.vars.value }}" selected style="color:red;">
                     [Choix supprimé/invalide]
                 </option>
             {% endif %}
         </select>
         <div class="d-none">
-            {{ form_widget(form.choice, {attr: {'type':'hidden'}}) }}
+            {{ form_widget(condition_form.choice, {attr: {'type':'hidden'}}) }}
         </div>
     </div>
     <div class="col-md-2">
