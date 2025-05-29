@@ -1,0 +1,12 @@
+{
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "watch": "vite build --watch",
+    "build": "vite build"
+  },
+  "devDependencies": {
+    "prettier": "^3.5.3",
+    "vite": "^6.3.5"
+  }
+}
