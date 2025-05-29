@@ -90,14 +90,7 @@ final class ConfiguratorController extends FrameworkBundleAdminController
     {
         $configurator = new Configurator();
 
-        \Media::addJsDef([
-            'drsoftfrproductwizard' => [
-                'routes' => [
-                    'product_search' => $this->generateUrl('admin_drsoft_fr_product_wizard_configurator_product_search'),
-                ],
-                'data' => $configurator->toArray(),
-            ],
-        ]);
+        $this->defineJsProps($configurator);
 
         $form = $this->createForm(ConfiguratorType::class, $configurator);
 
@@ -144,14 +137,7 @@ final class ConfiguratorController extends FrameworkBundleAdminController
      */
     public function editAction(Configurator $configurator, Request $request, EntityManagerInterface $em): Response
     {
-        \Media::addJsDef([
-            'drsoftfrproductwizard' => [
-                'routes' => [
-                    'product_search' => $this->generateUrl('admin_drsoft_fr_product_wizard_configurator_product_search'),
-                ],
-                'data' => $configurator->toArray(),
-            ],
-        ]);
+        $this->defineJsProps($configurator);
 
         $form = $this->createForm(ConfiguratorType::class, $configurator);
 
@@ -326,6 +312,23 @@ final class ConfiguratorController extends FrameworkBundleAdminController
         }
 
         return $stepsChoices;
+    }
+
+    /**
+     * @param Configurator $configurator
+     *
+     * @return void
+     */
+    private function defineJsProps(Configurator $configurator): void
+    {
+        \Media::addJsDef([
+            'drsoftfrproductwizard' => [
+                'routes' => [
+                    'product_search' => $this->generateUrl('admin_drsoft_fr_product_wizard_configurator_product_search'),
+                ],
+                'data' => $configurator->toArray(),
+            ],
+        ]);
     }
 
     /**
