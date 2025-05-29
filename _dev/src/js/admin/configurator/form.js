@@ -4,7 +4,14 @@ window.drsoftfrproductwizard = window.drsoftfrproductwizard || {}
 window.drsoftfrproductwizard.data = window.drsoftfrproductwizard.data || {
   steps: [],
   name: '',
+  active: true,
+  isValid: true,
+  loading: false,
 }
+window.drsoftfrproductwizard.data.isValid =
+  window.drsoftfrproductwizard.data.isValid || true
+window.drsoftfrproductwizard.data.loading =
+  window.drsoftfrproductwizard.data.loading || false
 window.drsoftfrproductwizard.routes = window.drsoftfrproductwizard.routes || {}
 
 function initProductSelectors() {
@@ -222,13 +229,20 @@ window.drsoftfrproductwizard.alpine = {
   },
 
   // Gestionnaire de condition
-  conditionManager: function (conditionStepIdx, conditionChoiceIdx, productChoiceIdx, stepIdx) {
+  conditionManager: function (
+    conditionStepIdx,
+    conditionChoiceIdx,
+    productChoiceIdx,
+    stepIdx,
+  ) {
     return {
       conditionStepIdx: conditionStepIdx,
       conditionChoiceIdx: conditionChoiceIdx,
       updateChoices() {
         // Synchronise l’étape sélectionnée avec le champ caché
-        $el.querySelector('input[name=\'{{ condition_form.step.vars.full_name }}\']').value = this.conditionStepIdx
+        $el.querySelector(
+          "input[name='{{ condition_form.step.vars.full_name }}']",
+        ).value = this.conditionStepIdx
 
         let select = $el.querySelector('.js-choice-select')
         let steps = JSON.parse(this.$root.getAttribute('data-steps-choices'))
@@ -240,8 +254,12 @@ window.drsoftfrproductwizard.alpine = {
         opt.textContent = 'Choix requis...'
         select.appendChild(opt)
 
-        if (selectedStepIdx !== '' && steps[selectedStepIdx] && steps[selectedStepIdx].choices) {
-          steps[selectedStepIdx].choices.forEach(function(choice) {
+        if (
+          selectedStepIdx !== '' &&
+          steps[selectedStepIdx] &&
+          steps[selectedStepIdx].choices
+        ) {
+          steps[selectedStepIdx].choices.forEach(function (choice) {
             let option = document.createElement('option')
             option.value = choice.idx
             option.textContent = choice.label
@@ -251,13 +269,17 @@ window.drsoftfrproductwizard.alpine = {
           // Reset la valeur du choix quand on change d’étape
           this.conditionChoiceIdx = ''
           setTimeout(() => {
-            $el.querySelector('input[name=\'{{ condition_form.choice.vars.full_name }}\']').value = ''
+            $el.querySelector(
+              "input[name='{{ condition_form.choice.vars.full_name }}']",
+            ).value = ''
           }, 0)
         }
       },
       syncChoice(e) {
-        $el.querySelector('input[name=\'{{ condition_form.choice.vars.full_name }}\']').value = e.target.value
-      }
+        $el.querySelector(
+          "input[name='{{ condition_form.choice.vars.full_name }}']",
+        ).value = e.target.value
+      },
     }
   },
 

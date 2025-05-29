@@ -13,7 +13,12 @@
 {% endblock %}
 
 {% block main %}
-    <div class="row justify-content-center" x-data="{}">
+    <div class="row justify-content-center relative">
+        <div x-show="$store.wizardData.data.loading"
+             style="position: absolute; top: 0; left: 0; height: 100%; width: 100%; background-color: var(--dark); z-index: 100; opacity: 0.5;">
+            <div class="spinner-border text-white" role="status"
+                 style="top:50%; left: 50%; position: absolute;"></div>
+        </div>
         <div class="col">
             <div class="card">
                 <h1 class="card-header">{{ form.vars.value.id ? 'Éditer le scénario' : 'Créer un scénario' }}</h1>
@@ -44,7 +49,9 @@
                     </div>
 
                     <div class="mt-4">
-                        <button type="submit" class="btn btn-success">Enregistrer</button>
+                        <button type="submit" class="btn btn-success"
+                                :class="!$store.wizardData.data.isValid ? 'disabled' : ''">Enregistrer
+                        </button>
                         <a class="btn btn-secondary"
                            href="{{ path('admin_drsoft_fr_product_wizard_configurator_index') }}">Retour</a>
                     </div>
