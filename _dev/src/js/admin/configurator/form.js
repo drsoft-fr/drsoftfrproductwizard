@@ -321,6 +321,145 @@ window.drsoftfrproductwizard.alpine = {
         updateName(value) {
           window.drsoftfrproductwizard.data.name = value
         },
+        refreshAllConditionSelectors() {
+          // Fonction centrale pour rafraîchir tous les sélecteurs après les modifications
+          this.initAllStepSelectors()
+          this.initAllChoiceSelectors()
+        },
+        initConditionSelectors() {
+          // Initialiser tous les sélecteurs d'étapes et de choix
+          this.initAllStepSelectors()
+          this.initAllChoiceSelectors()
+        },
+        initAllStepSelectors() {
+          document.querySelectorAll('.js-step-select').forEach((selector) => {
+            this.initStepSelector(selector)
+          })
+        },
+        initAllChoiceSelectors() {
+          document.querySelectorAll('.js-choice-select').forEach((selector) => {
+            this.initChoiceSelector(selector)
+          })
+        },
+        initStepSelector(selector) {
+          const currentStepId = parseInt(selector.dataset.stepId)
+          const currentStep = this.getStep(currentStepId)
+          const currentStepPosition = currentStep.position || 0
+
+          // Conserver la valeur sélectionnée actuelle
+          const selectedValue = selector.value
+
+          // Vider le sélecteur
+          selector.innerHTML = ''
+
+          // Ajouter l'option par défaut
+          const defaultOption = document.createElement('option')
+          defaultOption.value = ''
+          defaultOption.textContent = 'Étape...'
+          selector.appendChild(defaultOption)
+
+          // Ajouter les étapes avec position inférieure
+          this.data.steps.forEach((step) => {
+            if (step.position < currentStepPosition) {
+              const option = document.createElement('option')
+              option.value = step.id
+              option.textContent = step.label
+
+              // Restaurer la sélection si elle existe
+              if (selectedValue && parseInt(selectedValue) === step.id) {
+                option.selected = true
+              }
+
+              selector.appendChild(option)
+            }
+          })
+
+          // Si l'option précédemment sélectionnée n'est plus valide mais existait
+          if (
+            selectedValue &&
+            !Array.from(selector.options).some(
+              (opt) => opt.value === selectedValue && opt.value !== '',
+            )
+          ) {
+            const invalidOption = document.createElement('option')
+            invalidOption.value = selectedValue
+            invalidOption.textContent = '[Étape supprimée/invalide]'
+            invalidOption.style.color = 'red'
+            invalidOption.selected = true
+            selector.appendChild(invalidOption)
+          }
+
+          // Synchroniser avec le champ caché associé
+          const hiddenInput = selector
+            .closest('.js-condition-block')
+            .querySelector('input[name$="[step]"]')
+          if (hiddenInput) {
+            hiddenInput.value = selector.value
+          }
+        },
+        initChoiceSelector(selector) {
+          const stepSelector = selector
+            .closest('.js-condition-block')
+            .querySelector('.js-step-select')
+          const selectedStepId = stepSelector ? stepSelector.value : null
+
+          // Conserver la valeur sélectionnée actuelle
+          const selectedValue = selector.value
+
+          // Vider le sélecteur
+          selector.innerHTML = ''
+
+          // Ajouter l'option par défaut
+          const defaultOption = document.createElement('option')
+          defaultOption.value = ''
+          defaultOption.textContent = 'Choix requis...'
+          selector.appendChild(defaultOption)
+
+          // Si une étape est sélectionnée, ajouter ses choix
+          if (selectedStepId) {
+            const selectedStep = this.getStep(parseInt(selectedStepId))
+
+            if (selectedStep && selectedStep.product_choices) {
+              selectedStep.product_choices.forEach((choice) => {
+                if (choice.active) {
+                  const option = document.createElement('option')
+                  option.value = choice.id
+                  option.textContent = choice.label
+
+                  // Restaurer la sélection si elle existe
+                  if (selectedValue && parseInt(selectedValue) === choice.id) {
+                    option.selected = true
+                  }
+
+                  selector.appendChild(option)
+                }
+              })
+            }
+          }
+
+          // Si l'option précédemment sélectionnée n'est plus valide mais existait
+          if (
+            selectedValue &&
+            !Array.from(selector.options).some(
+              (opt) => opt.value === selectedValue && opt.value !== '',
+            )
+          ) {
+            const invalidOption = document.createElement('option')
+            invalidOption.value = selectedValue
+            invalidOption.textContent = '[Choix supprimé/invalide]'
+            invalidOption.style.color = 'red'
+            invalidOption.selected = true
+            selector.appendChild(invalidOption)
+          }
+
+          // Synchroniser avec le champ caché associé
+          const hiddenInput = selector
+            .closest('.js-condition-block')
+            .querySelector('input[name$="[choice]"]')
+          if (hiddenInput) {
+            hiddenInput.value = selector.value
+          }
+        },
         getStep(stepId) {
           const id =
             typeof stepId === 'string' && !isNaN(stepId)
