@@ -331,9 +331,12 @@ window.drsoftfrproductwizard.alpine = {
         },
         updateStep(stepId, property, value) {
           const step = this.getStep(stepId)
-          if (step) {
-            step[property] = value
+
+          if (!step) {
+            return
           }
+
+          step[property] = value
         },
         getProductChoice(stepId, productChoiceId) {
           const stepIdNum =
