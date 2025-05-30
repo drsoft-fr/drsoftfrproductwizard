@@ -293,9 +293,15 @@ window.drsoftfrproductwizard.alpine = {
         }
       },
       syncChoice(event, productChoice) {
-        event.target.parentElement.querySelector(
+        const hiddenInput = event.target.parentElement.querySelector(
           `input[name='${productChoice}']`,
-        ).value = event.target.value
+        )
+
+        if (hiddenInput) {
+          hiddenInput.value = event.target.value
+        } else {
+          console.error('Champ caché pour le choix non trouvé')
+        }
       },
     }
   },
