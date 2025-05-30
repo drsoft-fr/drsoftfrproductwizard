@@ -14,7 +14,61 @@ window.drsoftfrproductwizard.data.loading =
   window.drsoftfrproductwizard.data.loading || false
 window.drsoftfrproductwizard.routes = window.drsoftfrproductwizard.routes || {}
 
-function initProductSelectors() {
+const initSortableStep = () => {
+  const stepsList = document.getElementById('steps-collection')
+
+  if (!stepsList) {
+    return
+  }
+
+  new Sortable(stepsList, {
+    animation: 150,
+    handle: '.step-drag-handle',
+    ghostClass: 'sortable-ghost',
+    chosenClass: 'sortable-chosen',
+    dragClass: 'sortable-drag',
+    onEnd() {
+      stepsList.querySelectorAll('.js-step-block').forEach((block, idx) => {
+        let posInput = block.querySelector('input[name*="[position]"]')
+        let badgeElm = block.querySelector('.js-badge-position')
+        let stepIdx = parseInt(block.dataset.stepId || '')
+        if (posInput) {
+          posInput.value = idx
+        }
+        if (badgeElm) {
+          badgeElm.textContent = idx + 1
+        }
+        if (
+          window.drsoftfrproductwizard.data &&
+          window.drsoftfrproductwizard.data.steps
+        ) {
+          window.drsoftfrproductwizard.data.steps.find(
+            (s) => s.id === stepIdx,
+          ).position = idx
+        }
+      })
+      document.body.classList.remove('dragging-active')
+      document.querySelectorAll('.sortable-list').forEach((l) => {
+        l.classList.remove('inactive-list', 'active-list')
+      })
+    },
+    onStart(evt) {
+      document.body.classList.add('dragging-active')
+      document.querySelectorAll('.sortable-list').forEach((l) => {
+        l.classList.add('inactive-list')
+      })
+      document
+        .querySelectorAll('.sortable-list .card-body.collapse.show')
+        .forEach((l) => {
+          l.classList.remove('show')
+        })
+      evt.from.classList.remove('inactive-list')
+      evt.from.classList.add('active-list')
+    },
+  })
+}
+
+const initProductSelectors = () => {
   const elms = document.querySelectorAll(
     'input.js-product-selector:not([data-ts-initialized])',
   )
@@ -23,7 +77,7 @@ function initProductSelectors() {
     return
   }
 
-  elms.forEach(function (input) {
+  elms.forEach((input) => {
     if (!input) {
       return
     }
@@ -42,7 +96,7 @@ function initProductSelectors() {
         maxOptions: 20,
         maxItems: 1,
         create: false,
-        load: function (query, callback) {
+        load(query, callback) {
           if (!query.length) return callback()
           fetch(
             window.drsoftfrproductwizard.routes.product_search +
@@ -53,7 +107,7 @@ function initProductSelectors() {
             .then((json) => callback(json.items))
             .catch(() => callback())
         },
-        onChange: function (value) {
+        onChange(value) {
           let hidden = document.querySelector(input.dataset.target)
           if (hidden) hidden.value = value
         },
@@ -73,15 +127,7 @@ function initProductSelectors() {
   })
 }
 
-/**
- * Fonctions exportées pour être utilisées dans Alpine.js
- */
-
-// Exposer les fonctions sur l'objet window pour qu'Alpine.js puisse y accéder
-
-// Exposer les fonctions Alpine.js sur l'objet window
 window.drsoftfrproductwizard.alpine = {
-  // Gestionnaire des étapes
   stepManager: function (initialIdx) {
     return {
       idx: initialIdx,
@@ -128,7 +174,6 @@ window.drsoftfrproductwizard.alpine = {
     }
   },
 
-  // Gestionnaire des choix produits
   productChoiceManager: function (initialIdx, stepIdx) {
     return {
       idx: initialIdx,
@@ -199,7 +244,6 @@ window.drsoftfrproductwizard.alpine = {
     }
   },
 
-  // Gestionnaire des conditions
   conditionsManager: function (initialIdx, productChoiceIdx, stepIdx) {
     return {
       idx: initialIdx,
@@ -238,7 +282,6 @@ window.drsoftfrproductwizard.alpine = {
     }
   },
 
-  // Gestionnaire de condition
   conditionManager: function (
     conditionStepIdx,
     conditionChoiceIdx,
@@ -317,9 +360,6 @@ window.drsoftfrproductwizard.alpine = {
       window.Alpine.store('wizardData', {
         get data() {
           return window.drsoftfrproductwizard.data
-        },
-        updateName(value) {
-          window.drsoftfrproductwizard.data.name = value
         },
         initConditionSelectors() {
           this.initAllStepSelectors()
@@ -462,15 +502,6 @@ window.drsoftfrproductwizard.alpine = {
 
           return this.data.steps.find((s) => s.id === id) || {}
         },
-        updateStep(stepId, property, value) {
-          const step = this.getStep(stepId)
-
-          if (!step) {
-            return
-          }
-
-          step[property] = value
-        },
         getProductChoice(stepId, productChoiceId) {
           const stepIdNum =
             typeof stepId === 'string' && !isNaN(stepId)
@@ -488,187 +519,116 @@ window.drsoftfrproductwizard.alpine = {
 
           return step.product_choices.find((p) => p.id === choiceIdNum) || {}
         },
-        updateProductChoice(stepId, choiceId, property, value) {
-          const step = this.getStep(stepId)
-
-          if (!step) {
-            return
-          }
-
-          const choice = step.product_choices.find((c) => c.id === choiceId)
-
-          if (!choice) {
-            return
-          }
-
-          choice[property] = value
-        },
       })
     }
   },
 }
 
-// Exporter une fonction globale pour initialiser Alpine
-export function initAlpine() {
-  document.addEventListener('alpine:init', () => {
-    window.drsoftfrproductwizard.alpine.initStore()
+document.addEventListener('alpine:init', () => {
+  window.drsoftfrproductwizard.alpine.initStore()
+  Alpine.effect(() => {
+    // Accéder aux données réactives pour les surveiller
+    const data = window.drsoftfrproductwizard.data
 
-    // Utiliser Alpine.effect pour surveiller automatiquement les changements dans les données
-    // et déclencher le rafraîchissement des sélecteurs quand nécessaire
-    Alpine.effect(() => {
-      // Accéder aux données réactives pour les surveiller
-      const data = window.drsoftfrproductwizard.data
+    if (!data || !data.steps) return
 
-      if (!data || !data.steps) return
+    // Vérifier le nombre d'étapes et de choix pour détecter les ajouts/suppressions
+    const stepsCount = data.steps.length
+    let stepsChanged = false
+    let conditionsChanged = false
 
-      // Vérifier le nombre d'étapes et de choix pour détecter les ajouts/suppressions
-      const stepsCount = data.steps.length
-      let stepsChanged = false
-      let conditionsChanged = false
+    // Créer une empreinte unique de l'état actuel des étapes
+    let stepsFingerprint = data.steps
+      .map((step) => {
+        // Accéder à chaque propriété pour la surveiller
+        const stepId = step.id
+        const stepPosition = step.position
+        const stepActive = step.active
+        const stepLabel = step.label
 
-      // Créer une empreinte unique de l'état actuel des étapes
-      let stepsFingerprint = data.steps
-        .map((step) => {
-          // Accéder à chaque propriété pour la surveiller
-          const stepId = step.id
-          const stepPosition = step.position
-          const stepActive = step.active
-          const stepLabel = step.label
+        // Vérifier le nombre de choix de produits
+        const choicesCount = step.product_choices
+          ? step.product_choices.length
+          : 0
 
-          // Vérifier le nombre de choix de produits
-          const choicesCount = step.product_choices
-            ? step.product_choices.length
-            : 0
+        // Surveiller les choix de produits
+        if (step.product_choices) {
+          step.product_choices.forEach((choice) => {
+            const choiceId = choice.id
+            const choiceLabel = choice.label
+            const choiceActive = choice.active
+            const choiceIsDefault = choice.is_default
+            const choiceProductId = choice.product_id
+            const choiceAllowQuantity = choice.allow_quantity
+            const choiceForcedQuantity = choice.forced_quantity
 
-          // Surveiller les choix de produits
-          if (step.product_choices) {
-            step.product_choices.forEach((choice) => {
-              const choiceId = choice.id
-              const choiceLabel = choice.label
-              const choiceActive = choice.active
-              const choiceIsDefault = choice.is_default
-              const choiceProductId = choice.product_id
-              const choiceAllowQuantity = choice.allow_quantity
-              const choiceForcedQuantity = choice.forced_quantity
+            // Vérifier le nombre de conditions pour détecter les ajouts/suppressions
+            const conditionsCount = choice.display_conditions
+              ? choice.display_conditions.length
+              : 0
 
-              // Vérifier le nombre de conditions pour détecter les ajouts/suppressions
-              const conditionsCount = choice.display_conditions
-                ? choice.display_conditions.length
-                : 0
+            // Surveiller les conditions d'affichage
+            if (choice.display_conditions) {
+              choice.display_conditions.forEach((condition) => {
+                const conditionStep = condition.step
+                const conditionChoice = condition.choice
+              })
+            }
+          })
+        }
 
-              // Surveiller les conditions d'affichage
-              if (choice.display_conditions) {
-                choice.display_conditions.forEach((condition) => {
-                  const conditionStep = condition.step
-                  const conditionChoice = condition.choice
-                })
-              }
-            })
-          }
+        return `${stepId}-${stepPosition}-${stepActive}-${stepLabel}-${choicesCount}`
+      })
+      .join('|')
 
-          return `${stepId}-${stepPosition}-${stepActive}-${stepLabel}-${choicesCount}`
-        })
-        .join('|')
+    // Stocker la dernière empreinte pour comparer lors des prochaines exécutions
+    if (
+      !window._lastStepsFingerprint ||
+      window._lastStepsFingerprint !== stepsFingerprint
+    ) {
+      window._lastStepsFingerprint = stepsFingerprint
+      stepsChanged = true // Forcer la mise à jour initiale
+    }
 
-      // Stocker la dernière empreinte pour comparer lors des prochaines exécutions
-      if (
-        !window._lastStepsFingerprint ||
-        window._lastStepsFingerprint !== stepsFingerprint
-      ) {
-        window._lastStepsFingerprint = stepsFingerprint
-        stepsChanged = true // Forcer la mise à jour initiale
-      }
+    // Observer les modifications DOM qui pourraient nécessiter des mises à jour
+    const selectors = document.querySelectorAll(
+      '.js-step-select, .js-choice-select',
+    )
+    const selectorsCount = selectors.length
 
-      // Observer les modifications DOM qui pourraient nécessiter des mises à jour
-      const selectors = document.querySelectorAll(
-        '.js-step-select, .js-choice-select',
-      )
-      const selectorsCount = selectors.length
+    // Vérifier si le nombre de sélecteurs a changé
+    if (
+      !window._lastSelectorsCount ||
+      window._lastSelectorsCount !== selectorsCount
+    ) {
+      window._lastSelectorsCount = selectorsCount
+      conditionsChanged = true // Forcer la mise à jour initiale
+    }
 
-      // Vérifier si le nombre de sélecteurs a changé
-      if (
-        !window._lastSelectorsCount ||
-        window._lastSelectorsCount !== selectorsCount
-      ) {
-        window._lastSelectorsCount = selectorsCount
-        conditionsChanged = true // Forcer la mise à jour initiale
-      }
+    if (!stepsChanged && !conditionsChanged) {
+      return
+    }
 
-      if (!stepsChanged && !conditionsChanged) {
+    // Débounce du rafraîchissement
+    if (window._refreshSelectors_timeout) {
+      clearTimeout(window._refreshSelectors_timeout)
+    }
+
+    window._refreshSelectors_timeout = setTimeout(() => {
+      if (Alpine.store('wizardData')) {
         return
       }
 
-      // Débounce du rafraîchissement
-      if (window._refreshSelectors_timeout) {
-        clearTimeout(window._refreshSelectors_timeout)
-      }
-
-      window._refreshSelectors_timeout = setTimeout(() => {
-        if (Alpine.store('wizardData')) {
-          return
-        }
-
-        console.log('Rafraîchissement des sélecteurs détecté par Alpine.effect')
-        Alpine.store('wizardData').initConditionSelectors()
-      }, 50)
-    })
+      console.log('Rafraîchissement des sélecteurs détecté par Alpine.effect')
+      Alpine.store('wizardData').initConditionSelectors()
+    }, 50)
   })
-}
-
-// Initialiser Alpine lors du chargement du script
-initAlpine()
+})
 
 document.addEventListener('DOMContentLoaded', function () {
   Alpine.store('wizardData').initConditionSelectors()
-  const stepsList = document.getElementById('steps-collection')
-  if (stepsList) {
-    new Sortable(stepsList, {
-      animation: 150,
-      handle: '.step-drag-handle',
-      ghostClass: 'sortable-ghost',
-      chosenClass: 'sortable-chosen',
-      dragClass: 'sortable-drag',
-      onEnd: function () {
-        stepsList
-          .querySelectorAll('.js-step-block')
-          .forEach(function (block, idx) {
-            let posInput = block.querySelector('input[name*="[position]"]')
-            let badgeElm = block.querySelector('.js-badge-position')
-            let stepIdx = parseInt(block.dataset.stepId || '')
-            if (posInput) {
-              posInput.value = idx
-            }
-            if (badgeElm) {
-              badgeElm.textContent = idx + 1
-            }
-            if (
-              window.drsoftfrproductwizard.data &&
-              window.drsoftfrproductwizard.data.steps
-            ) {
-              window.drsoftfrproductwizard.data.steps.find(
-                (s) => s.id === stepIdx,
-              ).position = idx
-            }
-          })
-        document.body.classList.remove('dragging-active')
-        document.querySelectorAll('.sortable-list').forEach((l) => {
-          l.classList.remove('inactive-list', 'active-list')
-        })
-      },
-      onStart: function (evt) {
-        document.body.classList.add('dragging-active')
-        document.querySelectorAll('.sortable-list').forEach((l) => {
-          l.classList.add('inactive-list')
-        })
-        document
-          .querySelectorAll('.sortable-list .card-body.collapse.show')
-          .forEach((l) => {
-            l.classList.remove('show')
-          })
-        evt.from.classList.remove('inactive-list')
-        evt.from.classList.add('active-list')
-      },
-    })
-  }
-  setTimeout(initProductSelectors, 100)
+  setTimeout(() => {
+    initSortableStep()
+    initProductSelectors()
+  }, 100)
 })
