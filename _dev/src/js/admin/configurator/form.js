@@ -216,12 +216,22 @@ window.drsoftfrproductwizard.alpine = {
           )
           .insertAdjacentHTML('beforeend', tpl)
 
-        Alpine.store('wizardData')
-          .getProductChoice(stepIdx, productChoiceIdx)
-          .display_conditions.push({
-            step: 0,
-            choice: 0,
-          })
+        const productChoice = Alpine.store('wizardData').getProductChoice(
+          stepIdx,
+          productChoiceIdx,
+        )
+
+        if (
+          !productChoice ||
+          typeof productChoice.display_conditions === 'undefined'
+        ) {
+          return
+        }
+
+        productChoice.display_conditions.push({
+          step: 0,
+          choice: 0,
+        })
 
         this.idx++
       },
