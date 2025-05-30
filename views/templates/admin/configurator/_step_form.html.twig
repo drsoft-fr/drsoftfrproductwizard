@@ -1,6 +1,7 @@
 <div class="card mb-3 shadow-sm border-primary position-relative js-step-block"
      id="step-{{ step_id }}-card"
-     data-step-id="{{ step_id }}">
+     data-step-id="{{ step_id }}"
+     data-position="{{ step_form.position.vars.value|default(0) }}">
     <div class="card-header d-flex align-items-center justify-content-between">
         <div>
             <span class="step-drag-handle"
