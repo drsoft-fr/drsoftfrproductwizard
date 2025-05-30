@@ -357,12 +357,18 @@ window.drsoftfrproductwizard.alpine = {
         },
         updateProductChoice(stepId, choiceId, property, value) {
           const step = this.getStep(stepId)
-          if (step) {
-            const choice = step.product_choices.find((c) => c.id === choiceId)
-            if (choice) {
-              choice[property] = value
-            }
+
+          if (!step) {
+            return
           }
+
+          const choice = step.product_choices.find((c) => c.id === choiceId)
+
+          if (!choice) {
+            return
+          }
+
+          choice[property] = value
         },
       })
     }
