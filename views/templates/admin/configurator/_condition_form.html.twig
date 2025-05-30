@@ -7,6 +7,7 @@
 <div class="row align-items-end mb-2 js-condition-block {{ isInvalidStep or isInvalidChoice ? 'border border-danger bg-light text-danger' : '' }}"
      x-data="window.drsoftfrproductwizard.alpine.conditionManager('{{ condition_form.step.vars.value is not null ? condition_form.step.vars.value : '' }}', '{{ condition_form.choice.vars.value is not null ? condition_form.choice.vars.value : '' }}', {{ product_choice_id }}, {{ step_id }})"
      data-steps-choices='{{ steps_choices|json_encode|e('html_attr') }}'
+     x-init="$store.wizardData.initStepSelector($el.querySelector('.js-step-select')); $store.wizardData.initChoiceSelector($el.querySelector('.js-choice-select'))"
      id="step-{{ step_id }}__product-choice-{{ product_choice_id }}__condition">
     <div class="col-md-5">
         <select class="form-select custom-select js-step-select"

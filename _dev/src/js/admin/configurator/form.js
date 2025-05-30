@@ -321,13 +321,7 @@ window.drsoftfrproductwizard.alpine = {
         updateName(value) {
           window.drsoftfrproductwizard.data.name = value
         },
-        refreshAllConditionSelectors() {
-          // Fonction centrale pour rafraîchir tous les sélecteurs après les modifications
-          this.initAllStepSelectors()
-          this.initAllChoiceSelectors()
-        },
         initConditionSelectors() {
-          // Initialiser tous les sélecteurs d'étapes et de choix
           this.initAllStepSelectors()
           this.initAllChoiceSelectors()
         },
@@ -525,6 +519,7 @@ export function initAlpine() {
 initAlpine()
 
 document.addEventListener('DOMContentLoaded', function () {
+  Alpine.store('wizardData').initConditionSelectors()
   const stepsList = document.getElementById('steps-collection')
   if (stepsList) {
     new Sortable(stepsList, {
