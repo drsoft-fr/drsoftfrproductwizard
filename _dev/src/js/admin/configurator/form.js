@@ -512,6 +512,106 @@ window.drsoftfrproductwizard.alpine = {
 export function initAlpine() {
   document.addEventListener('alpine:init', () => {
     window.drsoftfrproductwizard.alpine.initStore()
+
+    // Utiliser Alpine.effect pour surveiller automatiquement les changements dans les données
+    // et déclencher le rafraîchissement des sélecteurs quand nécessaire
+    Alpine.effect(() => {
+      // Accéder aux données réactives pour les surveiller
+      const data = window.drsoftfrproductwizard.data
+
+      if (!data || !data.steps) return
+
+      // Vérifier le nombre d'étapes et de choix pour détecter les ajouts/suppressions
+      const stepsCount = data.steps.length
+      let stepsChanged = false
+      let conditionsChanged = false
+
+      // Créer une empreinte unique de l'état actuel des étapes
+      let stepsFingerprint = data.steps
+        .map((step) => {
+          // Accéder à chaque propriété pour la surveiller
+          const stepId = step.id
+          const stepPosition = step.position
+          const stepActive = step.active
+          const stepLabel = step.label
+
+          // Vérifier le nombre de choix de produits
+          const choicesCount = step.product_choices
+            ? step.product_choices.length
+            : 0
+
+          // Surveiller les choix de produits
+          if (step.product_choices) {
+            step.product_choices.forEach((choice) => {
+              const choiceId = choice.id
+              const choiceLabel = choice.label
+              const choiceActive = choice.active
+              const choiceIsDefault = choice.is_default
+              const choiceProductId = choice.product_id
+              const choiceAllowQuantity = choice.allow_quantity
+              const choiceForcedQuantity = choice.forced_quantity
+
+              // Vérifier le nombre de conditions pour détecter les ajouts/suppressions
+              const conditionsCount = choice.display_conditions
+                ? choice.display_conditions.length
+                : 0
+
+              // Surveiller les conditions d'affichage
+              if (choice.display_conditions) {
+                choice.display_conditions.forEach((condition) => {
+                  const conditionStep = condition.step
+                  const conditionChoice = condition.choice
+                })
+              }
+            })
+          }
+
+          return `${stepId}-${stepPosition}-${stepActive}-${stepLabel}-${choicesCount}`
+        })
+        .join('|')
+
+      // Stocker la dernière empreinte pour comparer lors des prochaines exécutions
+      if (
+        !window._lastStepsFingerprint ||
+        window._lastStepsFingerprint !== stepsFingerprint
+      ) {
+        window._lastStepsFingerprint = stepsFingerprint
+        stepsChanged = true // Forcer la mise à jour initiale
+      }
+
+      // Observer les modifications DOM qui pourraient nécessiter des mises à jour
+      const selectors = document.querySelectorAll(
+        '.js-step-select, .js-choice-select',
+      )
+      const selectorsCount = selectors.length
+
+      // Vérifier si le nombre de sélecteurs a changé
+      if (
+        !window._lastSelectorsCount ||
+        window._lastSelectorsCount !== selectorsCount
+      ) {
+        window._lastSelectorsCount = selectorsCount
+        conditionsChanged = true // Forcer la mise à jour initiale
+      }
+
+      if (!stepsChanged && !conditionsChanged) {
+        return
+      }
+
+      // Débounce du rafraîchissement
+      if (window._refreshSelectors_timeout) {
+        clearTimeout(window._refreshSelectors_timeout)
+      }
+
+      window._refreshSelectors_timeout = setTimeout(() => {
+        if (Alpine.store('wizardData')) {
+          return
+        }
+
+        console.log('Rafraîchissement des sélecteurs détecté par Alpine.effect')
+        Alpine.store('wizardData').initConditionSelectors()
+      }, 50)
+    })
   })
 }
 
