@@ -11,8 +11,10 @@
     <div class="col-md-5">
         <select class="form-select custom-select js-step-select"
                 x-model="conditionStepIdx"
-                x-on:change="updateChoices"
-                :class="{'border-danger text-danger': {{ isInvalidStep ? 'true' : 'false' }} }">
+                x-on:change="updateChoices($event, '{{ condition_form.step.vars.full_name }}', '{{ condition_form.choice.vars.full_name }}')"
+                :class="{'border-danger text-danger': {{ isInvalidStep ? 'true' : 'false' }} }"
+                data-step-id="{{ step_id }}"
+                data-product-choice-id="{{ product_choice_id }}">
             <option value="">Étape...</option>
             {% for stepIdx, step in steps_choices %}
                 {% if step.position < currentStepPosition %}
@@ -34,10 +36,12 @@
     <div class="col-md-5">
         <select class="form-select custom-select js-choice-select"
                 x-model="conditionChoiceIdx"
-                x-on:change="syncChoice"
-                :class="{'border-danger text-danger': {{ isInvalidChoice ? 'true' : 'false' }} }">
+                x-on:change="syncChoice($event, '{{ condition_form.choice.vars.full_name }}')"
+                :class="{'border-danger text-danger': {{ isInvalidChoice ? 'true' : 'false' }} }"
+                data-step-id="{{ step_id }}"
+                data-product-choice-id="{{ product_choice_id }}">
             <option value="">Choix requis...</option>
-            {% if selectedStep is not null %}
+            {% if selectedStep is not null and not isInvalidStep %}
                 {% for ch in selectedStep.choices %}
                     <option value="{{ ch.idx }}" {% if condition_form.choice.vars.value == ch.idx %}selected{% endif %}>
                         {{ ch.label }}

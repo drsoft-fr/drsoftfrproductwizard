@@ -238,14 +238,21 @@ window.drsoftfrproductwizard.alpine = {
     return {
       conditionStepIdx: conditionStepIdx,
       conditionChoiceIdx: conditionChoiceIdx,
-      updateChoices() {
+      updateChoices(event, step, productChoice) {
         // Synchronise l’étape sélectionnée avec le champ caché
-        $el.querySelector(
-          "input[name='{{ condition_form.step.vars.full_name }}']",
+        event.target.parentElement.querySelector(
+          `input[name='${step}']`,
         ).value = this.conditionStepIdx
 
-        let select = $el.querySelector('.js-choice-select')
-        let steps = JSON.parse(this.$root.getAttribute('data-steps-choices'))
+        let select =
+          event.target.parentElement.parentElement.querySelector(
+            '.js-choice-select',
+          )
+        let steps = JSON.parse(
+          event.target.parentElement.parentElement.getAttribute(
+            'data-steps-choices',
+          ),
+        )
         let selectedStepIdx = this.conditionStepIdx
 
         select.innerHTML = ''
@@ -269,16 +276,16 @@ window.drsoftfrproductwizard.alpine = {
           // Reset la valeur du choix quand on change d’étape
           this.conditionChoiceIdx = ''
           setTimeout(() => {
-            $el.querySelector(
-              "input[name='{{ condition_form.choice.vars.full_name }}']",
+            event.target.parentElement.parentElement.querySelector(
+              `input[name='${productChoice}']`,
             ).value = ''
           }, 0)
         }
       },
-      syncChoice(e) {
-        $el.querySelector(
-          "input[name='{{ condition_form.choice.vars.full_name }}']",
-        ).value = e.target.value
+      syncChoice(event, productChoice) {
+        event.target.parentElement.querySelector(
+          `input[name='${productChoice}']`,
+        ).value = event.target.value
       },
     }
   },
