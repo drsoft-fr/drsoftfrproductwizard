@@ -322,7 +322,12 @@ window.drsoftfrproductwizard.alpine = {
           window.drsoftfrproductwizard.data.name = value
         },
         getStep(stepId) {
-          return this.data.steps.find((s) => s.id === stepId) || {}
+          const id =
+            typeof stepId === 'string' && !isNaN(stepId)
+              ? parseInt(stepId, 10)
+              : stepId
+
+          return this.data.steps.find((s) => s.id === id) || {}
         },
         updateStep(stepId, property, value) {
           const step = this.getStep(stepId)
