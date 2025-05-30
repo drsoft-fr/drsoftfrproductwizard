@@ -336,11 +336,21 @@ window.drsoftfrproductwizard.alpine = {
           }
         },
         getProductChoice(stepId, productChoiceId) {
-          return (
-            this.getStep(stepId).product_choices.find(
-              (p) => p.id === productChoiceId,
-            ) || {}
-          )
+          const stepIdNum =
+            typeof stepId === 'string' && !isNaN(stepId)
+              ? parseInt(stepId, 10)
+              : stepId
+          const choiceIdNum =
+            typeof productChoiceId === 'string' && !isNaN(productChoiceId)
+              ? parseInt(productChoiceId, 10)
+              : productChoiceId
+          const step = this.getStep(stepIdNum)
+
+          if (!step || !step.product_choices) {
+            return {}
+          }
+
+          return step.product_choices.find((p) => p.id === choiceIdNum) || {}
         },
         updateProductChoice(stepId, choiceId, property, value) {
           const step = this.getStep(stepId)
