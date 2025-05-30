@@ -285,8 +285,6 @@ window.drsoftfrproductwizard.alpine = {
   conditionManager: function (
     conditionStepIdx,
     conditionChoiceIdx,
-    productChoiceIdx,
-    stepIdx,
   ) {
     return {
       conditionStepIdx: conditionStepIdx,
