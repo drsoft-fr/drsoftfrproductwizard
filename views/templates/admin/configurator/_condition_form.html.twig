@@ -4,7 +4,7 @@
 {% set selectedChoice = selectedStep is not null ? (selectedStep.choices|filter(c => c.idx == condition_form.choice.vars.value)|first) : null %}
 {% set isInvalidChoice = isInvalidStep or selectedChoice is not defined %}
 
-<div class="row align-items-end mb-2 js-condition-block {{ isInvalidStep or isInvalidChoice ? 'border border-danger bg-light text-danger' : '' }}"
+<div class="row align-items-end mb-2 js-condition-block{{ isInvalidStep or isInvalidChoice ? ' text-danger' : '' }}{{ is_virtual is same as(true) ? ' is-virtual' : '' }}"
      x-data="window.drsoftfrproductwizard.alpine.conditionManager(
         '{{ condition_form.step.vars.value is not null ? condition_form.step.vars.value : '' }}',
         '{{ condition_form.choice.vars.value is not null ? condition_form.choice.vars.value : '' }}',

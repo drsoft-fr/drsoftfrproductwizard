@@ -155,6 +155,7 @@ window.drsoftfrproductwizard.alpine = {
           label: 'Nouvelle étape',
           position: this.idx,
           product_choices: [],
+          is_virtual: true,
         })
 
         this.idx++
@@ -210,6 +211,7 @@ window.drsoftfrproductwizard.alpine = {
             allow_quantity: true,
             forced_quantity: null,
             display_conditions: [],
+            is_virtual: true,
           })
         }
 
@@ -278,6 +280,7 @@ window.drsoftfrproductwizard.alpine = {
         productChoice.display_conditions.push({
           step: 0,
           choice: 0,
+          is_virtual: true,
         })
 
         this.idx++
@@ -393,18 +396,23 @@ window.drsoftfrproductwizard.alpine = {
 
         // Ajouter les étapes avec position inférieure
         this.data.steps.forEach((step) => {
-          if (step.position < currentStepPosition) {
-            const option = document.createElement('option')
-            option.value = step.id
-            option.textContent = step.label
-
-            // Restaurer la sélection si elle existe
-            if (selectedValue && parseInt(selectedValue) === step.id) {
-              option.selected = true
-            }
-
-            selector.appendChild(option)
+          if (
+            step.position >= currentStepPosition ||
+            (typeof step.is_virtual !== 'undefined' && step.is_virtual === true)
+          ) {
+            return
           }
+
+          const option = document.createElement('option')
+          option.value = step.id
+          option.textContent = step.label
+
+          // Restaurer la sélection si elle existe
+          if (selectedValue && parseInt(selectedValue) === step.id) {
+            option.selected = true
+          }
+
+          selector.appendChild(option)
         })
 
         // Si l'option précédemment sélectionnée n'est plus valide mais existait
@@ -452,20 +460,31 @@ window.drsoftfrproductwizard.alpine = {
         if (selectedStepId) {
           const selectedStep = this.getStep(parseInt(selectedStepId))
 
-          if (selectedStep && selectedStep.product_choices) {
+          if (
+            selectedStep &&
+            selectedStep.product_choices &&
+            (typeof selectedStep.is_virtual === 'undefined' ||
+              selectedStep.is_virtual === false)
+          ) {
             selectedStep.product_choices.forEach((choice) => {
-              if (choice.active) {
-                const option = document.createElement('option')
-                option.value = choice.id
-                option.textContent = choice.label
-
-                // Restaurer la sélection si elle existe
-                if (selectedValue && parseInt(selectedValue) === choice.id) {
-                  option.selected = true
-                }
-
-                selector.appendChild(option)
+              if (
+                !choice.active ||
+                (typeof choice.is_virtual !== 'undefined' &&
+                  choice.is_virtual === true)
+              ) {
+                return
               }
+
+              const option = document.createElement('option')
+              option.value = choice.id
+              option.textContent = choice.label
+
+              // Restaurer la sélection si elle existe
+              if (selectedValue && parseInt(selectedValue) === choice.id) {
+                option.selected = true
+              }
+
+              selector.appendChild(option)
             })
           }
         }

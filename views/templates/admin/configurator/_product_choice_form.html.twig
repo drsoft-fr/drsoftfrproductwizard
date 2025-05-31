@@ -4,6 +4,7 @@
         <div>
             <strong>Choix produit #{{ product_choice_id }} <span
                         x-text="$store.wizardData.getProductChoice({{ step_id }}, {{ product_choice_id }}).label"></span></strong>
+            <span class="badge badge-info{{ is_virtual is same as(true) ? ' d-inline-block' : ' d-none' }}">New</span>
         </div>
         <div>
             <span class="badge bg-secondary">{% if product_choice_iteration is defined and product_choice_iteration matches '/^\\d+$/' %}{{ (product_choice_iteration + 0) + 1 }}{% endif %}</span>
@@ -14,12 +15,12 @@
         {{ form_row(product_choice_form.label, { attr: { 'x-model': '$store.wizardData.getProductChoice(' ~ step_id ~ ', ' ~ product_choice_id ~ ').label' } }) }}
         {% include '@Modules/drsoftfrproductwizard/views/templates/admin/configurator/_product_choice_product_field.html.twig'
             with { step_form, product_choice_form, step_id, product_choice_id } %}
-        {% if virtual is same as(false) %}
+        {% if is_virtual is same as(false) %}
             {% include '@Modules/drsoftfrproductwizard/views/templates/admin/configurator/_product_choice_condition_field.html.twig'
-                with { product_choice_form, step_id, product_choice_id } %}
+                with { product_choice_form, step_id, product_choice_id, is_virtual } %}
         {% else %}
             <div class="alert alert-info">
-                <i class="fa fa-info-circle"></i> Ce choix de produit est virtuel, vous ne pouvez pas fixer de
+                <i class="fa fa-info-circle"></i> Ce choix de produit est nouveau, vous ne pouvez pas encore fixer de
                 conditions. Vous devez enregistrer avant de pouvoir parameter les conditions.
             </div>
         {% endif %}
