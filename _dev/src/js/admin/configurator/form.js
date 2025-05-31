@@ -302,53 +302,29 @@ window.drsoftfrproductwizard.alpine = {
     }
   },
 
-  conditionManager(conditionStepIdx, conditionChoiceIdx) {
+  conditionManager(conditionStepIdx, conditionChoiceIdx, condition) {
     return {
-      conditionStepIdx: conditionStepIdx,
-      conditionChoiceIdx: conditionChoiceIdx,
-      updateChoices(event, step, productChoice) {
-        // Synchronise l’étape sélectionnée avec le champ caché
-        event.target.parentElement.querySelector(
+      conditionStepIdx,
+      conditionChoiceIdx,
+      condition,
+      updateChoices(event, step) {
+        const target = event.target
+        const hiddenElm = target.parentElement.querySelector(
           `input[name='${step}']`,
-        ).value = this.conditionStepIdx
-
-        let select =
-          event.target.parentElement.parentElement.querySelector(
-            '.js-choice-select',
-          )
-        let steps = JSON.parse(
-          event.target.parentElement.parentElement.getAttribute(
-            'data-steps-choices',
-          ),
         )
-        let selectedStepIdx = this.conditionStepIdx
 
-        select.innerHTML = ''
-        let opt = document.createElement('option')
-        opt.value = ''
-        opt.textContent = 'Choix requis...'
-        select.appendChild(opt)
+        if (hiddenElm) {
+          hiddenElm.value = this.conditionStepIdx
+          this.condition.step = parseInt(this.conditionStepIdx || '')
+        } else {
+          console.error('Champ caché pour le choix non trouvé')
 
-        if (
-          selectedStepIdx !== '' &&
-          steps[selectedStepIdx] &&
-          steps[selectedStepIdx].choices
-        ) {
-          steps[selectedStepIdx].choices.forEach(function (choice) {
-            let option = document.createElement('option')
-            option.value = choice.idx
-            option.textContent = choice.label
-            select.appendChild(option)
-          })
-
-          // Reset la valeur du choix quand on change d’étape
-          this.conditionChoiceIdx = ''
-          setTimeout(() => {
-            event.target.parentElement.parentElement.querySelector(
-              `input[name='${productChoice}']`,
-            ).value = ''
-          }, 0)
+          return
         }
+
+        window.Alpine.store('wizardData').initChoiceSelector(
+          target.parentElement.parentElement.querySelector('.js-choice-select'),
+        )
       },
       syncChoice(event, productChoice) {
         const hiddenInput = event.target.parentElement.querySelector(
@@ -356,7 +332,8 @@ window.drsoftfrproductwizard.alpine = {
         )
 
         if (hiddenInput) {
-          hiddenInput.value = event.target.value
+          hiddenInput.value = this.conditionChoiceIdx
+          this.condition.choice = parseInt(this.conditionChoiceIdx || '')
         } else {
           console.error('Champ caché pour le choix non trouvé')
         }
@@ -537,6 +514,20 @@ window.drsoftfrproductwizard.alpine = {
         }
 
         return step.product_choices.find((p) => p.id === choiceIdNum) || {}
+      },
+      getCondition(
+        stepId,
+        productChoiceId,
+        conditionStepIdx,
+        conditionChoiceIdx,
+      ) {
+        const choice = this.getProductChoice(stepId, productChoiceId)
+        const condition = choice.display_conditions.find(
+          (c) =>
+            c.step === parseInt(conditionStepIdx || '') &&
+            c.choice === parseInt(conditionChoiceIdx || ''),
+        )
+        return condition || {}
       },
     })
   },
