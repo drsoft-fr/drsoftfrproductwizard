@@ -8,7 +8,7 @@
      x-data="window.drsoftfrproductwizard.alpine.conditionManager('{{ condition_form.step.vars.value is not null ? condition_form.step.vars.value : '' }}', '{{ condition_form.choice.vars.value is not null ? condition_form.choice.vars.value : '' }}')"
      data-steps-choices='{{ steps_choices|json_encode|e('html_attr') }}'
      x-init="$store.wizardData.initStepSelector($el.querySelector('.js-step-select')); $store.wizardData.initChoiceSelector($el.querySelector('.js-choice-select'))"
-     id="step-{{ step_id }}__product-choice-{{ product_choice_id }}__condition">
+     id="step-{{ step_id }}__product-choice-{{ product_choice_id }}__condition-{{ condition_iteration }}">
     <div class="col-md-5">
         <select class="form-select custom-select js-step-select"
                 x-model="conditionStepIdx"
@@ -60,16 +60,17 @@
         </div>
     </div>
     <div class="col-md-2">
-        <button type="button"
-                class="btn btn-link text-danger p-0 ms-1"
-                @click="$el.closest('.js-condition-block').remove()"
-                title="Supprimer cette condition">
-            <i class="material-icons">delete</i> Supprimer
-        </button>
+        {{ form_widget(
+            condition_form.remove,
+            {
+                attr: {'@click': 'removeCondition(' ~ step_id ~ ', ' ~ product_choice_id ~ ', "step-' ~ step_id ~ '__product-choice-' ~  product_choice_id ~ '__condition-' ~ condition_iteration ~ '")' }
+            }
+        ) }}
     </div>
+    {% if isInvalidStep or isInvalidChoice %}
+        <div class="text-danger small mb-2">Cette condition ne pointe plus sur une étape ou un choix valide. Modifiez-la
+            ou
+            supprimez-la.
+        </div>
+    {% endif %}
 </div>
-{% if isInvalidStep or isInvalidChoice %}
-    <div class="text-danger small mb-2">Cette condition ne pointe plus sur une étape ou un choix valide. Modifiez-la ou
-        supprimez-la.
-    </div>
-{% endif %}

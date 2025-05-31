@@ -247,7 +247,7 @@ window.drsoftfrproductwizard.alpine = {
   conditionsManager(initialIdx, productChoiceIdx, stepIdx) {
     return {
       idx: initialIdx,
-      showConditions: initialIdx > 0 ? true : false,
+      showConditions: initialIdx > 0,
       addCondition() {
         let tpl = document
           .getElementById(
@@ -278,6 +278,26 @@ window.drsoftfrproductwizard.alpine = {
         })
 
         this.idx++
+      },
+      removeCondition(stepId, productChoiceId, elmId) {
+        const elm = document.getElementById(elmId)
+        const stepValue = parseInt(
+          elm.querySelector('.js-step-select').value || '',
+        )
+        const choiceValue = parseInt(
+          elm.querySelector('.js-choice-select').value || '',
+        )
+        const productChoice = Alpine.store('wizardData').getProductChoice(
+          stepId,
+          productChoiceId,
+        )
+
+        productChoice.display_conditions =
+          productChoice.display_conditions.filter((c) => {
+            return c.step !== stepValue || c.choice !== choiceValue
+          })
+
+        elm.remove()
       },
     }
   },
@@ -347,13 +367,14 @@ window.drsoftfrproductwizard.alpine = {
   // Store Alpine pour accéder aux données globales
   initStore() {
     // Rendre l'objet global réactif
-    window.drsoftfrproductwizard.data = window.Alpine.reactive(
-      window.drsoftfrproductwizard.data,
-    )
-
     if (!window.Alpine) {
       return
     }
+
+    // Make data object reactive
+    window.drsoftfrproductwizard.data = window.Alpine.reactive(
+      window.drsoftfrproductwizard.data,
+    )
 
     window.Alpine.store('wizardData', {
       get data() {
@@ -620,12 +641,12 @@ document.addEventListener('alpine:init', () => {
       Alpine.store('wizardData').initConditionSelectors()
     }, 50)
   })
-})
 
-document.addEventListener('DOMContentLoaded', () => {
-  Alpine.store('wizardData').initConditionSelectors()
-  setTimeout(() => {
-    initSortableStep()
-    initProductSelectors()
-  }, 100)
+  document.addEventListener('DOMContentLoaded', () => {
+    Alpine.store('wizardData').initConditionSelectors()
+    setTimeout(() => {
+      initSortableStep()
+      initProductSelectors()
+    }, 100)
+  })
 })
