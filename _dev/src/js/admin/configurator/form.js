@@ -7,11 +7,14 @@ window.drsoftfrproductwizard.data = window.drsoftfrproductwizard.data || {
   active: true,
   isValid: true,
   loading: false,
+  devMode: false,
 }
 window.drsoftfrproductwizard.data.isValid =
   window.drsoftfrproductwizard.data.isValid || true
 window.drsoftfrproductwizard.data.loading =
   window.drsoftfrproductwizard.data.loading || false
+window.drsoftfrproductwizard.data.devMode =
+  window.drsoftfrproductwizard.data.devMode || false
 window.drsoftfrproductwizard.routes = window.drsoftfrproductwizard.routes || {}
 
 const initSortableStep = () => {
