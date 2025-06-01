@@ -15,7 +15,6 @@
             '{{ condition_form.choice.vars.value is not null ? condition_form.choice.vars.value : '' }}'
         )
     )"
-     data-steps-choices='{{ steps_choices|json_encode|e('html_attr') }}'
      x-init="$store.wizardData.initStepSelector($el.querySelector('.js-step-select')); $store.wizardData.initChoiceSelector($el.querySelector('.js-choice-select'))"
      id="step-{{ step_id }}__product-choice-{{ product_choice_id }}__condition-{{ condition_iteration }}">
     <div class="col-md-5">

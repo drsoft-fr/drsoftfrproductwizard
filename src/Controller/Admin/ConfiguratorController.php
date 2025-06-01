@@ -217,7 +217,7 @@ final class ConfiguratorController extends FrameworkBundleAdminController
      *
      * @return Response
      */
-    public function stepFragmentAction(Request $request)
+    public function stepFragmentAction(Request $request): Response
     {
         $index = (int)$request->query->get('index');
         $step = new Step();
@@ -241,7 +241,7 @@ final class ConfiguratorController extends FrameworkBundleAdminController
      *
      * @return Response
      */
-    public function productChoiceFragmentAction(Request $request)
+    public function productChoiceFragmentAction(Request $request): Response
     {
         $index = (int)$request->query->get('index');
         $choice = new ProductChoice();
