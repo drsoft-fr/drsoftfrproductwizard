@@ -17,6 +17,33 @@ window.drsoftfrproductwizard.data.devMode =
   window.drsoftfrproductwizard.data.devMode || false
 window.drsoftfrproductwizard.routes = window.drsoftfrproductwizard.routes || {}
 
+/**
+ * Retourne la valeur d'un champ de formulaire en tant que nombre entier'
+ *
+ * @param value
+ *
+ * @return {number|null}
+ */
+const getIntOrNull = (value) => {
+  if (typeof value === 'number' && !isNaN(value)) {
+    return value
+  }
+
+  if (isNaN(value)) {
+    return null
+  }
+
+  if (typeof value !== 'string') {
+    return null
+  }
+
+  if (value === '') {
+    return null
+  }
+
+  return parseInt(value)
+}
+
 const initSortableStep = () => {
   const stepsList = document.getElementById('steps-collection')
 
@@ -265,33 +292,15 @@ window.drsoftfrproductwizard.alpine = {
           )
           .insertAdjacentHTML('beforeend', tpl)
 
-        const productChoice = Alpine.store('wizardData').getProductChoice(
-          stepIdx,
-          productChoiceIdx,
-        )
-
-        if (
-          !productChoice ||
-          typeof productChoice.display_conditions === 'undefined'
-        ) {
-          return
-        }
-
-        productChoice.display_conditions.push({
-          step: 0,
-          choice: 0,
-          is_virtual: true,
-        })
-
         this.idx++
       },
       removeCondition(stepId, productChoiceId, elmId) {
         const elm = document.getElementById(elmId)
-        const stepValue = parseInt(
-          elm.querySelector('.js-step-select').value || '',
+        const stepValue = getIntOrNull(
+          elm.querySelector('.js-step-select').value,
         )
-        const choiceValue = parseInt(
-          elm.querySelector('.js-choice-select').value || '',
+        const choiceValue = getIntOrNull(
+          elm.querySelector('.js-choice-select').value,
         )
         const productChoice = Alpine.store('wizardData').getProductChoice(
           stepId,
@@ -320,8 +329,8 @@ window.drsoftfrproductwizard.alpine = {
         )
 
         if (hiddenElm) {
-          hiddenElm.value = this.conditionStepIdx
-          this.condition.step = parseInt(this.conditionStepIdx || '')
+          hiddenElm.value = getIntOrNull(this.conditionStepIdx)
+          this.condition.step = getIntOrNull(this.conditionStepIdx)
         } else {
           console.error('Champ caché pour le choix non trouvé')
 
@@ -338,8 +347,8 @@ window.drsoftfrproductwizard.alpine = {
         )
 
         if (hiddenInput) {
-          hiddenInput.value = this.conditionChoiceIdx
-          this.condition.choice = parseInt(this.conditionChoiceIdx || '')
+          hiddenInput.value = getIntOrNull(this.conditionChoiceIdx)
+          this.condition.choice = getIntOrNull(this.conditionChoiceIdx)
         } else {
           console.error('Champ caché pour le choix non trouvé')
         }
@@ -378,7 +387,7 @@ window.drsoftfrproductwizard.alpine = {
         })
       },
       initStepSelector(selector) {
-        const currentStepId = parseInt(selector.dataset.stepId)
+        const currentStepId = getIntOrNull(selector.dataset.stepId)
         const currentStep = this.getStep(currentStepId)
         const currentStepPosition = currentStep.position || 0
 
@@ -513,22 +522,13 @@ window.drsoftfrproductwizard.alpine = {
         }
       },
       getStep(stepId) {
-        const id =
-          typeof stepId === 'string' && !isNaN(stepId)
-            ? parseInt(stepId, 10)
-            : stepId
+        const id = getIntOrNull(stepId)
 
         return this.data.steps.find((s) => s.id === id) || {}
       },
       getProductChoice(stepId, productChoiceId) {
-        const stepIdNum =
-          typeof stepId === 'string' && !isNaN(stepId)
-            ? parseInt(stepId, 10)
-            : stepId
-        const choiceIdNum =
-          typeof productChoiceId === 'string' && !isNaN(productChoiceId)
-            ? parseInt(productChoiceId, 10)
-            : productChoiceId
+        const stepIdNum = getIntOrNull(stepId)
+        const choiceIdNum = getIntOrNull(productChoiceId)
         const step = this.getStep(stepIdNum)
 
         if (!step || !step.product_choices) {
@@ -544,12 +544,30 @@ window.drsoftfrproductwizard.alpine = {
         conditionChoiceIdx,
       ) {
         const choice = this.getProductChoice(stepId, productChoiceId)
+
+        if (!choice || typeof choice.display_conditions === 'undefined') {
+          return {}
+        }
+
         const condition = choice.display_conditions.find(
           (c) =>
-            c.step === parseInt(conditionStepIdx || '') &&
-            c.choice === parseInt(conditionChoiceIdx || ''),
+            c.step === getIntOrNull(conditionStepIdx) &&
+            c.choice === getIntOrNull(conditionChoiceIdx),
         )
-        return condition || {}
+
+        if (condition) {
+          return condition
+        }
+
+        const newCondition = {
+          step: null,
+          choice: null,
+          is_virtual: true,
+        }
+
+        choice.display_conditions.push(newCondition)
+
+        return newCondition
       },
     })
   },
