@@ -231,7 +231,23 @@ class ProductChoice
 
     public function setDisplayConditions(array $displayConditions): ProductChoice
     {
-        $this->displayConditions = $displayConditions;
+        $conditionsMap = [];
+        $uniqueConditions = [];
+
+        /** @var array $condition */
+        foreach ($displayConditions as $condition) {
+            $key = $condition['step'] . '_' . $condition['choice'];
+
+            if (isset($conditionsMap[$key])) {
+                continue;
+            }
+
+            $conditionsMap[$key] = true;
+            $uniqueConditions[] = $condition;
+        }
+
+        $this->displayConditions = $uniqueConditions;
+
         return $this;
     }
 
