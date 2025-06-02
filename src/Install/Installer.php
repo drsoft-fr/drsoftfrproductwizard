@@ -15,6 +15,10 @@ final class Installer
 {
     use executeSqlFromFileTrait;
 
+    const HOOKS = [
+        'actionOutputHTMLBefore',
+    ];
+
     /**
      * Module's installation entry point.
      *
@@ -26,6 +30,10 @@ final class Installer
      */
     public function install(Module $module): bool
     {
+        if (!$this->registerHooks($module)) {
+            throw new Exception('An error occurred when registering hooks for the module.');
+        }
+
         if (!$this->executeSqlFromFile($module->getLocalPath() . 'src/Install/Resources/sql/install.sql')) {
             throw new Exception('An error has occurred while executing the installation SQL resources.');
         }
@@ -49,5 +57,17 @@ final class Installer
         }
 
         return true;
+    }
+
+    /**
+     * Register hooks for the module.
+     *
+     * @param Module $module
+     *
+     * @return bool
+     */
+    private function registerHooks(Module $module): bool
+    {
+        return (bool)$module->registerHook(self::HOOKS);
     }
 }

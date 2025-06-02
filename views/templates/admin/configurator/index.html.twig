@@ -12,8 +12,10 @@
                     <table class="table">
                         <thead>
                         <tr>
+                            <th>ID</th>
                             <th>Nom</th>
                             <th>Actif</th>
+                            <th>Shortcode</th>
                             <th>Créé le</th>
                             <th>Actions</th>
                         </tr>
@@ -21,8 +23,10 @@
                         <tbody>
                         {% for configurator in configurators %}
                             <tr>
+                                <td>{{ configurator.id }}</td>
                                 <td>{{ configurator.name }}</td>
                                 <td>{% if configurator.active %}Oui{% else %}Non{% endif %}</td>
+                                <td>[drsoft-fr-product-wizard id="{{ configurator.id }}"]</td>
                                 <td>{{ configurator.dateAdd|date('d/m/Y H:i') }}</td>
                                 <td>
                                     <a href="{{ path('admin_drsoft_fr_product_wizard_configurator_edit', {id: configurator.id}) }}"
