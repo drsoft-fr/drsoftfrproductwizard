@@ -5,6 +5,7 @@ declare(strict_types=1);
 use DrSoftFr\Module\ProductWizard\Config;
 use DrSoftFr\Module\ProductWizard\Controller\Admin\ConfiguratorController;
 use DrSoftFr\Module\ProductWizard\Controller\Hook\ActionOutputHTMLBeforeController;
+use DrSoftFr\Module\ProductWizard\Controller\Hook\DisplayBeforeBodyClosingTagController;
 use DrSoftFr\Module\ProductWizard\Install\Factory\InstallerFactory;
 use DrSoftFr\Module\ProductWizard\Install\Installer;
 use PrestaShop\PrestaShop\Core\Cache\Clearer\CacheClearerChain;
@@ -192,6 +193,19 @@ class drsoftfrproductwizard extends Module
     {
         $file = _PS_MODULE_DIR_ . $this->name . '/' . $this->name . '.php';
         $controller = new ActionOutputHTMLBeforeController($this, $file, $this->_path, $p);
+
+        return $controller->run();
+    }
+
+    /**
+     * @param array $p
+     *
+     * @return string
+     */
+    public function hookDisplayBeforeBodyClosingTag(array $p = []): string
+    {
+        $file = _PS_MODULE_DIR_ . $this->name . '/' . $this->name . '.php';
+        $controller = new DisplayBeforeBodyClosingTagController($this, $file, $this->_path, $p);
 
         return $controller->run();
     }

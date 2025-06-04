@@ -17,6 +17,7 @@ final class Installer
 
     const HOOKS = [
         'actionOutputHTMLBefore',
+        'displayBeforeBodyClosingTag',
     ];
 
     /**
