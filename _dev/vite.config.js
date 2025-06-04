@@ -1,16 +1,21 @@
 import { fileURLToPath, URL } from 'node:url'
 import { resolve } from 'path'
 import { defineConfig } from 'vite'
+import vue from '@vitejs/plugin-vue'
 
 export default defineConfig({
   build: {
     manifest: true,
     rollupOptions: {
-      external: ['prestashop', '$', 'jquery', 'vue'],
+      external: ['prestashop', '$', 'jquery'],
       input: {
         'admin-configurator-form': resolve(
           __dirname,
           'src/js/admin/configurator/form.js',
+        ),
+        'front-app': resolve(
+          __dirname,
+          'src/js/front/configurator/main.js',
         ),
       },
       output: {
@@ -38,6 +43,7 @@ export default defineConfig({
     },
     outDir: '../views',
   },
+  plugins: [vue()],
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url)),
