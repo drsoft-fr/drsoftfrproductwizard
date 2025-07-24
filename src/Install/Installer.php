@@ -16,6 +16,8 @@ final class Installer
     use executeSqlFromFileTrait;
 
     const HOOKS = [
+        'actionFrontControllerSetMedia',
+        'actionFrontControllerSetVariables',
         'actionOutputHTMLBefore',
         'displayBeforeBodyClosingTag',
     ];

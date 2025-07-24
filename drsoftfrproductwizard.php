@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 use DrSoftFr\Module\ProductWizard\Config;
 use DrSoftFr\Module\ProductWizard\Controller\Admin\ConfiguratorController;
+use DrSoftFr\Module\ProductWizard\Controller\Hook\ActionFrontControllerSetMediaController;
+use DrSoftFr\Module\ProductWizard\Controller\Hook\ActionFrontControllerSetVariablesController;
 use DrSoftFr\Module\ProductWizard\Controller\Hook\ActionOutputHTMLBeforeController;
 use DrSoftFr\Module\ProductWizard\Controller\Hook\DisplayBeforeBodyClosingTagController;
 use DrSoftFr\Module\ProductWizard\Install\Factory\InstallerFactory;
@@ -182,6 +184,32 @@ class drsoftfrproductwizard extends Module
         PrestaShopLogger::addLog($errorMessage, 3);
 
         $this->_errors[] = $errorMessage;
+    }
+
+    /**
+     * @param array $p
+     *
+     * @return void
+     */
+    public function hookActionFrontControllerSetMedia(array $p = []): void
+    {
+        $file = _PS_MODULE_DIR_ . $this->name . '/' . $this->name . '.php';
+        $controller = new ActionFrontControllerSetMediaController($this, $file, $this->_path, $p);
+
+        $controller->run();
+    }
+
+    /**
+     * @param array $p
+     *
+     * @return array
+     */
+    public function hookActionFrontControllerSetVariables(array $p = []): array
+    {
+        $file = _PS_MODULE_DIR_ . $this->name . '/' . $this->name . '.php';
+        $controller = new ActionFrontControllerSetVariablesController($this, $file, $this->_path, $p);
+
+        return $controller->run();
     }
 
     /**
