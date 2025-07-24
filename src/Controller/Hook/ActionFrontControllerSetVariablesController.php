@@ -39,6 +39,17 @@ final class ActionFrontControllerSetVariablesController extends AbstractHookCont
                 'data' => [],
                 'error' => false,
             ];
+
+            $values['routes']['getConfigurator'] = $this->getContext()
+                ->link
+                ->getModuleLink(
+                    $this->module->name,
+                    'ajax',
+                    [
+                        'action' => 'get-configurator',
+                        'ajax' => true,
+                    ]
+                );
         } catch (Throwable $t) {
             $this->handleException($t);
         } finally {
