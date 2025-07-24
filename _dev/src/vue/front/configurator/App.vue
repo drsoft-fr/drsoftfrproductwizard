@@ -1,5 +1,6 @@
 <script setup>
-import { onMounted, ref } from 'vue'
+import { onMounted, reactive, ref } from 'vue'
+import Alert from '@/vue/front/configurator/components/Alert.vue'
 
 const props = defineProps({
   id: { type: Number, required: true },
@@ -7,6 +8,8 @@ const props = defineProps({
 
 const configurator = ref(null)
 const loading = ref(true)
+
+const alert = reactive({ show: false, type: 'info', message: '' })
 
 const { drsoftfrproductwizard } = window?.prestashop?.modules || { routes: {} }
 const routes = drsoftfrproductwizard.routes || {}
@@ -34,6 +37,7 @@ async function fetchConfigurator() {
 
     if (false === data.success) {
       console.error(data.message || 'Failed to load configurator')
+      showAlert('danger', data.message || 'Failed to load configurator')
 
       return
     }
@@ -41,9 +45,24 @@ async function fetchConfigurator() {
     configurator.value = data
   } catch (error) {
     console.error('Error fetching configurator:', error)
+    showAlert('danger', 'An error occurred while loading the configurator')
   } finally {
     loading.value = false
   }
+}
+
+function showAlert(type, message) {
+  alert.show = true
+  alert.type = type
+  alert.message = message
+
+  setTimeout(() => {
+    closeAlert()
+  }, 5000)
+}
+
+function closeAlert() {
+  alert.show = false
 }
 </script>
 
@@ -52,6 +71,12 @@ async function fetchConfigurator() {
     :id="'configurator-' + id"
     class="product-wizard-container container p-3"
   >
+    <Alert
+      :show="alert.show"
+      :type="alert.type"
+      :message="alert.message"
+      @close="closeAlert"
+    />
     <div v-if="loading" class="col-12 text-center p-5">
       <div class="spinner-border" role="status">
         <span class="sr-only">Chargement...</span>
