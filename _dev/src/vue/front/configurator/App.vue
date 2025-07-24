@@ -18,10 +18,9 @@ onMounted(fetchConfigurator)
 
 async function fetchConfigurator() {
   try {
-    if (typeof routes.getConfigurator === 'undefined')
-      throw new Error(
-        'Missing routes.getConfigurator',
-      )
+    if (typeof routes.getConfigurator === 'undefined') {
+      throw new Error('Missing routes.getConfigurator')
+    }
 
     loading.value = true
 
