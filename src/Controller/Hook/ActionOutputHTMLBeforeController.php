@@ -51,7 +51,7 @@ final class ActionOutputHTMLBeforeController extends AbstractHookController impl
     {
         try {
             if (false === $this->checkObject()) {
-                return $this->props['html'];
+                return '';
             }
 
             $this->props['html'] = preg_replace_callback(
@@ -80,7 +80,7 @@ final class ActionOutputHTMLBeforeController extends AbstractHookController impl
         $configuratorId = (int)$matches[1];
 
         if (0 >= $configuratorId) {
-            return $this->props['html'];
+            return '';
         }
 
         /** @var ConfiguratorRepository $repository */
@@ -93,7 +93,7 @@ final class ActionOutputHTMLBeforeController extends AbstractHookController impl
         ]);
 
         if (null === $obj) {
-            return $this->props['html'];
+            return '';
         }
 
         return '
