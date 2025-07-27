@@ -79,7 +79,7 @@ function closeAlert() {
       :message="alert.message"
       @close="closeAlert"
     />
-    <div v-if="loading" class="col-12 text-center p-5">
+    <div v-if="loading" class="text-center p-5">
       <div class="spinner-border" role="status">
         <span class="sr-only">{{ $t('Loading...') }}</span>
       </div>
