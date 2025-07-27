@@ -14,6 +14,8 @@ use Throwable;
 
 final class ActionOutputHTMLBeforeController extends AbstractHookController implements HookControllerInterface
 {
+    private const CONFIGURATOR_REPOSITORY = 'drsoft_fr.module.product_wizard.repository.configurator_repository';
+
     /**
      * Checks if the object is valid.
      *
@@ -84,7 +86,7 @@ final class ActionOutputHTMLBeforeController extends AbstractHookController impl
         }
 
         /** @var ConfiguratorRepository $repository */
-        $repository = $this->module->get('drsoft_fr.module.product_wizard.repository.configurator_repository');
+        $repository = $this->getRepository();
 
         /** @var Configurator $obj */
         $obj = $repository->findOneBy([
@@ -104,5 +106,14 @@ final class ActionOutputHTMLBeforeController extends AbstractHookController impl
                     </script></div>
                     <div class="js-drsoft-fr-product-wizard" data-configurator="' . $configuratorId . '"></div>
                 ';
+    }
+
+    /**
+     * @throws Exception
+     */
+    private function getRepository(): ConfiguratorRepository
+    {
+        /** @type ConfiguratorRepository */
+        return $this->module->get(self::CONFIGURATOR_REPOSITORY);
     }
 }
