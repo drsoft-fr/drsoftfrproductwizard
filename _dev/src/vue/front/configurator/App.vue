@@ -1,30 +1,25 @@
 <script setup>
-import { onMounted, reactive, ref } from 'vue'
+import { inject, onMounted, reactive, ref } from 'vue'
 import Alert from '@/vue/front/configurator/components/Alert.vue'
 
 const props = defineProps({
   id: { type: Number, required: true },
 })
 
+const $r = inject('$r')
+
 const configurator = ref(null)
 const loading = ref(true)
 
 const alert = reactive({ show: false, type: 'info', message: '' })
 
-const { drsoftfrproductwizard } = window?.prestashop?.modules || { routes: {} }
-const routes = drsoftfrproductwizard.routes || {}
-
 onMounted(fetchConfigurator)
 
 async function fetchConfigurator() {
   try {
-    if (typeof routes.getConfigurator === 'undefined') {
-      throw new Error('Missing routes.getConfigurator')
-    }
-
     loading.value = true
 
-    const response = await fetch(routes.getConfigurator, {
+    const response = await fetch($r('getConfigurator'), {
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       body: new URLSearchParams({
