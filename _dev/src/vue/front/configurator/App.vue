@@ -9,8 +9,11 @@ const props = defineProps({
 const $r = inject('$r')
 const $t = inject('$t')
 
+const activeStepIndex = ref(0)
 const configurator = ref(null)
 const loading = ref(true)
+const selections = ref([])
+const steps = ref([])
 
 const alert = reactive({ show: false, type: 'info', message: '' })
 
@@ -39,7 +42,10 @@ async function fetchConfigurator() {
       return
     }
 
+    activeStepIndex.value = 0
     configurator.value = data
+    selections.value = []
+    steps.value = data.steps
   } catch (error) {
     console.error(
       $t('Error fetching configurator: %error%', { '%error%': error }, 'Error'),
@@ -71,7 +77,7 @@ function closeAlert() {
 <template>
   <div
     :id="'configurator-' + id"
-    class="product-wizard-container container p-3"
+    class="product-wizard-container"
   >
     <Alert
       :show="alert.show"
@@ -85,8 +91,14 @@ function closeAlert() {
       </div>
       <p class="mt-3">{{ $t('Loading configurator options...') }}</p>
     </div>
-    <div v-else class="row">
+    <div v-else-if="steps.length > 0" class="row">
       <pre><samp>{{ configurator }}</samp></pre>
+    </div>
+    <div v-else class="text-center alert alert-info">
+      <p>
+        <i class="empty-icon">&#9888;</i>
+        {{ $t('No configuration options available.') }}
+      </p>
     </div>
   </div>
 </template>
