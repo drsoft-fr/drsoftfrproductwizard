@@ -66,7 +66,7 @@ final class ActionOutputHTMLBeforeController extends AbstractHookController impl
         } catch (Throwable $t) {
             $this->handleException($t);
 
-            return $this->props['html'];
+            return '';
         }
     }
 
