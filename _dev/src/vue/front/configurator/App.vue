@@ -1,6 +1,7 @@
 <script setup>
 import { inject, onMounted, reactive, ref } from 'vue'
 import Alert from '@/vue/front/configurator/components/Alert.vue'
+import Step from '@/vue/front/configurator/components/Step.vue'
 
 const props = defineProps({
   id: { type: Number, required: true },
@@ -104,6 +105,7 @@ function closeAlert() {
           </span>
         </div>
         <div class="steps-container">
+          <Step v-for="step in steps" :step :configurator />
           <pre><samp>{{ configurator }}</samp></pre>
         </div>
       </div>
