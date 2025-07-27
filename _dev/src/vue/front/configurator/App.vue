@@ -75,10 +75,7 @@ function closeAlert() {
 </script>
 
 <template>
-  <div
-    :id="'configurator-' + id"
-    class="product-wizard-container"
-  >
+  <div :id="'configurator-' + id" class="product-wizard-container">
     <Alert
       :show="alert.show"
       :type="alert.type"
@@ -92,7 +89,24 @@ function closeAlert() {
       <p class="mt-3">{{ $t('Loading configurator options...') }}</p>
     </div>
     <div v-else-if="steps.length > 0" class="row">
-      <pre><samp>{{ configurator }}</samp></pre>
+      <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center">
+          <h2>{{ configurator.name }}</h2>
+          <span
+            class="badge"
+            :class="
+              activeStepIndex === steps.length - 1
+                ? 'badge-success'
+                : 'badge-warning'
+            "
+          >
+            {{ activeStepIndex + 1 }} / {{ steps.length }}
+          </span>
+        </div>
+        <div class="steps-container">
+          <pre><samp>{{ configurator }}</samp></pre>
+        </div>
+      </div>
     </div>
     <div v-else class="text-center alert alert-info">
       <p>

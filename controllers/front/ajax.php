@@ -158,6 +158,8 @@ final class DrsoftfrproductwizardAjaxModuleFrontController extends ModuleFrontCo
             $this->ajaxRender(json_encode([
                 'success' => true,
                 'slug' => $configurator->getId(),
+                'id' => $configurator->getId(),
+                'name' => $configurator->getName(),
                 'steps' => $steps,
             ]));
 
