@@ -7,6 +7,7 @@ const props = defineProps({
 })
 
 const $r = inject('$r')
+const $t = inject('$t')
 
 const configurator = ref(null)
 const loading = ref(true)
@@ -30,16 +31,23 @@ async function fetchConfigurator() {
     const data = await response.json()
 
     if (false === data.success) {
-      console.error(data.message || 'Failed to load configurator')
-      showAlert('danger', data.message || 'Failed to load configurator')
+      const errorMessage = $t('Failed to load configurator', {}, 'Error')
+
+      console.error(data.message || errorMessage)
+      showAlert('danger', data.message || errorMessage)
 
       return
     }
 
     configurator.value = data
   } catch (error) {
-    console.error('Error fetching configurator:', error)
-    showAlert('danger', 'An error occurred while loading the configurator')
+    console.error(
+      $t('Error fetching configurator: %error%', { '%error%': error }, 'Error'),
+    )
+    showAlert(
+      'danger',
+      $t('An error occurred while loading the configurator', {}, 'Error'),
+    )
   } finally {
     loading.value = false
   }
@@ -73,9 +81,9 @@ function closeAlert() {
     />
     <div v-if="loading" class="col-12 text-center p-5">
       <div class="spinner-border" role="status">
-        <span class="sr-only">Chargement...</span>
+        <span class="sr-only">{{ $t('Loading...') }}</span>
       </div>
-      <p class="mt-3">Chargement des options du configurateur...</p>
+      <p class="mt-3">{{ $t('Loading configurator options...') }}</p>
     </div>
     <div v-else class="row">
       <pre><samp>{{ configurator }}</samp></pre>

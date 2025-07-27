@@ -36,7 +36,17 @@ final class ActionFrontControllerSetVariablesController extends AbstractHookCont
         try {
             $values = [
                 'routes' => [],
-                'data' => [],
+                'messages' => [
+                    'Modules.Drsoftfrproductwizard.Global' => [
+                        'Loading...' => $this->getContext()->getTranslator()->trans('Loading...', [], 'Modules.Drsoftfrproductwizard.Global'),
+                        'Loading configurator options...' => $this->getContext()->getTranslator()->trans('Loading configurator options...', [], 'Modules.Drsoftfrproductwizard.Global'),
+                    ],
+                    'Modules.Drsoftfrproductwizard.Error' => [
+                        'Failed to load configurator' => $this->getContext()->getTranslator()->trans('Failed to load configurator', [], 'Modules.Drsoftfrproductwizard.Error'),
+                        'Error fetching configurator: %error%' => $this->getContext()->getTranslator()->trans('Error fetching configurator: %error%', [], 'Modules.Drsoftfrproductwizard.Error'),
+                        'An error occurred while loading the configurator' => $this->getContext()->getTranslator()->trans('An error occurred while loading the configurator', [], 'Modules.Drsoftfrproductwizard.Error'),
+                    ],
+                ],
                 'error' => false,
             ];
 
