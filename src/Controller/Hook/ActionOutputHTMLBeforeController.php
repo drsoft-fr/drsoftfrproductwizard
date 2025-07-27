@@ -15,6 +15,17 @@ use Throwable;
 final class ActionOutputHTMLBeforeController extends AbstractHookController implements HookControllerInterface
 {
     private const CONFIGURATOR_REPOSITORY = 'drsoft_fr.module.product_wizard.repository.configurator_repository';
+    private const WIZARD_TAG_PATTERN = '/\[drsoft-fr-product-wizard id="(\d+)"]/';
+    private const SCRIPT_TEMPLATE = '
+        <div>
+          <script>
+              window.drsoftfrproductwizard = window.drsoftfrproductwizard || {}
+              window.drsoftfrproductwizard.data = window.drsoftfrproductwizard.data || {}
+              window.drsoftfrproductwizard.data[%d] = %s
+          </script>
+        </div>
+        <div class="js-drsoft-fr-product-wizard" data-configurator="%d"></div>
+    ';
 
     /**
      * Checks if the object is valid.
@@ -57,7 +68,7 @@ final class ActionOutputHTMLBeforeController extends AbstractHookController impl
             }
 
             $this->props['html'] = preg_replace_callback(
-                '/\[drsoft-fr-product-wizard id="(\d+)"]/',
+                self::WIZARD_TAG_PATTERN,
                 [$this, 'replace'],
                 $this->props['html']
             );
@@ -85,7 +96,6 @@ final class ActionOutputHTMLBeforeController extends AbstractHookController impl
             return '';
         }
 
-        /** @var ConfiguratorRepository $repository */
         $repository = $this->getRepository();
 
         /** @var Configurator $obj */
@@ -98,15 +108,22 @@ final class ActionOutputHTMLBeforeController extends AbstractHookController impl
             return '';
         }
 
-        return '
-                    <div><script>
-                      window.drsoftfrproductwizard = window.drsoftfrproductwizard || {}
-                      window.drsoftfrproductwizard.data = window.drsoftfrproductwizard.data || {}
-                      window.drsoftfrproductwizard.data[' . $configuratorId . '] = ' . json_encode($obj->toArray()) . '
-                    </script></div>
-                    <div class="js-drsoft-fr-product-wizard" data-configurator="' . $configuratorId . '"></div>
-                ';
+        return $this->generateScriptTag($configuratorId, $obj->toArray());
     }
+
+    /**
+     * Generates the script tag for the configurator.
+     *
+     * @param int $configuratorId Configurator ID.
+     * @param array $data Configurator data.
+     *
+     * @return string
+     */
+    private function generateScriptTag(int $configuratorId, array $data): string
+    {
+        return sprintf(self::SCRIPT_TEMPLATE, $configuratorId, json_encode($data), $configuratorId);
+    }
+
 
     /**
      * @throws Exception
