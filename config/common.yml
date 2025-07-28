@@ -20,3 +20,8 @@ services:
     factory: [ '@doctrine.orm.default_entity_manager', getRepository ]
     arguments:
       - DrSoftFr\Module\ProductWizard\Entity\ProductChoice
+
+  drsoft_fr.module.product_wizard.service.configurator_presenter_service:
+    class: DrSoftFr\Module\ProductWizard\Service\ConfiguratorPresenterService
+    arguments:
+      - '@drsoft_fr.module.product_wizard.repository.configurator_repository'
