@@ -8,6 +8,7 @@ use DrSoftFr\Module\ProductWizard\Config;
 use DrSoftFr\PrestaShopModuleHelper\Controller\Hook\AbstractHookController;
 use DrSoftFr\PrestaShopModuleHelper\Controller\Hook\HookControllerInterface;
 use Exception;
+use PrestaShop\PrestaShop\Adapter\Image\ImageRetriever;
 use Throwable;
 
 final class ActionFrontControllerSetVariablesController extends AbstractHookController implements HookControllerInterface
@@ -34,6 +35,7 @@ final class ActionFrontControllerSetVariablesController extends AbstractHookCont
     public function run(): array
     {
         try {
+            $imageRetriever = new ImageRetriever($this->getContext()->link);
             $values = [
                 'routes' => [],
                 'messages' => [
@@ -49,6 +51,7 @@ final class ActionFrontControllerSetVariablesController extends AbstractHookCont
                         'An error occurred while loading the configurator' => $this->getContext()->getTranslator()->trans('An error occurred while loading the configurator', [], 'Modules.Drsoftfrproductwizard.Error'),
                     ],
                 ],
+                'noPictureImage' => $imageRetriever->getNoPictureImage($this->getContext()->language),
                 'error' => false,
             ];
 
