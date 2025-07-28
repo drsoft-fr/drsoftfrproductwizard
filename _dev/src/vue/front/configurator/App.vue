@@ -105,7 +105,7 @@ function closeAlert() {
           </span>
         </div>
         <div class="steps-container">
-          <Step v-for="step in steps" :step :configurator class="mt-3" />
+          <Step v-for="(step, index) in steps" :step :configurator :class="index > 0 ? 'mt-3' : ''" />
         </div>
       </div>
     </div>
