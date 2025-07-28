@@ -44,9 +44,9 @@ async function fetchConfigurator() {
     }
 
     activeStepIndex.value = 0
-    configurator.value = data
+    configurator.value = data.configurator
     selections.value = []
-    steps.value = data.steps
+    steps.value = data.configurator.steps
   } catch (error) {
     console.error(
       $t('Error fetching configurator: %error%', { '%error%': error }, 'Error'),

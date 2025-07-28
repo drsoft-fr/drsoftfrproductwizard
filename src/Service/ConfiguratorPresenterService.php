@@ -61,9 +61,11 @@ final class ConfiguratorPresenterService
         return [
             'success' => true,
             'slug' => $configurator->getId(),
-            'id' => $configurator->getId(),
-            'name' => $configurator->getName(),
-            'steps' => $steps,
+            'configurator' => [
+                'id' => $configurator->getId(),
+                'name' => $configurator->getName(),
+                'steps' => $steps,
+            ],
         ];
     }
 
