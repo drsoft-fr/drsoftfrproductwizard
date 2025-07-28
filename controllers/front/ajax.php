@@ -6,6 +6,14 @@ use DrSoftFr\Module\ProductWizard\Entity\Configurator;
 use DrSoftFr\Module\ProductWizard\Entity\ProductChoice;
 use DrSoftFr\Module\ProductWizard\Entity\Step;
 use DrSoftFr\Module\ProductWizard\Repository\ConfiguratorRepository;
+use PrestaShop\PrestaShop\Adapter\Image\ImageRetriever;
+use PrestaShop\PrestaShop\Adapter\Presenter\Product\ProductLazyArray;
+use PrestaShop\PrestaShop\Adapter\Presenter\Product\ProductPresenter;
+use PrestaShop\PrestaShop\Adapter\Product\PriceFormatter;
+use PrestaShop\PrestaShop\Adapter\Product\ProductColorsRetriever;
+use PrestaShop\PrestaShop\Core\Product\ProductPresentationSettings;
+
+// @TODO il faut aussi que le client est le droit de voir le produit, ou sinon on masque le choix ?
 
 final class DrsoftfrproductwizardAjaxModuleFrontController extends ModuleFrontController
 {
@@ -206,13 +214,27 @@ final class DrsoftfrproductwizardAjaxModuleFrontController extends ModuleFrontCo
     {
         $choices = [];
 
+        $assembler = new ProductAssembler($this->context);
+        $presenterFactory = new ProductPresenterFactory($this->context);
+        $presentationSettings = $presenterFactory->getPresentationSettings();
+
+        $presenter = new ProductPresenter(
+            new ImageRetriever(
+                $this->context->link
+            ),
+            $this->context->link,
+            new PriceFormatter(),
+            new ProductColorsRetriever(),
+            $this->context->getTranslator()
+        );
+
         /** @var ProductChoice $choice */
         foreach ($step->getProductChoices() as $choice) {
             if (false === $choice->isActive()) {
                 continue;
             }
 
-            $choices[] = $this->retrieveChoice($choice);
+            $choices[] = $this->retrieveChoice($choice, $presenter, $presentationSettings, $assembler);
         }
 
         usort($choices, function ($a, $b) {
@@ -222,9 +244,21 @@ final class DrsoftfrproductwizardAjaxModuleFrontController extends ModuleFrontCo
         return $choices;
     }
 
-    private function retrieveChoice(ProductChoice $choice): array
+    private function retrieveChoice(
+        ProductChoice               $choice,
+        ProductPresenter            $presenter,
+        ProductPresentationSettings $presentationSettings,
+        ProductAssembler            $assembler
+    ): array
     {
-        $productInfo = $this->retrieveProduct((int)$choice->getProductId());
+        $productId = (int)$choice->getProductId();
+        $productInfo = $this->retrieveProduct($productId, $presenter, $presentationSettings, $assembler);
+        $combinations = $this->retrieveProductCombinations($productId);
+        $variants = [];
+
+        foreach ($combinations as $combination) {
+            $variants[] = $this->retrieveProduct($productId, $presenter, $presentationSettings, $assembler, $combination['id']);;
+        }
 
         return [
             'id' => $choice->getId(),
@@ -235,21 +269,49 @@ final class DrsoftfrproductwizardAjaxModuleFrontController extends ModuleFrontCo
             'forcedQuantity' => $choice->getForcedQuantity(),
             'displayConditions' => $choice->getDisplayConditions(),
             'product' => $productInfo,
+            'variants' => $variants,
+            'combinations' => $combinations,
         ];
     }
 
-    private function retrieveProduct(int $productId): ?array
+    private function retrieveProduct(
+        int                         $productId,
+        ProductPresenter            $presenter,
+        ProductPresentationSettings $presentationSettings,
+        ProductAssembler            $assembler,
+        int                         $productAttributeId = null
+    ): ?ProductLazyArray
     {
         if (0 >= $productId) {
             return null;
         }
 
-        $product = new Product($productId, true, $this->context->language->id);
+        $props = [
+            'id_product' => $productId,
+        ];
 
-        if (false === Validate::isLoadedObject($product)) {
-            return null;
+        if (null !== $productAttributeId) {
+            $props['id_product_attribute'] = $productAttributeId;
         }
 
+        try {
+            return $presenter->present(
+                $presentationSettings,
+                $assembler->assembleProduct($props),
+                $this->context->language
+            );
+        } catch (Throwable $t) {
+            return null;
+        }
+    }
+
+    private function retrieveProductCombinations(int $productId): array
+    {
+        if (0 >= $productId) {
+            return [];
+        }
+
+        $product = new Product($productId, true, $this->context->language->id);
         $images = $product->getImages($this->context->language->id);
         $imageUrl = null;
 
@@ -258,19 +320,10 @@ final class DrsoftfrproductwizardAjaxModuleFrontController extends ModuleFrontCo
             $imageUrl = $this->context->link->getImageLink($product->link_rewrite, $image['id_image'], 'home_default');
         }
 
-        $combinations = $this->retrieveProductCombinations($product, $imageUrl);
+        if (false === Validate::isLoadedObject($product)) {
+            return [];
+        }
 
-        return [
-            'id' => $product->id,
-            'name' => $product->name,
-            'price' => $product->price,
-            'imageUrl' => $imageUrl,
-            'combinations' => $combinations,
-        ];
-    }
-
-    private function retrieveProductCombinations(Product $product, ?string $imageUrl): array
-    {
         $combinations = [];
 
         foreach ($product->getAttributeCombinations($this->context->language->id) as $combination) {

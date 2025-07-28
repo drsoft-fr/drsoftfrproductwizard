@@ -105,8 +105,7 @@ function closeAlert() {
           </span>
         </div>
         <div class="steps-container">
-          <Step v-for="step in steps" :step :configurator />
-          <pre><samp>{{ configurator }}</samp></pre>
+          <Step v-for="step in steps" :step :configurator class="mt-3" />
         </div>
       </div>
     </div>

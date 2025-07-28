@@ -1,5 +1,6 @@
 <script setup>
 import { inject } from 'vue'
+import ProductChoice from '@/vue/front/configurator/components/ProductChoice.vue'
 
 const props = defineProps({
   configurator: { type: Object, required: true },
@@ -16,8 +17,14 @@ const $t = inject('$t')
   >
     <h3>{{ step.label }}</h3>
     <div>
-      <div v-if="step.choices.length > 0">
-        <pre><samp>{{ step.choices }}</samp></pre>
+      <div v-if="step.choices.length > 0" class="product-choices row g-3">
+        <ProductChoice
+          v-for="choice in step.choices"
+          :configurator
+          :step
+          :choice
+          class="col-12 col-sm-6 col-lg-3"
+        />
       </div>
       <div v-else class="text-center p-3">
         <p>{{ $t('No options available for this step.') }}</p>
