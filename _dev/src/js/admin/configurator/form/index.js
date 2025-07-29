@@ -29,7 +29,10 @@ window.drsoftfrproductwizard.alpine = {
   stepManager(initialIdx) {
     return {
       idx: initialIdx,
+
       addStep() {
+        this.idx++
+
         let tpl = document
           .getElementById('step-prototype')
           .innerHTML.replace(/__step__/g, this.idx)
@@ -52,9 +55,8 @@ window.drsoftfrproductwizard.alpine = {
           product_choices: [],
           is_virtual: true,
         })
-
-        this.idx++
       },
+
       removeStep(stepId) {
         const elm = document.getElementById('step-' + stepId + '-card')
 
@@ -76,7 +78,10 @@ window.drsoftfrproductwizard.alpine = {
   productChoiceManager(initialIdx, stepIdx) {
     return {
       idx: initialIdx,
+
       addProductChoice() {
+        this.idx++
+
         let tpl = document
           .getElementById('step-' + stepIdx + '__product-choice-prototype')
           .innerHTML.replace(/__choice__/g, this.idx)
@@ -111,8 +116,8 @@ window.drsoftfrproductwizard.alpine = {
         }
 
         setTimeout(useTomSelect, 100)
-        this.idx++
       },
+
       removeProductChoice(stepId, productChoiceId) {
         const elm = document.getElementById(
           `step-${stepId}__product-choice-${productChoiceId}-card`,
@@ -125,6 +130,7 @@ window.drsoftfrproductwizard.alpine = {
 
         elm.remove()
       },
+
       uncheckOthers(event) {
         const targetStepId = parseInt(event.target.dataset.stepId || '')
         const targetProductChoiceId = parseInt(
@@ -148,7 +154,10 @@ window.drsoftfrproductwizard.alpine = {
     return {
       idx: initialIdx,
       showConditions: initialIdx > 0,
+
       addCondition() {
+        this.idx++
+
         let tpl = document
           .getElementById(
             `step-${stepIdx}__product-choice-${productChoiceIdx}__condition-prototype`,
@@ -159,9 +168,8 @@ window.drsoftfrproductwizard.alpine = {
             `step-${stepIdx}__product-choice-${productChoiceIdx}__conditions-collection`,
           )
           .insertAdjacentHTML('beforeend', tpl)
-
-        this.idx++
       },
+
       removeCondition(stepId, productChoiceId, elmId) {
         const elm = document.getElementById(elmId)
         const stepValue = getIdOrNull(
@@ -190,6 +198,7 @@ window.drsoftfrproductwizard.alpine = {
       conditionStepIdx,
       conditionChoiceIdx,
       condition,
+
       updateChoices(event, step) {
         const target = event.target
         const hiddenElm = target.parentElement.querySelector(
@@ -209,6 +218,7 @@ window.drsoftfrproductwizard.alpine = {
           target.parentElement.parentElement.querySelector('.js-choice-select'),
         )
       },
+
       syncChoice(event, productChoice) {
         const hiddenInput = event.target.parentElement.querySelector(
           `input[name='${productChoice}']`,
@@ -240,20 +250,24 @@ window.drsoftfrproductwizard.alpine = {
       get data() {
         return window.drsoftfrproductwizard.data
       },
+
       initConditionSelectors() {
         this.initAllStepSelectors()
         this.initAllChoiceSelectors()
       },
+
       initAllStepSelectors() {
         document.querySelectorAll('.js-step-select').forEach((selector) => {
           this.initStepSelector(selector)
         })
       },
+
       initAllChoiceSelectors() {
         document.querySelectorAll('.js-choice-select').forEach((selector) => {
           this.initChoiceSelector(selector)
         })
       },
+
       initStepSelector(selector) {
         const currentStepId = getIdOrNull(selector.dataset.stepId)
         const currentStep = this.getStep(currentStepId)
@@ -315,6 +329,7 @@ window.drsoftfrproductwizard.alpine = {
           hiddenInput.value = selector.value
         }
       },
+
       initChoiceSelector(selector) {
         const stepSelector = selector
           .closest('.js-condition-block')
@@ -389,11 +404,13 @@ window.drsoftfrproductwizard.alpine = {
           hiddenInput.value = selector.value
         }
       },
+
       getStep(stepId) {
         const id = getIdOrNull(stepId)
 
         return this.data.steps.find((s) => s.id === id) || {}
       },
+
       getProductChoice(stepId, productChoiceId) {
         const stepIdNum = getIdOrNull(stepId)
         const choiceIdNum = getIdOrNull(productChoiceId)
@@ -405,6 +422,7 @@ window.drsoftfrproductwizard.alpine = {
 
         return step.product_choices.find((p) => p.id === choiceIdNum) || {}
       },
+
       getCondition(
         stepId,
         productChoiceId,
