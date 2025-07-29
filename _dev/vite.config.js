@@ -11,7 +11,7 @@ export default defineConfig({
       input: {
         'admin-configurator-form': resolve(
           __dirname,
-          'src/js/admin/configurator/form.js',
+          'src/js/admin/configurator/form/index.js',
         ),
         'front-app': resolve(
           __dirname,
