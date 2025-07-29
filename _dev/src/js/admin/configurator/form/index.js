@@ -1,12 +1,12 @@
 import '@/css/admin/configurator/form/index.scss'
 
 import Alpine from 'alpinejs'
-import TomSelect from 'tom-select'
 
 window.Alpine = Alpine
 
 import getIntOrNull from '@/js/admin/configurator/form/getIntOrNull.js'
 import useSortable from '@/js/admin/configurator/form/useSortable.js'
+import useTomSelect from '@/js/admin/configurator/form/useTomSelect.js'
 
 window.drsoftfrproductwizard = window.drsoftfrproductwizard || {}
 window.drsoftfrproductwizard.data = window.drsoftfrproductwizard.data || {
@@ -24,65 +24,6 @@ window.drsoftfrproductwizard.data.loading =
 window.drsoftfrproductwizard.data.devMode =
   window.drsoftfrproductwizard.data.devMode || false
 window.drsoftfrproductwizard.routes = window.drsoftfrproductwizard.routes || {}
-
-const initProductSelectors = () => {
-  const elms = document.querySelectorAll(
-    'input.js-product-selector:not([data-ts-initialized])',
-  )
-
-  if (!elms.length) {
-    return
-  }
-
-  elms.forEach((input) => {
-    if (!input) {
-      return
-    }
-
-    if (input.tomselect) {
-      input.tomselect.destroy()
-    }
-
-    try {
-      let selectedId = input.getAttribute('data-product-id')
-      let selectedName = input.getAttribute('data-product-name')
-      let options = {
-        valueField: 'id',
-        labelField: 'text',
-        searchField: 'text',
-        maxOptions: 20,
-        maxItems: 1,
-        create: false,
-        load(query, callback) {
-          if (!query.length) return callback()
-          fetch(
-            window.drsoftfrproductwizard.routes.product_search +
-              '&q=' +
-              encodeURIComponent(query),
-          )
-            .then((response) => response.json())
-            .then((json) => callback(json.items))
-            .catch(() => callback())
-        },
-        onChange(value) {
-          let hidden = document.querySelector(input.dataset.target)
-          if (hidden) hidden.value = value
-        },
-      }
-      let ts = new TomSelect(input, options)
-
-      if (selectedId && selectedName) {
-        ts.addOption({ id: selectedId, text: selectedName })
-        ts.setValue(selectedId)
-        ts.clearOptions()
-      }
-
-      input.setAttribute('data-ts-initialized', '1')
-    } catch (e) {
-      console.error("Erreur lors de l'initialisation de Tom Select:", e)
-    }
-  })
-}
 
 window.drsoftfrproductwizard.alpine = {
   stepManager(initialIdx) {
@@ -169,7 +110,7 @@ window.drsoftfrproductwizard.alpine = {
           })
         }
 
-        setTimeout(initProductSelectors, 100)
+        setTimeout(useTomSelect, 100)
         this.idx++
       },
       removeProductChoice(stepId, productChoiceId) {
@@ -604,7 +545,7 @@ document.addEventListener('alpine:init', () => {
     Alpine.store('wizardData').initConditionSelectors()
     setTimeout(() => {
       useSortable()
-      initProductSelectors()
+      useTomSelect()
     }, 100)
   })
 })
