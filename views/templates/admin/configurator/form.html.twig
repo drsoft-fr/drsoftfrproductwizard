@@ -90,7 +90,6 @@
     {{ parent() }}
 
     {% if manifest is defined %}
-        <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
         <script src="{{ asset('../modules/drsoftfrproductwizard/views/' ~ manifest.url('src/js/admin/configurator/form.js')['file']) }}"
                 async defer></script>

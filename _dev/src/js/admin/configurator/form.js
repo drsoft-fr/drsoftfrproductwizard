@@ -1,6 +1,7 @@
 import '@/css/admin/configurator/form.scss'
 
 import TomSelect from 'tom-select'
+import Sortable from 'sortablejs'
 
 window.drsoftfrproductwizard = window.drsoftfrproductwizard || {}
 window.drsoftfrproductwizard.data = window.drsoftfrproductwizard.data || {
