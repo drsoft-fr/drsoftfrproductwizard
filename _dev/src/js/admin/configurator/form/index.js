@@ -4,6 +4,8 @@ import Alpine from 'alpinejs'
 import TomSelect from 'tom-select'
 import Sortable from 'sortablejs'
 
+import getIntOrNull from '@/js/admin/configurator/form/getIntOrNull.js'
+
 window.Alpine = Alpine
 
 window.drsoftfrproductwizard = window.drsoftfrproductwizard || {}
@@ -22,33 +24,6 @@ window.drsoftfrproductwizard.data.loading =
 window.drsoftfrproductwizard.data.devMode =
   window.drsoftfrproductwizard.data.devMode || false
 window.drsoftfrproductwizard.routes = window.drsoftfrproductwizard.routes || {}
-
-/**
- * Retourne la valeur d'un champ de formulaire en tant que nombre entier'
- *
- * @param value
- *
- * @return {number|null}
- */
-const getIntOrNull = (value) => {
-  if (typeof value === 'number' && !isNaN(value)) {
-    return value
-  }
-
-  if (isNaN(value)) {
-    return null
-  }
-
-  if (typeof value !== 'string') {
-    return null
-  }
-
-  if (value === '') {
-    return null
-  }
-
-  return parseInt(value)
-}
 
 const initSortableStep = () => {
   const stepsList = document.getElementById('steps-collection')
