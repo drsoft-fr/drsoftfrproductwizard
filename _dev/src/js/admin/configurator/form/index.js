@@ -1,4 +1,4 @@
-import '@/css/admin/configurator/form.scss'
+import '@/css/admin/configurator/form/index.scss'
 
 import Alpine from 'alpinejs'
 import TomSelect from 'tom-select'
