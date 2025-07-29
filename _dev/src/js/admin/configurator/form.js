@@ -1,7 +1,10 @@
 import '@/css/admin/configurator/form.scss'
 
+import Alpine from 'alpinejs'
 import TomSelect from 'tom-select'
 import Sortable from 'sortablejs'
+
+window.Alpine = Alpine
 
 window.drsoftfrproductwizard = window.drsoftfrproductwizard || {}
 window.drsoftfrproductwizard.data = window.drsoftfrproductwizard.data || {
@@ -684,3 +687,5 @@ document.addEventListener('alpine:init', () => {
     }, 100)
   })
 })
+
+Alpine.start()
