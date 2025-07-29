@@ -78,7 +78,7 @@ final class ConfiguratorController extends FrameworkBundleAdminController
      */
     public function indexAction(Request $request): Response
     {
-        return $this->render(self::TEMPLATE_FOLDER . 'index.html.twig', [
+        return $this->render(self::TEMPLATE_FOLDER . 'home/index.html.twig', [
             'configurators' => $this->getRepository()->findAll(),
             'enableSidebar' => true,
             'help_link' => $this->generateSidebarLink($request->attributes->get('_legacy_controller')),
@@ -126,7 +126,7 @@ final class ConfiguratorController extends FrameworkBundleAdminController
             return $this->redirectToRoute(self::PAGE_INDEX_ROUTE);
         }
 
-        return $this->render(self::TEMPLATE_FOLDER . 'form.html.twig', [
+        return $this->render(self::TEMPLATE_FOLDER . 'form/index.html.twig', [
             'form' => $form->createView(),
             'module' => $this->getModule(),
             'steps_choices' => $this->prepareStepChoices($configurator),
@@ -173,7 +173,7 @@ final class ConfiguratorController extends FrameworkBundleAdminController
             return $this->redirectToRoute(self::PAGE_INDEX_ROUTE);
         }
 
-        return $this->render(self::TEMPLATE_FOLDER . 'form.html.twig', [
+        return $this->render(self::TEMPLATE_FOLDER . 'form/index.html.twig', [
             'form' => $form->createView(),
             'module' => $this->getModule(),
             'steps_choices' => $this->prepareStepChoices($configurator),
@@ -224,7 +224,7 @@ final class ConfiguratorController extends FrameworkBundleAdminController
         $stepForm = $this->createForm(StepType::class, $step, [
             'block_name' => 'steps[' . $index . ']'
         ]);
-        return $this->render(self::TEMPLATE_FOLDER . '_step_form.html.twig', [
+        return $this->render(self::TEMPLATE_FOLDER . 'form/partial/_step_form.html.twig', [
             'form' => $stepForm->createView(),
             'index' => $index,
         ]);
@@ -248,7 +248,7 @@ final class ConfiguratorController extends FrameworkBundleAdminController
         $choiceForm = $this->createForm(ProductChoiceType::class, $choice, [
             'block_name' => 'productChoices[' . $index . ']'
         ]);
-        return $this->render(self::TEMPLATE_FOLDER . '_product_choice_form.html.twig', [
+        return $this->render(self::TEMPLATE_FOLDER . 'form/partial/_product_choice_form.html.twig', [
             'form' => $choiceForm->createView(),
             'index' => $index,
         ]);

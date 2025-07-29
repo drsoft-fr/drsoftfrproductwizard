@@ -46,14 +46,14 @@
                             <h2 class="mb-2">Étapes du scénario</h2>
                             <div id="steps-collection" class="sortable-list">
                                 {% for step_form in form.steps %}
-                                    {% include '@Modules/drsoftfrproductwizard/views/templates/admin/configurator/_step_form.html.twig' with { step_form, 'step_id': step_form.vars.value.id, 'step_iteration': loop.index0, 'is_virtual': false } %}
+                                    {% include '@Modules/drsoftfrproductwizard/views/templates/admin/configurator/form/partial/_step_form.html.twig' with { step_form, 'step_id': step_form.vars.value.id, 'step_iteration': loop.index0, 'is_virtual': false } %}
                                 {% else %}
                                     <div class="alert alert-info">Aucune étape définie pour ce scénario.</div>
                                 {% endfor %}
                             </div>
 
                             <template id="step-prototype">
-                                {% include '@Modules/drsoftfrproductwizard/views/templates/admin/configurator/_step_form.html.twig' with { 'step_form': form.steps.vars.prototype, 'step_id': '__step__', 'step_iteration': '__step__', 'is_virtual': true } %}
+                                {% include '@Modules/drsoftfrproductwizard/views/templates/admin/configurator/form/partial/_step_form.html.twig' with { 'step_form': form.steps.vars.prototype, 'step_id': '__step__', 'step_iteration': '__step__', 'is_virtual': true } %}
                             </template>
                             <button type="button" class="btn btn-outline-primary mt-2" @click="addStep">Ajouter une
                                 étape

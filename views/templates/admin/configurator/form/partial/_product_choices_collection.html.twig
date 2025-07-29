@@ -20,13 +20,13 @@
          class="collapse show">
         <div id="step-{{ step_id }}__product-choices-collection">
             {% for product_choice_form in product_choices_form %}
-                {% include '@Modules/drsoftfrproductwizard/views/templates/admin/configurator/_product_choice_form.html.twig' with { step_form, product_choice_form, 'product_choice_id': product_choice_form.vars.value.id, 'product_choice_iteration': loop.index0, step_id, is_virtual } %}
+                {% include '@Modules/drsoftfrproductwizard/views/templates/admin/configurator/form/partial/_product_choice_form.html.twig' with { step_form, product_choice_form, 'product_choice_id': product_choice_form.vars.value.id, 'product_choice_iteration': loop.index0, step_id, is_virtual } %}
             {% else %}
                 <div class="alert alert-info">Aucun choix produit défini pour cette étape.</div>
             {% endfor %}
         </div>
         <template id="step-{{ step_id }}__product-choice-prototype">
-            {% include '@Modules/drsoftfrproductwizard/views/templates/admin/configurator/_product_choice_form.html.twig' with { step_form, 'product_choice_form': product_choices_form.vars.prototype, 'product_choice_id': '__choice__', 'product_choice_iteration': '__choice__', step_id, 'is_virtual': true } %}
+            {% include '@Modules/drsoftfrproductwizard/views/templates/admin/configurator/form/partial/_product_choice_form.html.twig' with { step_form, 'product_choice_form': product_choices_form.vars.prototype, 'product_choice_id': '__choice__', 'product_choice_iteration': '__choice__', step_id, 'is_virtual': true } %}
         </template>
         <button type="button"
                 class="btn btn-outline-secondary btn-sm mt-1"

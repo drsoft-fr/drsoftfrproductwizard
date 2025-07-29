@@ -14,12 +14,12 @@
         <div class="mt-2">
             <div id="step-{{ step_id }}__product-choice-{{ product_choice_id }}__conditions-collection">
                 {% for condition_form in product_choice_form.displayConditions %}
-                    {% include '@Modules/drsoftfrproductwizard/views/templates/admin/configurator/_condition_form.html.twig'
+                    {% include '@Modules/drsoftfrproductwizard/views/templates/admin/configurator/form/partial/_condition_form.html.twig'
                         with { step_form, condition_form, step_id, product_choice_id, 'condition_iteration': loop.index0, is_virtual } %}
                 {% endfor %}
             </div>
             <template id="step-{{ step_id }}__product-choice-{{ product_choice_id }}__condition-prototype">
-                {% include '@Modules/drsoftfrproductwizard/views/templates/admin/configurator/_condition_form.html.twig'
+                {% include '@Modules/drsoftfrproductwizard/views/templates/admin/configurator/form/partial/_condition_form.html.twig'
                     with { step_form, 'condition_form': product_choice_form.displayConditions.vars.prototype, step_id, product_choice_id, 'condition_iteration': '__cond__', 'is_virtual': true } %}
             </template>
             <button type="button"
