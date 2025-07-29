@@ -4,7 +4,7 @@
     {{ parent() }}
 
     {% if manifest is defined %}
-        <link href="{{ asset('../modules/drsoftfrproductwizard/views/' ~ manifest.url('src/js/admin/configurator/form.js')['css'][0]) }}"
+        <link href="{{ asset('../modules/drsoftfrproductwizard/views/' ~ manifest.url('src/js/admin/configurator/form/index.js')['css'][0]) }}"
               rel="stylesheet">
     {% endif %}
 {% endblock %}
@@ -90,7 +90,7 @@
     {{ parent() }}
 
     {% if manifest is defined %}
-        <script src="{{ asset('../modules/drsoftfrproductwizard/views/' ~ manifest.url('src/js/admin/configurator/form.js')['file']) }}"
+        <script src="{{ asset('../modules/drsoftfrproductwizard/views/' ~ manifest.url('src/js/admin/configurator/form/index.js')['file']) }}"
                 async defer></script>
     {% endif %}
 {% endblock %}
