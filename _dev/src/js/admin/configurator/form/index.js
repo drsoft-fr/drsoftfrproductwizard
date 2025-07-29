@@ -32,10 +32,13 @@ window.drsoftfrproductwizard.alpine = {
 
       addStep() {
         this.idx++
+        const newObjId = `virtual-${this.idx}`
+        const iteration = this.idx
 
         let tpl = document
           .getElementById('step-prototype')
-          .innerHTML.replace(/__step__/g, this.idx)
+          .innerHTML.replace(/__step__/g, newObjId)
+          .replace(/__iteration__/g, iteration)
 
         let alert = document.querySelector('#steps-collection .alert')
 
@@ -48,10 +51,10 @@ window.drsoftfrproductwizard.alpine = {
           .insertAdjacentHTML('beforeend', tpl)
 
         window.drsoftfrproductwizard.data.steps.push({
-          id: this.idx,
+          id: newObjId,
           active: true,
           label: 'Nouvelle étape',
-          position: this.idx,
+          position: iteration,
           product_choices: [],
           is_virtual: true,
         })
@@ -81,10 +84,13 @@ window.drsoftfrproductwizard.alpine = {
 
       addProductChoice() {
         this.idx++
+        const newObjId = `virtual-${this.idx}`
+        const iteration = this.idx
 
         let tpl = document
           .getElementById('step-' + stepIdx + '__product-choice-prototype')
-          .innerHTML.replace(/__choice__/g, this.idx)
+          .innerHTML.replace(/__choice__/g, newObjId)
+          .replace(/__iteration__/g, iteration)
 
         let alert = document.querySelector(
           '#step-' + stepIdx + '__product-choices-collection .alert',
@@ -103,7 +109,7 @@ window.drsoftfrproductwizard.alpine = {
         )
         if (step) {
           step.product_choices.push({
-            id: this.idx,
+            id: newObjId,
             label: 'Nouveau choix',
             active: true,
             is_default: false,
@@ -132,8 +138,8 @@ window.drsoftfrproductwizard.alpine = {
       },
 
       uncheckOthers(event) {
-        const targetStepId = parseInt(event.target.dataset.stepId || '')
-        const targetProductChoiceId = parseInt(
+        const targetStepId = getIdOrNull(event.target.dataset.stepId || '')
+        const targetProductChoiceId = getIdOrNull(
           event.target.dataset.productChoiceId || '',
         )
 
@@ -157,12 +163,13 @@ window.drsoftfrproductwizard.alpine = {
 
       addCondition() {
         this.idx++
+        const iteration = this.idx
 
         let tpl = document
           .getElementById(
             `step-${stepIdx}__product-choice-${productChoiceIdx}__condition-prototype`,
           )
-          .innerHTML.replace(/__cond__/g, this.idx)
+          .innerHTML.replace(/__iteration__/g, iteration)
         document
           .getElementById(
             `step-${stepIdx}__product-choice-${productChoiceIdx}__conditions-collection`,

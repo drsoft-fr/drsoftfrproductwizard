@@ -53,7 +53,7 @@
                             </div>
 
                             <template id="step-prototype">
-                                {% include '@Modules/drsoftfrproductwizard/views/templates/admin/configurator/form/partial/_step_form.html.twig' with { 'step_form': form.steps.vars.prototype, 'step_id': '__step__', 'step_iteration': '__step__', 'is_virtual': true } %}
+                                {% include '@Modules/drsoftfrproductwizard/views/templates/admin/configurator/form/partial/_step_form.html.twig' with { 'step_form': form.steps.vars.prototype, 'step_id': '__step__', 'step_iteration': '__iteration__', 'is_virtual': true } %}
                             </template>
                             <button type="button" class="btn btn-outline-primary mt-2" @click="addStep">Ajouter une
                                 étape

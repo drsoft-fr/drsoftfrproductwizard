@@ -26,7 +26,7 @@
             {% endfor %}
         </div>
         <template id="step-{{ step_id }}__product-choice-prototype">
-            {% include '@Modules/drsoftfrproductwizard/views/templates/admin/configurator/form/partial/_product_choice_form.html.twig' with { step_form, 'product_choice_form': product_choices_form.vars.prototype, 'product_choice_id': '__choice__', 'product_choice_iteration': '__choice__', step_id, 'is_virtual': true } %}
+            {% include '@Modules/drsoftfrproductwizard/views/templates/admin/configurator/form/partial/_product_choice_form.html.twig' with { step_form, 'product_choice_form': product_choices_form.vars.prototype, 'product_choice_id': '__choice__', 'product_choice_iteration': '__iteration__', step_id, 'is_virtual': true } %}
         </template>
         <button type="button"
                 class="btn btn-outline-secondary btn-sm mt-1"

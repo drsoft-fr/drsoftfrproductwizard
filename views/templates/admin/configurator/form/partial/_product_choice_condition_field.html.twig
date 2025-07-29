@@ -1,4 +1,4 @@
-<div x-data="window.drsoftfrproductwizard.alpine.conditionsManager({{ product_choice_form.displayConditions|length }}, {{ product_choice_id }}, {{ step_id }})"
+<div x-data="window.drsoftfrproductwizard.alpine.conditionsManager({{ product_choice_form.displayConditions|length }}, '{{ product_choice_id }}', '{{ step_id }}')"
      class="border p-2 rounded mb-2 bg-light mt-2">
     <div class="form-check">
         <input type="checkbox"
@@ -20,7 +20,7 @@
             </div>
             <template id="step-{{ step_id }}__product-choice-{{ product_choice_id }}__condition-prototype">
                 {% include '@Modules/drsoftfrproductwizard/views/templates/admin/configurator/form/partial/_condition_form.html.twig'
-                    with { step_form, 'condition_form': product_choice_form.displayConditions.vars.prototype, step_id, product_choice_id, 'condition_iteration': '__cond__', 'is_virtual': true } %}
+                    with { step_form, 'condition_form': product_choice_form.displayConditions.vars.prototype, step_id, product_choice_id, 'condition_iteration': '__iteration__', 'is_virtual': true } %}
             </template>
             <button type="button"
                     class="btn btn-link btn-sm"

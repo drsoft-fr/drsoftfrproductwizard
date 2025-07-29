@@ -3,16 +3,16 @@
     <div class="d-flex align-items-center justify-content-between">
         <div>
             <strong>Choix produit #{{ product_choice_id }} <span
-                        x-text="$store.wizardData.getProductChoice({{ step_id }}, {{ product_choice_id }}).label"></span></strong>
+                        x-text="$store.wizardData.getProductChoice('{{ step_id }}', '{{ product_choice_id }}').label"></span></strong>
             <span class="badge badge-info{{ is_virtual is same as(true) ? ' d-inline-block' : ' d-none' }}">New</span>
         </div>
         <div>
-            <span class="badge bg-secondary">{% if product_choice_iteration is defined and product_choice_iteration matches '/^\\d+$/' %}{{ (product_choice_iteration + 0) + 1 }}{% endif %}</span>
+            <span class="badge bg-secondary">{% if product_choice_iteration is defined and product_choice_iteration|number_format matches '/^\\d+$/' %}{{ product_choice_iteration }}{% endif %}</span>
         </div>
     </div>
     <div class="p-2"
          id="step-{{ step_id }}__product-choice-{{ product_choice_id }}-body">
-        {{ form_row(product_choice_form.label, { attr: { 'x-model': '$store.wizardData.getProductChoice(' ~ step_id ~ ', ' ~ product_choice_id ~ ').label' } }) }}
+        {{ form_row(product_choice_form.label, { attr: { 'x-model': '$store.wizardData.getProductChoice("' ~ step_id ~ '", "' ~ product_choice_id ~ '").label' } }) }}
         {% include '@Modules/drsoftfrproductwizard/views/templates/admin/configurator/form/partial/_product_choice_product_field.html.twig'
             with { step_form, product_choice_form, step_id, product_choice_id } %}
         {% if is_virtual is same as(false) %}
@@ -26,16 +26,16 @@
         {% endif %}
         {{ form_row(product_choice_form.isDefault, {
             attr: {
-                'x-model.boolean': '$store.wizardData.getProductChoice(' ~ step_id ~ ', ' ~ product_choice_id ~ ').is_default',
+                'x-model.boolean': '$store.wizardData.getProductChoice("' ~ step_id ~ '", "' ~ product_choice_id ~ '").is_default',
                 'data-step-id': step_id,
                 'data-product-choice-id': product_choice_id
             }
         }) }}
-        {{ form_row(product_choice_form.allowQuantity, { attr: { 'x-model.boolean': '$store.wizardData.getProductChoice(' ~ step_id ~ ', ' ~ product_choice_id ~ ').allow_quantity' } }) }}
-        {{ form_row(product_choice_form.forcedQuantity, { attr: { 'x-model.number': '$store.wizardData.getProductChoice(' ~ step_id ~ ', ' ~ product_choice_id ~ ').forced_quantity' } }) }}
-        {{ form_row(product_choice_form.active, { attr: { 'x-model.boolean': '$store.wizardData.getProductChoice(' ~ step_id ~ ', ' ~ product_choice_id ~ ').active' } }) }}
+        {{ form_row(product_choice_form.allowQuantity, { attr: { 'x-model.boolean': '$store.wizardData.getProductChoice("' ~ step_id ~ '", "' ~ product_choice_id ~ '").allow_quantity' } }) }}
+        {{ form_row(product_choice_form.forcedQuantity, { attr: { 'x-model.number': '$store.wizardData.getProductChoice("' ~ step_id ~ '", "' ~ product_choice_id ~ '").forced_quantity' } }) }}
+        {{ form_row(product_choice_form.active, { attr: { 'x-model.boolean': '$store.wizardData.getProductChoice("' ~ step_id ~ '", "' ~ product_choice_id ~ '").active' } }) }}
         <div class="text-right">
-            {{ form_widget(product_choice_form.remove, { attr: { '@click': 'removeProductChoice(' ~ step_id ~ ', ' ~ product_choice_id ~ ')' } }) }}
+            {{ form_widget(product_choice_form.remove, { attr: { '@click': 'removeProductChoice("' ~ step_id ~ '", "' ~ product_choice_id ~ '")' } }) }}
         </div>
     </div>
 </div>

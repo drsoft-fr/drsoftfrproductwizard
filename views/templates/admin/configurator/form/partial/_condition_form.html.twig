@@ -9,8 +9,8 @@
         '{{ condition_form.step.vars.value is not null ? condition_form.step.vars.value : '' }}',
         '{{ condition_form.choice.vars.value is not null ? condition_form.choice.vars.value : '' }}',
         $store.wizardData.getCondition(
-            {{ step_id }},
-            {{ product_choice_id }},
+            '{{ step_id }}',
+            '{{ product_choice_id }}',
             '{{ condition_form.step.vars.value is not null ? condition_form.step.vars.value : '' }}',
             '{{ condition_form.choice.vars.value is not null ? condition_form.choice.vars.value : '' }}'
         )
@@ -71,7 +71,7 @@
         {{ form_widget(
             condition_form.remove,
             {
-                attr: {'@click': 'removeCondition(' ~ step_id ~ ', ' ~ product_choice_id ~ ', "step-' ~ step_id ~ '__product-choice-' ~  product_choice_id ~ '__condition-' ~ condition_iteration ~ '")' }
+                attr: {'@click': 'removeCondition("' ~ step_id ~ '", "' ~ product_choice_id ~ '", "step-' ~ step_id ~ '__product-choice-' ~  product_choice_id ~ '__condition-' ~ condition_iteration ~ '")' }
             }
         ) }}
     </div>
