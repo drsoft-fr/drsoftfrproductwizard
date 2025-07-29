@@ -5,13 +5,9 @@
  *
  * @return {number|null}
  */
-export default function getIntOrNull(value) {
+export default function getIdOrNull(value) {
   if (typeof value === 'number' && !isNaN(value)) {
     return value
-  }
-
-  if (isNaN(value)) {
-    return null
   }
 
   if (typeof value !== 'string') {
@@ -22,5 +18,9 @@ export default function getIntOrNull(value) {
     return null
   }
 
-  return parseInt(value)
+  if (null === value.match(/^virtual-[0-9]+$/)) {
+    return parseInt(value)
+  }
+
+  return value
 }

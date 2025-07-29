@@ -4,7 +4,7 @@ import Alpine from 'alpinejs'
 
 window.Alpine = Alpine
 
-import getIntOrNull from '@/js/admin/configurator/form/getIntOrNull.js'
+import getIdOrNull from '@/js/admin/configurator/form/getIdOrNull.js'
 import useSortable from '@/js/admin/configurator/form/useSortable.js'
 import useTomSelect from '@/js/admin/configurator/form/useTomSelect.js'
 
@@ -164,10 +164,10 @@ window.drsoftfrproductwizard.alpine = {
       },
       removeCondition(stepId, productChoiceId, elmId) {
         const elm = document.getElementById(elmId)
-        const stepValue = getIntOrNull(
+        const stepValue = getIdOrNull(
           elm.querySelector('.js-step-select').value,
         )
-        const choiceValue = getIntOrNull(
+        const choiceValue = getIdOrNull(
           elm.querySelector('.js-choice-select').value,
         )
         const productChoice = Alpine.store('wizardData').getProductChoice(
@@ -197,8 +197,8 @@ window.drsoftfrproductwizard.alpine = {
         )
 
         if (hiddenElm) {
-          hiddenElm.value = getIntOrNull(this.conditionStepIdx)
-          this.condition.step = getIntOrNull(this.conditionStepIdx)
+          hiddenElm.value = getIdOrNull(this.conditionStepIdx)
+          this.condition.step = getIdOrNull(this.conditionStepIdx)
         } else {
           console.error('Champ caché pour le choix non trouvé')
 
@@ -215,8 +215,8 @@ window.drsoftfrproductwizard.alpine = {
         )
 
         if (hiddenInput) {
-          hiddenInput.value = getIntOrNull(this.conditionChoiceIdx)
-          this.condition.choice = getIntOrNull(this.conditionChoiceIdx)
+          hiddenInput.value = getIdOrNull(this.conditionChoiceIdx)
+          this.condition.choice = getIdOrNull(this.conditionChoiceIdx)
         } else {
           console.error('Champ caché pour le choix non trouvé')
         }
@@ -255,7 +255,7 @@ window.drsoftfrproductwizard.alpine = {
         })
       },
       initStepSelector(selector) {
-        const currentStepId = getIntOrNull(selector.dataset.stepId)
+        const currentStepId = getIdOrNull(selector.dataset.stepId)
         const currentStep = this.getStep(currentStepId)
         const currentStepPosition = currentStep.position || 0
 
@@ -390,13 +390,13 @@ window.drsoftfrproductwizard.alpine = {
         }
       },
       getStep(stepId) {
-        const id = getIntOrNull(stepId)
+        const id = getIdOrNull(stepId)
 
         return this.data.steps.find((s) => s.id === id) || {}
       },
       getProductChoice(stepId, productChoiceId) {
-        const stepIdNum = getIntOrNull(stepId)
-        const choiceIdNum = getIntOrNull(productChoiceId)
+        const stepIdNum = getIdOrNull(stepId)
+        const choiceIdNum = getIdOrNull(productChoiceId)
         const step = this.getStep(stepIdNum)
 
         if (!step || !step.product_choices) {
@@ -419,8 +419,8 @@ window.drsoftfrproductwizard.alpine = {
 
         const condition = choice.display_conditions.find(
           (c) =>
-            c.step === getIntOrNull(conditionStepIdx) &&
-            c.choice === getIntOrNull(conditionChoiceIdx),
+            c.step === getIdOrNull(conditionStepIdx) &&
+            c.choice === getIdOrNull(conditionChoiceIdx),
         )
 
         if (condition) {
