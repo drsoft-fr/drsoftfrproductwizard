@@ -4,7 +4,6 @@
     {{ parent() }}
 
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/css/tom-select.bootstrap4.min.css" rel="stylesheet">
 
     {% if manifest is defined %}
         <link href="{{ asset('../modules/drsoftfrproductwizard/views/' ~ manifest.url('src/js/admin/configurator/form.js')['css'][0]) }}"
@@ -93,7 +92,6 @@
     {{ parent() }}
 
     {% if manifest is defined %}
-        <script src="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/js/tom-select.complete.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
         <script src="{{ asset('../modules/drsoftfrproductwizard/views/' ~ manifest.url('src/js/admin/configurator/form.js')['file']) }}"

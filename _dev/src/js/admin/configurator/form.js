@@ -1,5 +1,7 @@
 import '@/css/admin/configurator/form.scss'
 
+import TomSelect from 'tom-select'
+
 window.drsoftfrproductwizard = window.drsoftfrproductwizard || {}
 window.drsoftfrproductwizard.data = window.drsoftfrproductwizard.data || {
   steps: [],
