@@ -105,7 +105,7 @@ window.drsoftfrproductwizard.alpine = {
           .insertAdjacentHTML('beforeend', tpl)
 
         const step = window.drsoftfrproductwizard.data.steps.find(
-          (s) => s.id === parseInt(stepIdx),
+          (s) => s.id === stepIdx,
         )
         if (step) {
           step.product_choices.push({
@@ -306,7 +306,7 @@ window.drsoftfrproductwizard.alpine = {
           option.textContent = step.label
 
           // Restaurer la sélection si elle existe
-          if (selectedValue && parseInt(selectedValue) === step.id) {
+          if (selectedValue && selectedValue === step.id) {
             option.selected = true
           }
 
@@ -357,7 +357,7 @@ window.drsoftfrproductwizard.alpine = {
 
         // Si une étape est sélectionnée, ajouter ses choix
         if (selectedStepId) {
-          const selectedStep = this.getStep(parseInt(selectedStepId))
+          const selectedStep = this.getStep(selectedStepId)
 
           if (
             selectedStep &&
@@ -379,7 +379,7 @@ window.drsoftfrproductwizard.alpine = {
               option.textContent = choice.label
 
               // Restaurer la sélection si elle existe
-              if (selectedValue && parseInt(selectedValue) === choice.id) {
+              if (selectedValue && selectedValue === choice.id) {
                 option.selected = true
               }
 
