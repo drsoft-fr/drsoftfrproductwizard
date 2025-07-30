@@ -1,6 +1,6 @@
 <script setup>
 import { inject } from 'vue'
-import ProductChoice from '@/vue/front/configurator/components/ProductChoice.vue'
+import ProductChoice from '@/vue/front/configurator/components/product-choice/ProductChoice.vue'
 
 const props = defineProps({
   configurator: { type: Object, required: true },

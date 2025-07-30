@@ -1,8 +1,8 @@
 <script setup>
 import { inject, onMounted, reactive, ref } from 'vue'
-import Alert from '@/vue/front/configurator/components/Alert.vue'
-import Configurator from '@/vue/front/configurator/components/Configurator.vue'
-import Loader from '@/vue/front/configurator/components/Loader.vue'
+import Alert from '@/vue/front/configurator/components/core/Alert.vue'
+import Configurator from '@/vue/front/configurator/components/configurator/Configurator.vue'
+import Loader from '@/vue/front/configurator/components/core/Loader.vue'
 
 const props = defineProps({
   id: { type: Number, required: true },

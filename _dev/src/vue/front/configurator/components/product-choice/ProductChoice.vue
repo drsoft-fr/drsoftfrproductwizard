@@ -1,6 +1,6 @@
 <script setup>
-import NoProduct from '@/vue/front/configurator/components/NoProduct.vue'
-import Product from '@/vue/front/configurator/components/Product.vue'
+import NoProduct from '@/vue/front/configurator/components/product-choice/NoProduct.vue'
+import Product from '@/vue/front/configurator/components/product-choice/Product.vue'
 
 const props = defineProps({
   configurator: { type: Object, required: true },

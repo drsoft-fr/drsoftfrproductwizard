@@ -1,7 +1,7 @@
 <script setup>
 import { inject } from 'vue'
-import Step from '@/vue/front/configurator/components/Step.vue'
-import CartSummary from '@/vue/front/configurator/components/CartSummary.vue'
+import Step from '@/vue/front/configurator/components/step/Step.vue'
+import CartSummary from '@/vue/front/configurator/components/cart/CartSummary.vue'
 
 const props = defineProps({
   activeStepIndex: { type: Number, required: true },
