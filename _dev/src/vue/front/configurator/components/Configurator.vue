@@ -1,6 +1,7 @@
 <script setup>
 import { inject } from 'vue'
 import Step from '@/vue/front/configurator/components/Step.vue'
+import CartSummary from '@/vue/front/configurator/components/CartSummary.vue'
 
 const props = defineProps({
   activeStepIndex: { type: Number, required: true },
@@ -28,13 +29,16 @@ const $t = inject('$t')
       </span>
     </div>
     <div v-if="steps.length > 0" class="row">
-      <div class="col-12">
+      <div class="col-12 col-lg-8">
         <Step
           v-for="(step, index) in steps"
           :step
           :configurator
           :class="index > 0 ? 'mt-3' : ''"
         />
+      </div>
+      <div class="col-12 col-lg-4">
+        <CartSummary :selections />
       </div>
     </div>
     <div v-else class="text-center alert alert-info">
