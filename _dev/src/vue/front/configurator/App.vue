@@ -1,7 +1,7 @@
 <script setup>
 import { inject, onMounted, reactive, ref } from 'vue'
 import Alert from '@/vue/front/configurator/components/Alert.vue'
-import Step from '@/vue/front/configurator/components/Step.vue'
+import Configurator from '@/vue/front/configurator/components/Configurator.vue'
 
 const props = defineProps({
   id: { type: Number, required: true },
@@ -76,7 +76,7 @@ function closeAlert() {
 </script>
 
 <template>
-  <div :id="'configurator-' + id" class="product-wizard-container">
+  <div class="product-wizard-container">
     <Alert
       :show="alert.show"
       :type="alert.type"
@@ -89,32 +89,7 @@ function closeAlert() {
       </div>
       <p class="mt-3">{{ $t('Loading configurator options...') }}</p>
     </div>
-    <div v-else-if="steps.length > 0" class="row">
-      <div class="col-12">
-        <div class="d-flex justify-content-between align-items-center">
-          <h2>{{ configurator.name }}</h2>
-          <span
-            class="badge"
-            :class="
-              activeStepIndex === steps.length - 1
-                ? 'badge-success'
-                : 'badge-warning'
-            "
-          >
-            {{ activeStepIndex + 1 }} / {{ steps.length }}
-          </span>
-        </div>
-        <div class="steps-container">
-          <Step v-for="(step, index) in steps" :step :configurator :class="index > 0 ? 'mt-3' : ''" />
-        </div>
-      </div>
-    </div>
-    <div v-else class="text-center alert alert-info">
-      <p>
-        <i class="empty-icon">&#9888;</i>
-        {{ $t('No configuration options available.') }}
-      </p>
-    </div>
+    <Configurator v-else :configurator :steps :activeStepIndex :selections />
   </div>
 </template>
 
