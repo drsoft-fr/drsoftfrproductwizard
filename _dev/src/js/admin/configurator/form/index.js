@@ -137,6 +137,21 @@ window.drsoftfrproductwizard.alpine = {
         elm.remove()
       },
 
+      updateProductId(elm, stepId, productChoiceId) {
+        const stepIdNum = getIdOrNull(stepId)
+        const choiceIdNum = getIdOrNull(productChoiceId)
+        const step = Alpine.store('wizardData').getStep(stepIdNum)
+
+        if (!step || !step.product_choices) {
+          return
+        }
+
+        const productChoice =
+          step.product_choices.find((p) => p.id === choiceIdNum) || {}
+
+        productChoice.product_id = getIdOrNull(elm.value)
+      },
+
       uncheckOthers(event) {
         const targetStepId = getIdOrNull(event.target.dataset.stepId || '')
         const targetProductChoiceId = getIdOrNull(
