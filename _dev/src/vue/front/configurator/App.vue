@@ -2,6 +2,7 @@
 import { inject, onMounted, reactive, ref } from 'vue'
 import Alert from '@/vue/front/configurator/components/Alert.vue'
 import Configurator from '@/vue/front/configurator/components/Configurator.vue'
+import Loader from '@/vue/front/configurator/components/Loader.vue'
 
 const props = defineProps({
   id: { type: Number, required: true },
@@ -83,12 +84,7 @@ function closeAlert() {
       :message="alert.message"
       @close="closeAlert"
     />
-    <div v-if="loading" class="text-center p-5">
-      <div class="spinner-border" role="status">
-        <span class="sr-only">{{ $t('Loading...') }}</span>
-      </div>
-      <p class="mt-3">{{ $t('Loading configurator options...') }}</p>
-    </div>
+    <Loader v-if="loading" />
     <Configurator v-else :configurator :steps :activeStepIndex :selections />
   </div>
 </template>
