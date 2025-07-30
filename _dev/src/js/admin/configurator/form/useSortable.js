@@ -1,5 +1,7 @@
 import Sortable from 'sortablejs'
 
+import getIdOrNull from '@/js/admin/configurator/form/getIdOrNull.js'
+
 export default function useSortable() {
   const stepsList = document.getElementById('steps-collection')
 
@@ -18,7 +20,7 @@ export default function useSortable() {
       stepsList.querySelectorAll('.js-step-block').forEach((block, idx) => {
         let posInput = block.querySelector('input[name*="[position]"]')
         let badgeElm = block.querySelector('.js-badge-position')
-        let stepIdx = parseInt(block.dataset.stepId || '')
+        let stepIdx = getIdOrNull(block.dataset.stepId || '')
 
         if (posInput) {
           posInput.value = idx
