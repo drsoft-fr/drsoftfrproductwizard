@@ -14,21 +14,21 @@ const $t = inject('$t')
 
 <template>
   <div :id="'configurator-' + configurator.id">
+    <div class="d-flex justify-content-between align-items-center">
+      <h2>{{ configurator.name }}</h2>
+      <span
+        class="badge"
+        :class="
+          activeStepIndex === steps.length - 1
+            ? 'badge-success'
+            : 'badge-warning'
+        "
+      >
+        {{ activeStepIndex + 1 }} / {{ steps.length }}
+      </span>
+    </div>
     <div v-if="steps.length > 0" class="row">
       <div class="col-12">
-        <div class="d-flex justify-content-between align-items-center">
-          <h2>{{ configurator.name }}</h2>
-          <span
-            class="badge"
-            :class="
-              activeStepIndex === steps.length - 1
-                ? 'badge-success'
-                : 'badge-warning'
-            "
-          >
-            {{ activeStepIndex + 1 }} / {{ steps.length }}
-          </span>
-        </div>
         <Step
           v-for="(step, index) in steps"
           :step

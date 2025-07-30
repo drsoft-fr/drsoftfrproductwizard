@@ -7,8 +7,6 @@ const props = defineProps({
   choice: { type: Object, required: true },
 })
 
-const $t = inject('$t')
-
 const { drsoftfrproductwizard } = window?.prestashop?.modules || {
   noPictureImage: {},
 }
@@ -49,9 +47,8 @@ const noPictureImage = drsoftfrproductwizard.noPictureImage || {}
       <template v-else>
         <img :src="noPictureImage.medium.url" alt="" class="card-img-top" />
         <div class="card-body">
-          <h4 class="card-title">{{ choice.label }}</h4>
           <p class="card-text">
-            {{ $t('Skip this step without selecting any products.') }}
+            {{ choice.label }}
           </p>
         </div>
       </template>
