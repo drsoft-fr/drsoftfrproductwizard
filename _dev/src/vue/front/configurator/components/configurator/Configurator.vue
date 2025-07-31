@@ -28,12 +28,8 @@ const $t = inject('$t')
       </span>
     </div>
     <div v-if="0 < steps.length" class="row g-5 border-top mt-5">
-      <div class="col-12 col-lg-8 mt-lg-5">
-        <Steps :steps :configurator />
-      </div>
-      <div class="col-12 col-lg-4 mt-lg-5">
-        <Cart />
-      </div>
+      <Steps :steps :configurator class="col-12 col-lg-8 mt-lg-5" />
+      <Cart class="col-12 col-lg-4 mt-lg-5" />
     </div>
     <div v-else class="text-center alert alert-info">
       <p>

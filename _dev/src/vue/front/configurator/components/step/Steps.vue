@@ -8,12 +8,14 @@ const props = defineProps({
 </script>
 
 <template>
-  <Step
-    v-for="(step, index) in steps"
-    :step
-    :configurator
-    :class="0 < index ? 'mt-8' : ''"
-  />
+  <div>
+    <Step
+      v-for="(step, index) in steps"
+      :step
+      :configurator
+      :class="0 < index ? 'mt-8' : ''"
+    />
+  </div>
 </template>
 
 <style scoped lang="scss"></style>

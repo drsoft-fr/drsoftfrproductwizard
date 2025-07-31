@@ -16,9 +16,13 @@ const $t = inject('$t')
     class="step-container"
   >
     <h3>{{ step.label }}</h3>
-    <div v-if="0 < step.choices.length" class="product-choices row g-3">
-      <ProductChoices :configurator :step :choices="step.choices" />
-    </div>
+    <ProductChoices
+      v-if="0 < step.choices.length"
+      :configurator
+      :step
+      :choices="step.choices"
+      class="product-choices row g-3"
+    />
     <div v-else class="text-center alert alert-info">
       <i class="empty-icon">&#9888;</i>
       <p>{{ $t('No options available for this step.') }}</p>

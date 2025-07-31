@@ -9,13 +9,15 @@ const props = defineProps({
 </script>
 
 <template>
-  <ProductChoice
-    v-for="choice in choices"
-    :configurator
-    :step
-    :choice
-    class="col-12 col-sm-6 col-lg-3"
-  />
+  <div>
+    <ProductChoice
+      v-for="choice in choices"
+      :configurator
+      :step
+      :choice
+      class="col-12 col-sm-6 col-lg-3"
+    />
+  </div>
 </template>
 
 <style scoped lang="scss"></style>
