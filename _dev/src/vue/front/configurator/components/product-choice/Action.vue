@@ -1,10 +1,7 @@
 <script setup>
 import { inject } from 'vue'
 
-const props = defineProps({
-  selected: { type: Boolean, default: false },
-})
-
+const selected = inject('selected')
 const $t = inject('$t')
 </script>
 
@@ -15,13 +12,13 @@ const $t = inject('$t')
       class="btn btn-primary"
       :class="{ 'btn-success': selected }"
     >
-      <span v-if="selected">
-        <span class="fa fa-check-circle" aria-hidden="true"></span>
+      <template v-if="selected">
+        <span class="fa fa-check-circle mr-1" aria-hidden="true"></span>
         {{ $t('Selected') }}
-      </span>
-      <span v-else>
+      </template>
+      <template v-else>
         {{ $t('Select') }}
-      </span>
+      </template>
     </button>
   </div>
 </template>

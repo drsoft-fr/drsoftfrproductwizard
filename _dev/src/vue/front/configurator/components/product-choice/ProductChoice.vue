@@ -1,11 +1,12 @@
 <script setup>
-import { inject } from 'vue'
+import { inject, provide } from 'vue'
 import NoProduct from '@/vue/front/configurator/components/product-choice/NoProduct.vue'
 import Product from '@/vue/front/configurator/components/product-choice/Product.vue'
 
 const props = defineProps({
   step: { type: Object, required: true },
   choice: { type: Object, required: true },
+  selected: { type: Boolean, default: false },
 })
 
 const activeStepIndex = inject('activeStepIndex')
@@ -42,6 +43,8 @@ function handleSelect(choice) {
     activeStepIndex.value++
   }
 }
+
+provide('selected', props.selected)
 </script>
 
 <template>
@@ -55,6 +58,7 @@ function handleSelect(choice) {
       choice.id
     "
     class="product-choice"
+    :class="{ selected: selected }"
   >
     <Product
       v-if="choice.product"

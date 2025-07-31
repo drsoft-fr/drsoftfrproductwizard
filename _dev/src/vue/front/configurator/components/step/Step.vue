@@ -1,5 +1,5 @@
 <script setup>
-import { inject } from 'vue'
+import { inject, provide, ref } from 'vue'
 import ProductChoices from '@/vue/front/configurator/components/product-choice/ProductChoices.vue'
 
 const props = defineProps({
@@ -8,6 +8,10 @@ const props = defineProps({
 
 const configurator = inject('configurator')
 const $t = inject('$t')
+
+const selectedChoice = ref(null)
+
+provide('selectedChoice', selectedChoice)
 </script>
 
 <template>
