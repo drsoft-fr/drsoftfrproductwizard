@@ -51,6 +51,8 @@ final class ActionFrontControllerSetVariablesController extends AbstractHookCont
                         'Total' => $this->getContext()->getTranslator()->trans('Total', [], 'Modules.Drsoftfrproductwizard.Global'),
                         'Add to Cart' => $this->getContext()->getTranslator()->trans('Add to Cart', [], 'Modules.Drsoftfrproductwizard.Global'),
                         'Please complete all steps before adding to cart.' => $this->getContext()->getTranslator()->trans('Please complete all steps before adding to cart.', [], 'Modules.Drsoftfrproductwizard.Global'),
+                        'Selected' => $this->getContext()->getTranslator()->trans('Selected', [], 'Modules.Drsoftfrproductwizard.Global'),
+                        'Select' => $this->getContext()->getTranslator()->trans('Select', [], 'Modules.Drsoftfrproductwizard.Global'),
                     ],
                     'Modules.Drsoftfrproductwizard.Error' => [
                         'Failed to load configurator' => $this->getContext()->getTranslator()->trans('Failed to load configurator', [], 'Modules.Drsoftfrproductwizard.Error'),

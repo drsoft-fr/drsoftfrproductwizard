@@ -1,4 +1,6 @@
 <script setup>
+import Action from '@/vue/front/configurator/components/product-choice/Action.vue'
+
 const props = defineProps({
   choice: { type: Object, required: true },
   noPictureImage: { type: Object, required: true },
@@ -7,7 +9,7 @@ const props = defineProps({
 </script>
 
 <template>
-  <div class="card h-100">
+  <div class="card">
     <img
       :src="
         choice.product.images[0]
@@ -23,8 +25,20 @@ const props = defineProps({
       <p class="card-text">
         {{ choice.product.price }}
       </p>
+      <Action />
     </div>
   </div>
 </template>
 
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+.card {
+  height: 100%;
+}
+
+.card-body {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+}
+</style>
