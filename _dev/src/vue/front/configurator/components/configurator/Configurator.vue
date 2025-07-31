@@ -28,16 +28,16 @@ const $t = inject('$t')
         {{ activeStepIndex + 1 }} / {{ steps.length }}
       </span>
     </div>
-    <div v-if="steps.length > 0" class="row">
-      <div class="col-12 col-lg-8">
+    <div v-if="steps.length > 0" class="row g-5 border-top mt-5">
+      <div class="col-12 col-lg-8 mt-lg-5">
         <Step
           v-for="(step, index) in steps"
           :step
           :configurator
-          :class="index > 0 ? 'mt-3' : ''"
+          :class="index > 0 ? 'mt-8' : ''"
         />
       </div>
-      <div class="col-12 col-lg-4">
+      <div class="col-12 col-lg-4 mt-lg-5">
         <CartSummary :selections />
       </div>
     </div>

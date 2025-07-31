@@ -17,15 +17,8 @@ function formatPrice(price) {
 
 <template>
   <div class="cart-summary">
+    <h3 class="text-right">{{ $t('Your Selection') }}</h3>
     <div class="card">
-      <div
-        class="card-header d-flex justify-content-between align-items-center"
-      >
-        <h3 class="mb-0">{{ $t('Your Selection') }}</h3>
-        <span class="badge badge-secondary" v-if="selections.length > 0">{{
-          selections.length
-        }}</span>
-      </div>
       <div class="card-body">
         <div v-if="selections.length === 0" class="text-center p-4">
           <div class="empty-cart">
