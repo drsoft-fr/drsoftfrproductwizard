@@ -25,7 +25,7 @@ const props = defineProps({
       <p class="card-text">
         {{ choice.product.price }}
       </p>
-      <Action />
+      <Action @click="$emit('select', choice)" />
     </div>
   </div>
 </template>

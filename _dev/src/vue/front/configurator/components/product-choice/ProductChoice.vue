@@ -8,12 +8,40 @@ const props = defineProps({
   choice: { type: Object, required: true },
 })
 
+const activeStepIndex = inject('activeStepIndex')
 const configurator = inject('configurator')
+const selections = inject('selections')
+const selectedChoice = inject('selectedChoice')
+const steps = inject('steps')
 
 const { drsoftfrproductwizard } = window?.prestashop?.modules || {
   noPictureImage: {},
 }
 const noPictureImage = drsoftfrproductwizard.noPictureImage || {}
+
+function handleSelect(choice) {
+  selectedChoice.value = choice
+
+  const stepIndex = steps.value.findIndex((step) => step.id === props.step.id)
+
+  if (stepIndex === -1) {
+    return
+  }
+
+  selections.value = [
+    ...selections.value.filter((s) => s.stepId !== props.step.id),
+    choice,
+  ]
+
+  // @TODO recalculer le prix total
+
+  if (
+    stepIndex === activeStepIndex.value &&
+    stepIndex < steps.value.length - 1
+  ) {
+    activeStepIndex.value++
+  }
+}
 </script>
 
 <template>
@@ -33,8 +61,9 @@ const noPictureImage = drsoftfrproductwizard.noPictureImage || {}
       :choice
       :noPictureImage
       :product="choice.product"
+      @select="handleSelect"
     />
-    <NoProduct v-else :choice :noPictureImage />
+    <NoProduct v-else :choice :noPictureImage @select="handleSelect" />
   </div>
 </template>
 
