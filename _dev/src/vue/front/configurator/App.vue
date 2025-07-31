@@ -75,6 +75,7 @@ function closeAlert() {
   alert.show = false
 }
 
+provide('activeStepIndex', activeStepIndex)
 provide('configurator', configurator)
 provide('selections', selections)
 </script>
