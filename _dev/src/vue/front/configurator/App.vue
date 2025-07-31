@@ -89,8 +89,10 @@ provide('steps', steps)
       :message="alert.message"
       @close="closeAlert"
     />
-    <Loader v-if="loading" />
-    <Configurator v-else :activeStepIndex />
+    <Transition name="fade" mode="out-in">
+      <Loader v-if="loading" />
+      <Configurator v-else :activeStepIndex />
+    </Transition>
   </div>
 </template>
 
