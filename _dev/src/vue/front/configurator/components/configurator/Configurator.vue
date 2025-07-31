@@ -1,6 +1,6 @@
 <script setup>
 import { inject } from 'vue'
-import Step from '@/vue/front/configurator/components/step/Step.vue'
+import Steps from '@/vue/front/configurator/components/step/Steps.vue'
 import Cart from '@/vue/front/configurator/components/cart/Cart.vue'
 
 const props = defineProps({
@@ -27,14 +27,9 @@ const $t = inject('$t')
         {{ activeStepIndex + 1 }} / {{ steps.length }}
       </span>
     </div>
-    <div v-if="steps.length > 0" class="row g-5 border-top mt-5">
+    <div v-if="0 < steps.length" class="row g-5 border-top mt-5">
       <div class="col-12 col-lg-8 mt-lg-5">
-        <Step
-          v-for="(step, index) in steps"
-          :step
-          :configurator
-          :class="index > 0 ? 'mt-8' : ''"
-        />
+        <Steps :steps :configurator />
       </div>
       <div class="col-12 col-lg-4 mt-lg-5">
         <Cart />
