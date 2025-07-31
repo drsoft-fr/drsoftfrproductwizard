@@ -1,7 +1,7 @@
 <script setup>
 import { inject } from 'vue'
-import CardAction from '@/vue/front/configurator/components/cart/CardAction.vue'
-import CardProducts from '@/vue/front/configurator/components/cart/CardProducts.vue'
+import Action from '@/vue/front/configurator/components/cart/Action.vue'
+import Products from '@/vue/front/configurator/components/cart/Products.vue'
 
 const props = defineProps({
   selections: { type: Array, required: true, default: () => [] },
@@ -15,8 +15,8 @@ const $t = inject('$t')
     <h3 class="text-right">{{ $t('Your Selection') }}</h3>
     <div class="card">
       <div class="card-body">
-        <CardProducts :selections />
-        <CardAction class="mt-4" :selections />
+        <Products :selections />
+        <Action class="mt-4" :selections />
       </div>
     </div>
   </div>

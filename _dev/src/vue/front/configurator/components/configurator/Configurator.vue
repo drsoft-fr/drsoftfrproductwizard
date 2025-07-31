@@ -1,7 +1,7 @@
 <script setup>
 import { inject } from 'vue'
 import Step from '@/vue/front/configurator/components/step/Step.vue'
-import CartSummary from '@/vue/front/configurator/components/cart/CartSummary.vue'
+import Cart from '@/vue/front/configurator/components/cart/Cart.vue'
 
 const props = defineProps({
   activeStepIndex: { type: Number, required: true },
@@ -38,7 +38,7 @@ const $t = inject('$t')
         />
       </div>
       <div class="col-12 col-lg-4 mt-lg-5">
-        <CartSummary :selections />
+        <Cart :selections />
       </div>
     </div>
     <div v-else class="text-center alert alert-info">
