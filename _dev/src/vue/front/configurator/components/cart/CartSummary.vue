@@ -1,5 +1,6 @@
 <script setup>
 import { inject } from 'vue'
+import CardAction from '@/vue/front/configurator/components/cart/CardAction.vue'
 
 const props = defineProps({
   selections: { type: Array, required: true, default: () => [] },
@@ -60,24 +61,7 @@ function formatPrice(price) {
             <div class="total-price">{{ formatPrice(totalPrice) }}</div>
           </div>
         </div>
-        <div class="cart-actions mt-4">
-          <button
-            type="button"
-            class="btn btn-primary btn-lg btn-block"
-            :disabled="!canAddToCart || selections.length === 0"
-            @click="emitAddToCart"
-          >
-            <i class="cart-btn-icon">&#128722;</i> {{ $t('Add to Cart') }}
-          </button>
-          <div
-            v-if="!canAddToCart && selections.length > 0"
-            class="alert alert-info mt-3 text-center"
-          >
-            <small>{{
-              $t('Please complete all steps before adding to cart.')
-            }}</small>
-          </div>
-        </div>
+        <CardAction class="mt-4" :selections />
       </div>
     </div>
   </div>
