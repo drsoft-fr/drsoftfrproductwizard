@@ -6,7 +6,6 @@ import Cart from '@/vue/front/configurator/components/cart/Cart.vue'
 const props = defineProps({
   activeStepIndex: { type: Number, required: true },
   configurator: { type: Object, required: true },
-  selections: { type: Array, required: true },
   steps: { type: Array, required: true },
 })
 
@@ -38,7 +37,7 @@ const $t = inject('$t')
         />
       </div>
       <div class="col-12 col-lg-4 mt-lg-5">
-        <Cart :selections />
+        <Cart />
       </div>
     </div>
     <div v-else class="text-center alert alert-info">

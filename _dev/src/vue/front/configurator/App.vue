@@ -1,5 +1,5 @@
 <script setup>
-import { inject, onMounted, reactive, ref } from 'vue'
+import { inject, onMounted, provide, reactive, ref } from 'vue'
 import Alert from '@/vue/front/configurator/components/core/Alert.vue'
 import Configurator from '@/vue/front/configurator/components/configurator/Configurator.vue'
 import Loader from '@/vue/front/configurator/components/core/Loader.vue'
@@ -74,6 +74,8 @@ function showAlert(type, message) {
 function closeAlert() {
   alert.show = false
 }
+
+provide('selections', selections)
 </script>
 
 <template>
@@ -85,7 +87,7 @@ function closeAlert() {
       @close="closeAlert"
     />
     <Loader v-if="loading" />
-    <Configurator v-else :configurator :steps :activeStepIndex :selections />
+    <Configurator v-else :configurator :steps :activeStepIndex />
   </div>
 </template>
 

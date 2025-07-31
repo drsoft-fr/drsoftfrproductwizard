@@ -2,10 +2,7 @@
 import { inject } from 'vue'
 import Product from '@/vue/front/configurator/components/cart/Product.vue'
 
-const props = defineProps({
-  selections: { type: Array, required: true, default: () => [] },
-})
-
+const selections = inject('selections')
 const $t = inject('$t')
 
 function formatPrice(price) {

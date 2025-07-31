@@ -3,10 +3,6 @@ import { inject } from 'vue'
 import Action from '@/vue/front/configurator/components/cart/Action.vue'
 import Summary from '@/vue/front/configurator/components/cart/Summary.vue'
 
-const props = defineProps({
-  selections: { type: Array, required: true, default: () => [] },
-})
-
 const $t = inject('$t')
 </script>
 
@@ -15,8 +11,8 @@ const $t = inject('$t')
     <h3 class="text-right">{{ $t('Your Selection') }}</h3>
     <div class="card">
       <div class="card-body">
-        <Summary :selections />
-        <Action class="mt-4" :selections />
+        <Summary />
+        <Action class="mt-4" />
       </div>
     </div>
   </div>

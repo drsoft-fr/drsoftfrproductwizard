@@ -1,10 +1,7 @@
 <script setup>
 import { inject } from 'vue'
 
-const props = defineProps({
-  selections: { type: Array, required: true, default: () => [] },
-})
-
+const selections = inject('selections')
 const $t = inject('$t')
 </script>
 
