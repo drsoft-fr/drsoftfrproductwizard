@@ -3,10 +3,10 @@ import { inject } from 'vue'
 import ProductChoices from '@/vue/front/configurator/components/product-choice/ProductChoices.vue'
 
 const props = defineProps({
-  configurator: { type: Object, required: true },
   step: { type: Object, required: true },
 })
 
+const configurator = inject('configurator')
 const $t = inject('$t')
 </script>
 
@@ -18,7 +18,6 @@ const $t = inject('$t')
     <h3>{{ step.label }}</h3>
     <ProductChoices
       v-if="0 < step.choices.length"
-      :configurator
       :step
       :choices="step.choices"
       class="product-choices row g-3"

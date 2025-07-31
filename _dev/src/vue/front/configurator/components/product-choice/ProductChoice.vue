@@ -1,12 +1,14 @@
 <script setup>
+import { inject } from 'vue'
 import NoProduct from '@/vue/front/configurator/components/product-choice/NoProduct.vue'
 import Product from '@/vue/front/configurator/components/product-choice/Product.vue'
 
 const props = defineProps({
-  configurator: { type: Object, required: true },
   step: { type: Object, required: true },
   choice: { type: Object, required: true },
 })
+
+const configurator = inject('configurator')
 
 const { drsoftfrproductwizard } = window?.prestashop?.modules || {
   noPictureImage: {},
