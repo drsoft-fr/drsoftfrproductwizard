@@ -39,29 +39,33 @@ provide('selectedChoice', selectedChoice)
   >
     <div @click="handleToggleStep" class="step-header">
       <div class="step-number">
-        <span v-if="completed" class="fa fa-check" aria-hidden="true"></span>
-        <span v-else>{{ stepIndex + 1 }}</span>
+        <Transition name="slide-fade" mode="out-in">
+          <span v-if="completed" class="fa fa-check" aria-hidden="true"></span>
+          <span v-else>{{ stepIndex + 1 }}</span>
+        </Transition>
       </div>
       <h3 class="step-title">{{ step.label }}</h3>
       <div class="step-toggle">
-        <Transition>
+        <Transition name="fade" mode="out-in">
           <span v-if="active" class="fa fa-arrow-up" aria-hidden="true"></span>
           <span v-else class="fa fa-arrow-down" aria-hidden="true"></span>
         </Transition>
       </div>
     </div>
-    <div class="step-content" v-if="active">
-      <ProductChoices
-        v-if="0 < step.choices.length"
-        :step
-        :choices="step.choices"
-        class="product-choices row g-3"
-      />
-      <div v-else class="text-center alert alert-info">
-        <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
-        <p>{{ $t('No options available for this step.') }}</p>
+    <Transition name="height-fade" mode="out-in">
+      <div class="step-content" v-show="active">
+        <ProductChoices
+          v-if="0 < step.choices.length"
+          :step
+          :choices="step.choices"
+          class="product-choices row g-3"
+        />
+        <div v-else class="text-center alert alert-info">
+          <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+          <p>{{ $t('No options available for this step.') }}</p>
+        </div>
       </div>
-    </div>
+    </Transition>
   </div>
 </template>
 

@@ -25,3 +25,19 @@
   transform: translateX(20px);
   opacity: 0;
 }
+
+.height-fade-enter-active,
+.height-fade-leave-active {
+  max-height: 1000px;
+  overflow: hidden;
+  transition-property: max-height, opacity;
+  transition-timing-function: ease-in-out;
+  transition-duration: 0.5s, 0.75s;
+}
+
+.height-fade-enter-from,
+.height-fade-leave-to {
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+}
