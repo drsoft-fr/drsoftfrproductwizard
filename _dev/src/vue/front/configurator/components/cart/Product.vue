@@ -5,14 +5,8 @@ const props = defineProps({
   selection: { type: Object, required: true },
 })
 
+const formatPrice = inject('formatPrice')
 const $t = inject('$t')
-
-function formatPrice(price) {
-  return new Intl.NumberFormat(document.documentElement.lang, {
-    style: 'currency',
-    currency: prestashop.currency.iso_code,
-  }).format(price)
-}
 </script>
 
 <template>

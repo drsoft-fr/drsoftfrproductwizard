@@ -2,15 +2,9 @@
 import { inject } from 'vue'
 import Product from '@/vue/front/configurator/components/cart/Product.vue'
 
+const formatPrice = inject('formatPrice')
 const selections = inject('selections')
 const $t = inject('$t')
-
-function formatPrice(price) {
-  return new Intl.NumberFormat(document.documentElement.lang, {
-    style: 'currency',
-    currency: prestashop.currency.iso_code,
-  }).format(price)
-}
 </script>
 
 <template>
