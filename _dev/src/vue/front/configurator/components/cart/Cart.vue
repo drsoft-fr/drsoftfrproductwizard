@@ -12,7 +12,7 @@ const $t = inject('$t')
     <div class="card">
       <div class="card-body">
         <Summary />
-        <Action class="mt-4" />
+        <Action class="mt-3" />
       </div>
     </div>
   </div>
