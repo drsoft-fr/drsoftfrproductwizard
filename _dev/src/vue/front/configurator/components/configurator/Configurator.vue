@@ -3,12 +3,9 @@ import { inject } from 'vue'
 import Steps from '@/vue/front/configurator/components/step/Steps.vue'
 import Cart from '@/vue/front/configurator/components/cart/Cart.vue'
 
-const props = defineProps({
-  steps: { type: Array, required: true },
-})
-
 const activeStepIndex = inject('activeStepIndex')
 const configurator = inject('configurator')
+const steps = inject('steps')
 const $t = inject('$t')
 </script>
 

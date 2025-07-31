@@ -1,9 +1,8 @@
 <script setup>
+import { inject } from 'vue'
 import Step from '@/vue/front/configurator/components/step/Step.vue'
 
-const props = defineProps({
-  steps: { type: Array, required: true },
-})
+const steps = inject('steps')
 </script>
 
 <template>

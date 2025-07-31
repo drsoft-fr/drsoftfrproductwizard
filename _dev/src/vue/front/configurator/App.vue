@@ -78,6 +78,7 @@ function closeAlert() {
 provide('activeStepIndex', activeStepIndex)
 provide('configurator', configurator)
 provide('selections', selections)
+provide('steps', steps)
 </script>
 
 <template>
@@ -89,7 +90,7 @@ provide('selections', selections)
       @close="closeAlert"
     />
     <Loader v-if="loading" />
-    <Configurator v-else :steps :activeStepIndex />
+    <Configurator v-else :activeStepIndex />
   </div>
 </template>
 
