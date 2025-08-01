@@ -9,8 +9,8 @@ const $t = inject('$t')
   <div class="mt-3">
     <button
       type="button"
-      class="btn btn-primary"
-      :class="{ 'btn-success': selected }"
+      class="btn"
+      :class="selected ? 'btn-success' : 'btn-primary'"
     >
       <template v-if="selected">
         <span class="fa fa-check-circle mr-1" aria-hidden="true"></span>
