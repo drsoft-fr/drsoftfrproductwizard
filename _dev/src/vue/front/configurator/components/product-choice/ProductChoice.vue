@@ -76,4 +76,16 @@ provide('selected', selected)
   </div>
 </template>
 
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+.product-choice .card {
+  transition: all 0.25s ease-in-out;
+}
+
+.product-choice:hover .card {
+  box-shadow: var(--bs-box-shadow);
+}
+
+.product-choice.selected .card {
+  border-color: var(--bs-success);
+}
+</style>
