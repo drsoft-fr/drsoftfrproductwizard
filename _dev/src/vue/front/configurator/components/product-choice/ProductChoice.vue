@@ -1,12 +1,11 @@
 <script setup>
-import { inject, provide } from 'vue'
+import { inject, provide, ref, watch } from 'vue'
 import NoProduct from '@/vue/front/configurator/components/product-choice/NoProduct.vue'
 import Product from '@/vue/front/configurator/components/product-choice/Product.vue'
 
 const props = defineProps({
   step: { type: Object, required: true },
   choice: { type: Object, required: true },
-  selected: { type: Boolean, default: false },
 })
 
 const activeStepIndex = inject('activeStepIndex')
@@ -15,10 +14,16 @@ const selections = inject('selections')
 const selectedChoice = inject('selectedChoice')
 const steps = inject('steps')
 
+const selected = ref(false)
+
 const { drsoftfrproductwizard } = window?.prestashop?.modules || {
   noPictureImage: {},
 }
 const noPictureImage = drsoftfrproductwizard.noPictureImage || {}
+
+watch(selectedChoice, () => {
+  selected.value = props.choice.id === selectedChoice.value.id
+})
 
 function handleSelect(choice) {
   selectedChoice.value = choice
@@ -44,7 +49,7 @@ function handleSelect(choice) {
   }
 }
 
-provide('selected', props.selected)
+provide('selected', selected)
 </script>
 
 <template>
