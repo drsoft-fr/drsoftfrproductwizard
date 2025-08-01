@@ -1,5 +1,6 @@
 <script setup>
 import Action from '@/vue/front/configurator/components/product-choice/Action.vue'
+import Quantity from '@/vue/front/configurator/components/product-choice/Quantity.vue'
 
 const props = defineProps({
   choice: { type: Object, required: true },
@@ -24,6 +25,7 @@ const props = defineProps({
       <p class="card-text product-price">
         {{ choice.product.price }}
       </p>
+      <Quantity />
       <Action @click="$emit('select', choice)" />
     </div>
   </div>
