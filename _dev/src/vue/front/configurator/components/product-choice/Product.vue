@@ -20,8 +20,7 @@ const props = defineProps({
       class="card-img-top"
     />
     <div class="card-body">
-      <h4 class="card-title">{{ choice.label }}</h4>
-      <p class="card-text">{{ choice.product.name }}</p>
+      <h4 class="card-title">{{ choice.product.name }}</h4>
       <p class="card-text">
         {{ choice.product.price }}
       </p>

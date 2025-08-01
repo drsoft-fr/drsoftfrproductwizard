@@ -11,9 +11,7 @@ const props = defineProps({
   <div class="card">
     <img :src="noPictureImage.medium.url" alt="" class="card-img-top" />
     <div class="card-body">
-      <p class="card-text">
-        {{ choice.label }}
-      </p>
+      <h4 class="card-text">{{ choice.label }}</h4>
       <Action @click="$emit('select', choice)" />
     </div>
   </div>
