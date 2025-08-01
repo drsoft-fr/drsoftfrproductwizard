@@ -21,7 +21,7 @@ const props = defineProps({
     />
     <div class="card-body">
       <h4 class="card-title">{{ choice.product.name }}</h4>
-      <p class="card-text">
+      <p class="card-text product-price">
         {{ choice.product.price }}
       </p>
       <Action @click="$emit('select', choice)" />
@@ -39,5 +39,15 @@ const props = defineProps({
   flex-direction: column;
   justify-content: space-between;
   height: 100%;
+}
+
+.card-title {
+  flex-grow: 1;
+}
+
+.product-price {
+  color: var(--bs-primary);
+  font-size: 1.2rem;
+  font-weight: bold;
 }
 </style>
