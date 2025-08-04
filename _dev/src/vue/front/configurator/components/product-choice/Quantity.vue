@@ -24,7 +24,7 @@ function decrement() {
     <div class="quantity-input-group">
       <button
         type="button"
-        class="btn btn-outline-secondary"
+        class="btn btn-outline-secondary btn-sm"
         @click="decrement"
         :disabled="quantity <= 1"
       >
@@ -39,7 +39,7 @@ function decrement() {
       />
       <button
         type="button"
-        class="btn btn-outline-secondary"
+        class="btn btn-outline-secondary btn-sm"
         @click="increment"
       >
         <i class="fa fa-plus" aria-hidden="true"></i>
@@ -50,13 +50,12 @@ function decrement() {
 
 <style scoped lang="scss">
 .quantity-input-group {
-  align-items: center;
   display: flex;
 }
 
 .quantity-input-group input {
-  margin: 0 0.5rem;
+  border-width: 1px 0;
+  flex: auto;
   text-align: center;
-  width: 60px;
 }
 </style>
