@@ -16,8 +16,10 @@ provide('formatPrice', formatPrice)
 </script>
 
 <template>
-  <Choices v-if="0 < selections.length" :selections />
-  <EmptyChoice v-else />
+  <Transition name="fade" mode="out-in">
+    <Choices v-if="0 < selections.length" :selections />
+    <EmptyChoice v-else />
+  </Transition>
 </template>
 
 <style scoped lang="scss"></style>
