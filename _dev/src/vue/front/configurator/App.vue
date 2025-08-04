@@ -1,5 +1,5 @@
 <script setup>
-import { inject, onMounted, provide, reactive, ref } from 'vue'
+import { inject, onMounted, provide, reactive, ref, watch } from 'vue'
 import Alert from '@/vue/front/configurator/components/core/Alert.vue'
 import Configurator from '@/vue/front/configurator/components/configurator/Configurator.vue'
 import Loader from '@/vue/front/configurator/components/core/Loader.vue'
@@ -16,10 +16,31 @@ const configurator = ref(null)
 const loading = ref(true)
 const selections = ref([])
 const steps = ref([])
+const totalPrice = ref(0)
 
 const alert = reactive({ show: false, type: 'info', message: '' })
 
 onMounted(fetchConfigurator)
+
+watch(selections, calculateTotalPrice, { deep: true })
+
+function calculateTotalPrice() {
+  let total = 0
+
+  for (const selection of selections.value) {
+    if (null === selection.productId) {
+      continue
+    }
+
+    if (!selection.product || !selection.product.price_amount) {
+      continue
+    }
+
+    total += selection.product.price_amount * (selection.quantity || 1)
+  }
+
+  totalPrice.value = total
+}
 
 async function fetchConfigurator() {
   try {
@@ -79,6 +100,7 @@ provide('activeStepIndex', activeStepIndex)
 provide('configurator', configurator)
 provide('selections', selections)
 provide('steps', steps)
+provide('totalPrice', totalPrice)
 </script>
 
 <template>

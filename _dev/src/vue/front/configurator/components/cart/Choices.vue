@@ -4,6 +4,7 @@ import Product from '@/vue/front/configurator/components/cart/Product.vue'
 
 const formatPrice = inject('formatPrice')
 const selections = inject('selections')
+const totalPrice = inject('totalPrice')
 const $t = inject('$t')
 </script>
 
@@ -22,7 +23,7 @@ const $t = inject('$t')
   </TransitionGroup>
   <div class="mt-3">
     <div>{{ $t('Total') }}</div>
-    <div>{{ formatPrice(0) }}</div>
+    <div>{{ formatPrice(totalPrice) }}</div>
   </div>
 </template>
 
