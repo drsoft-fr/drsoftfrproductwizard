@@ -8,13 +8,32 @@ const $t = inject('$t')
 </script>
 
 <template>
-    <template v-for="(selection, index) in selections" :key="index">
-      <Product :selection />
-    </template>
-    <div>
-      <div>{{ $t('Total') }}</div>
-      <div>{{ formatPrice(0) }}</div>
-    </div>
+  <TransitionGroup name="slide-fade" tag="ul">
+    <li v-for="(choice, index) in selections" :key="index">
+      <div :class="{ 'text-muted': choice.productId }">
+        <span>{{ choice.stepLabel }}</span> - <span>{{ choice.label }}</span>
+      </div>
+      <Product
+        v-if="null !== choice.productId"
+        :product="choice.product"
+        :choice="choice"
+      />
+    </li>
+  </TransitionGroup>
+  <div class="mt-3">
+    <div>{{ $t('Total') }}</div>
+    <div>{{ formatPrice(0) }}</div>
+  </div>
 </template>
 
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+ul {
+  list-style: none;
+  padding: 0;
+
+  li {
+    padding: 1rem 0;
+    border-bottom: 1px solid var(--bs-border-color);
+  }
+}
+</style>

@@ -2,7 +2,8 @@
 import { inject } from 'vue'
 
 const props = defineProps({
-  selection: { type: Object, required: true },
+  choice: { type: Object, required: true },
+  product: { type: Object, required: true },
 })
 
 const formatPrice = inject('formatPrice')
@@ -11,17 +12,17 @@ const $t = inject('$t')
 
 <template>
   <div>
-    <div>{{ selection.name }}</div>
-    <div v-if="selection.combinationName">
+    <div>{{ product.name }}</div>
+    <div v-if="product.combinationName">
       <span class="badge badge-success">{{ selection.combinationName }}</span>
     </div>
     <div>
       <span>{{ $t('Quantity') }}:</span>
-      <span>{{ selection.quantity }}</span>
+      <span>{{ choice.quantity }}</span>
     </div>
   </div>
   <div>
-    {{ formatPrice(selection.price * selection.quantity) }}
+    {{ formatPrice(product.price_amount * choice.quantity) }}
   </div>
 </template>
 
