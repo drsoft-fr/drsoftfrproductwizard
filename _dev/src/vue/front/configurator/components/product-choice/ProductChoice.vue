@@ -35,7 +35,7 @@ function handleSelect(choice) {
   }
 
   selections.value = [
-    ...selections.value.filter((s) => s.stepId !== props.step.id),
+    ...selections.value.filter((s) => s.id !== choice.id),
     choice,
   ]
 
