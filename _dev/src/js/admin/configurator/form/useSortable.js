@@ -30,6 +30,8 @@ export default function useSortable() {
           badgeElm.textContent = idx + 1
         }
 
+        block.dataset.position = idx + 1
+
         if (
           window.drsoftfrproductwizard.data &&
           window.drsoftfrproductwizard.data.steps
