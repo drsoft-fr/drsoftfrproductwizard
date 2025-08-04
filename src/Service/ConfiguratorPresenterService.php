@@ -163,6 +163,7 @@ final class ConfiguratorPresenterService
             'product' => $productInfo,
             'variants' => $variants,
             'combinations' => $combinations,
+            'quantity' => null !== $choice->getForcedQuantity() ? $choice->getForcedQuantity() : 1,
         ];
     }
 
