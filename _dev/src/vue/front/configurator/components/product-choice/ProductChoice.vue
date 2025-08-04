@@ -34,10 +34,14 @@ function handleSelect(choice) {
     return
   }
 
-  selections.value = [
-    ...selections.value.filter((s) => s.id !== choice.id),
+  let arr = [
+    ...selections.value.filter((s) => s.stepId !== props.step.id),
     choice,
   ]
+
+  arr.sort((a, b) => a.stepPosition - b.stepPosition)
+
+  selections.value = arr
 
   // @TODO recalculer le prix total
 

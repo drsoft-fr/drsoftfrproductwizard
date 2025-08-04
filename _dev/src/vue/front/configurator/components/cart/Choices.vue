@@ -9,7 +9,7 @@ const $t = inject('$t')
 
 <template>
   <TransitionGroup name="slide-fade" tag="ul">
-    <li v-for="(choice, index) in selections" :key="index">
+    <li v-for="choice in selections" :key="choice.stepId">
       <div :class="{ 'text-muted': choice.productId }">
         <span>{{ choice.stepLabel }}</span> - <span>{{ choice.label }}</span>
       </div>

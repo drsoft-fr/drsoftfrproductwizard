@@ -164,6 +164,9 @@ final class ConfiguratorPresenterService
             'variants' => $variants,
             'combinations' => $combinations,
             'quantity' => null !== $choice->getForcedQuantity() ? $choice->getForcedQuantity() : 1,
+            'stepId' => $choice->getStep()->getId(),
+            'stepLabel' => $choice->getStep()->getLabel(),
+            'stepPosition' => $choice->getStep()->getPosition(),
         ];
     }
 
