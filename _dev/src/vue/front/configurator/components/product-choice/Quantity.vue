@@ -7,18 +7,16 @@ const props = defineProps({
 
 const $t = inject('$t')
 
-const quantity = ref(1)
-
 function increment() {
-  quantity.value++
+  props.choice.quantity++
 }
 
 function decrement() {
-  if (1 >= quantity.value) {
+  if (1 >= props.choice.quantity) {
     return
   }
 
-  quantity.value--
+  props.choice.quantity--
 }
 </script>
 
@@ -33,7 +31,7 @@ function decrement() {
           type="button"
           class="btn btn-outline-secondary btn-sm"
           @click="decrement"
-          :disabled="quantity <= 1"
+          :disabled="choice.quantity <= 1"
         >
           <i class="fa fa-minus" aria-hidden="true"></i>
         </button>
@@ -41,7 +39,7 @@ function decrement() {
           type="number"
           id="quantity-input"
           class="form-control"
-          v-model.number="quantity"
+          v-model.number="choice.quantity"
           min="1"
         />
         <button
@@ -55,7 +53,7 @@ function decrement() {
     </template>
     <template v-else>
       <div class="form-label">{{ $t('Quantity:') }}</div>
-      <div class="form-control text-center">x {{ quantity }}</div>
+      <div class="form-control text-center">x {{ choice.quantity }}</div>
     </template>
   </div>
 </template>
