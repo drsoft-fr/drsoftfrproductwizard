@@ -1,7 +1,7 @@
 <script setup>
 import { inject, provide } from 'vue'
-import NoProduct from '@/vue/front/configurator/components/cart/NoProduct.vue'
-import Products from '@/vue/front/configurator/components/cart/Products.vue'
+import EmptyChoice from '@/vue/front/configurator/components/cart/EmptyChoice.vue'
+import Choices from '@/vue/front/configurator/components/cart/Choices.vue'
 
 const selections = inject('selections')
 
@@ -16,8 +16,8 @@ provide('formatPrice', formatPrice)
 </script>
 
 <template>
-  <Products v-if="0 < selections.length" :selections />
-  <NoProduct v-else />
+  <Choices v-if="0 < selections.length" :selections />
+  <EmptyChoice v-else />
 </template>
 
 <style scoped lang="scss"></style>
