@@ -1,5 +1,5 @@
 <script setup>
-import { inject, provide, ref } from 'vue'
+import { computed, inject, provide, ref } from 'vue'
 import ProductChoices from '@/vue/front/configurator/components/product-choice/ProductChoices.vue'
 
 const props = defineProps({
@@ -12,9 +12,30 @@ const props = defineProps({
 
 const activeStepIndex = inject('activeStepIndex')
 const configurator = inject('configurator')
+const selections = inject('selections')
 const $t = inject('$t')
 
 const selectedChoice = ref(null)
+
+const filteredChoices = computed(() => {
+  return props.step.choices.filter((choice) => {
+    if (!choice.displayConditions || choice.displayConditions.length === 0) {
+      return true
+    }
+
+    return choice.displayConditions.some((condition) => {
+      const selection = selections.value.find(
+        (s) => s.stepId === condition.step,
+      )
+
+      if (!selection) {
+        return false
+      }
+
+      return selection.id === condition.choice
+    })
+  })
+})
 
 function handleToggleStep() {
   if (true === props.disabled) {
@@ -55,9 +76,9 @@ provide('selectedChoice', selectedChoice)
     <Transition name="height-fade" mode="out-in">
       <div class="step-content" v-show="active">
         <ProductChoices
-          v-if="0 < step.choices.length"
+          v-if="0 < filteredChoices.length"
           :step
-          :choices="step.choices"
+          :choices="filteredChoices"
           class="product-choices row g-3"
         />
         <div v-else class="text-center alert alert-info">
