@@ -1,6 +1,7 @@
 <script setup>
 import { ref, computed, inject } from 'vue'
 import { useConfiguratorStore } from '@/js/admin/configurator/form/stores/configurator'
+import ProductChoiceList from '@/vue/admin/configurator/components/product-choice/ProductChoiceList.vue'
 
 const props = defineProps({
   stepId: { type: [String, Number], required: true },
@@ -135,7 +136,7 @@ const toggleCollapse = () => {
       <hr />
 
       <!-- Product Choices -->
-<!--      TODO créer les ProductChoice -->
+      <ProductChoiceList :step-id="stepId" />
     </div>
   </div>
 </template>
