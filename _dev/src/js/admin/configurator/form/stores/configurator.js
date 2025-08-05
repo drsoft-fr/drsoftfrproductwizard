@@ -20,7 +20,12 @@ export const useConfiguratorStore = defineStore('configurator', {
     nextTempId: -1,
   }),
 
-  getters: {},
+  getters: {
+    // Get a step by ID
+    getStep: (state) => (stepId) => {
+      return state.steps.find((step) => step.id === stepId) || {}
+    },
+  },
 
   actions: {
     // Initialize store with data from server
