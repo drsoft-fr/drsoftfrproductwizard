@@ -47,14 +47,41 @@ const closeAlert = () => {
       :message="alert.message"
       @close="closeAlert"
     />
-    <div class="card">
-      <div class="card-header">
-        <h1>{{ pageTitle }}</h1>
+    <div :class="{ row: store.devMode }">
+      <div :class="{ 'col-8': store.devMode }">
+        <div class="card">
+          <div class="card-header">
+            <h1>{{ pageTitle }}</h1>
+          </div>
+          <div class="card-body">
+            <Transition name="fade" mode="out-in">
+              <Loader v-if="store.loading" />
+            </Transition>
+          </div>
+          <div class="card-footer">
+            <div class="form-check">
+              <input
+                v-model="store.devMode"
+                type="checkbox"
+                class="form-check-input"
+                id="devMode"
+              />
+              <label for="devMode" class="form-check-label">
+                {{ $t('DEV MODE - view data in real time') }}
+              </label>
+            </div>
+          </div>
+        </div>
       </div>
-      <div class="card-body">
-        <Transition name="fade" mode="out-in">
-          <Loader v-if="store.loading" />
-        </Transition>
+      <div v-if="store.devMode" class="col-4">
+        <div class="card">
+          <div class="card-header">
+            <h2>{{ $t('Real-time data') }}</h2>
+          </div>
+          <div class="card-body">
+            <pre><code>{{ JSON.stringify(store.$state, null, 2) }}</code></pre>
+          </div>
+        </div>
       </div>
     </div>
   </div>

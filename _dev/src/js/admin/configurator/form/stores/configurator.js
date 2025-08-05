@@ -7,21 +7,21 @@ export const useConfiguratorStore = defineStore('configurator', {
     name: '',
     active: true,
     steps: [],
-    
+
     // UI state
     loading: false,
+    devMode: false,
     isValid: true,
-    
+
     // Form submission
     formErrors: [],
-    
+
     // Temporary IDs for new items
-    nextTempId: -1
+    nextTempId: -1,
   }),
-  
-  getters: {
-  },
-  
+
+  getters: {},
+
   actions: {
     // Initialize store with data from server
     initializeStore(data) {
@@ -37,5 +37,10 @@ export const useConfiguratorStore = defineStore('configurator', {
     setLoading(loading) {
       this.loading = loading
     },
-  }
+
+    // Toggle dev mode
+    toggleDevMode() {
+      this.devMode = !this.devMode
+    },
+  },
 })
