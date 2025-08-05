@@ -251,8 +251,30 @@ final class ConfiguratorController extends FrameworkBundleAdminController
     {
         \Media::addJsDef([
             'drsoftfrproductwizard' => [
-                'routes' => [],
-                'messages' => [],
+                'routes' => [
+                    'home' => $this->generateUrl('admin_drsoft_fr_product_wizard_configurator_index'),
+                    'get' => $this->generateUrl('admin_drsoft_fr_product_wizard_configurator_api_get'),
+                ],
+                'messages' => [
+                    'Modules.Drsoftfrproductwizard.Admin' => [
+                        'Create a scenario' => $this->trans('Create a scenario', 'Modules.Drsoftfrproductwizard.Admin'),
+                        'Edit the scenario' => $this->trans('Edit the scenario', 'Modules.Drsoftfrproductwizard.Admin'),
+                        'DEV MODE - view data in real time' => $this->trans('DEV MODE - view data in real time', 'Modules.Drsoftfrproductwizard.Admin'),
+                        'Real-time data' => $this->trans('Real-time data', 'Modules.Drsoftfrproductwizard.Admin'),
+                        'Loading...' => $this->trans('Loading...', 'Modules.Drsoftfrproductwizard.Admin'),
+                    ],
+                    'Modules.Drsoftfrproductwizard.Error' => [
+                        'Error loading the configurator' => $this->trans('Error loading the configurator', 'Modules.Drsoftfrproductwizard.Error'),
+                        'Error fetching configurator:' => $this->trans('Error fetching configurator:', 'Modules.Drsoftfrproductwizard.Error'),
+                        'An error occurred while loading the configurator.' => $this->trans('An error occurred while loading the configurator.', 'Modules.Drsoftfrproductwizard.Error'),
+                        'Error while saving the configurator' => $this->trans('Error while saving the configurator', 'Modules.Drsoftfrproductwizard.Error'),
+                        'Error saving configurator:' => $this->trans('Error saving configurator:', 'Modules.Drsoftfrproductwizard.Error'),
+                        'An error occurred while saving the configurator.' => $this->trans('An error occurred while saving the configurator.', 'Modules.Drsoftfrproductwizard.Error'),
+                    ],
+                    'Modules.Drsoftfrproductwizard.Success' => [
+                        'Configurator successfully saved' => $this->trans('Configurator successfully saved', 'Modules.Drsoftfrproductwizard.Success'),
+                    ],
+                ],
             ],
         ]);
     }
