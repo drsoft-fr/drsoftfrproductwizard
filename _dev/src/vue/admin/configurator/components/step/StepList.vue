@@ -1,5 +1,5 @@
 <script setup>
-import { computed } from 'vue'
+import { computed, inject } from 'vue'
 import { useConfiguratorStore } from '@/js/admin/configurator/form/stores/configurator'
 import StepItem from './StepItem.vue'
 
