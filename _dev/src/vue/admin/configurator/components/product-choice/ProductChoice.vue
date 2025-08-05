@@ -1,11 +1,13 @@
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, inject } from 'vue'
 import { useConfiguratorStore } from '@/js/admin/configurator/form/stores/configurator'
 
 const props = defineProps({
   stepId: { type: [String, Number], required: true },
   productChoiceId: { type: [String, Number], required: true },
 })
+
+const $t = inject('$t')
 
 const emit = defineEmits(['remove'])
 
