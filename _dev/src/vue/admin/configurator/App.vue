@@ -1,5 +1,5 @@
 <script setup>
-import { reactive, computed, inject } from 'vue'
+import { reactive, onMounted, computed, inject } from 'vue'
 import { useConfiguratorStore } from '@/js/admin/configurator/form/stores/configurator'
 import ConfiguratorForm from '@/vue/admin/configurator/components/configurator/ConfiguratorForm.vue'
 import Alert from '@/vue/admin/configurator/components/core/Alert.vue'
@@ -8,6 +8,8 @@ import Loader from '@/vue/admin/configurator/components/core/Loader.vue'
 const props = defineProps({
   configuratorId: { type: Number, default: null },
 })
+
+const $r = inject('$r')
 const $t = inject('$t')
 
 const store = useConfiguratorStore()
@@ -38,6 +40,55 @@ const showAlert = (type, message, duration = 5000) => {
 const closeAlert = () => {
   alert.show = false
 }
+
+const fetchConfigurator = async () => {
+  try {
+    store.setLoading(true)
+
+    if (!props.configuratorId) {
+      // Initialize empty configurator for new creation
+      store.initializeStore({
+        id: null,
+        name: '',
+        active: true,
+        steps: [],
+      })
+      store.setLoading(false)
+
+      return
+    }
+
+    const response = await fetch(
+      `${$r('get')}&configuratorId=${props.configuratorId}`,
+      {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      },
+    )
+
+    const data = await response.json()
+
+    if (false === data.success) {
+      showAlert('danger', data.message || $t('Error loading the configurator'))
+      store.setLoading(false)
+
+      return
+    }
+
+    store.initializeStore(data.configurator)
+  } catch (error) {
+    console.error($t('Error fetching configurator:'), error)
+    showAlert('danger', $t('An error occurred while loading the configurator.'))
+  } finally {
+    store.setLoading(false)
+  }
+}
+
+onMounted(() => {
+  fetchConfigurator()
+})
 </script>
 
 <template>
