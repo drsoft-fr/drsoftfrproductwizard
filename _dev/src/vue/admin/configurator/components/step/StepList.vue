@@ -9,6 +9,10 @@ const store = useConfiguratorStore()
 
 const steps = computed(() => store.steps || [])
 const hasSteps = computed(() => steps.value.length > 0)
+
+const addStep = () => {
+  store.addStep()
+}
 </script>
 
 <template>
@@ -22,6 +26,10 @@ const hasSteps = computed(() => steps.value.length > 0)
       </div>
       <!--      TODO rajouter la boucle sur Step -->
     </div>
+    <button type="button" class="btn btn-outline-primary" @click="addStep">
+      <i class="material-icons">add</i>
+      {{ $t('Add a step') }}
+    </button>
   </div>
 </template>
 

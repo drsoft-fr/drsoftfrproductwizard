@@ -33,6 +33,23 @@ export const useConfiguratorStore = defineStore('configurator', {
       this.loading = false
     },
 
+    // Add a new step
+    addStep() {
+      const newStepId = `virtual-${this.nextTempId--}`
+      const position = this.steps.length
+
+      this.steps.push({
+        id: newStepId,
+        label: 'Nouvelle étape',
+        position,
+        active: true,
+        product_choices: [],
+        is_virtual: true,
+      })
+
+      return newStepId
+    },
+
     // Set loading state
     setLoading(loading) {
       this.loading = loading
