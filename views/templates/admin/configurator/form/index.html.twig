@@ -4,84 +4,19 @@
     {{ parent() }}
 
     {% if manifest is defined %}
-        <link href="{{ asset('../modules/drsoftfrproductwizard/views/' ~ manifest.url('src/js/admin/configurator/form/index.js')['css'][0]) }}"
+        <link href="{{ asset('../modules/drsoftfrproductwizard/views/' ~ manifest.url('src/js/admin/configurator/form/index.js', 'admin-configurator-form')['css'][0]) }}"
               rel="stylesheet">
     {% endif %}
 {% endblock %}
 
 {% block main %}
-    <div x-data="$store.wizardData.data" :class="$store.wizardData.data.devMode ? 'row g-3' : ''">
-        <div x-transition x-show="$store.wizardData.data.devMode"
-             :class="$store.wizardData.data.devMode ? 'col-4' : ''">
-            <div class="card card-body">
-                <div class="card-head">
-                    <strong>Données en temps réel :</strong> <span x-text="$store.wizardData.data.name"></span>
-                </div>
-                <div class="card-body">
-
-                <pre><code id="js-code" class="language-js"
-                           x-text="JSON.stringify($store.wizardData.data, null, 2)"></code></pre>
-                </div>
+    <div id="app-configurator-admin"
+         data-configurator-id="{{ configurator_id|default('null') }}">
+        <div class="text-center p-5">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">{{ 'Chargement...'|trans }}</span>
             </div>
-        </div>
-        <div x-transition class="relative"
-             :class="$store.wizardData.data.devMode ? ' row justify-content-center col-8' : ''">
-            <div x-show="$store.wizardData.data.loading"
-                 style="position: absolute; top: 0; left: 0; height: 100%; width: 100%; background-color: var(--dark); z-index: 100; opacity: 0.5;">
-                <div class="spinner-border text-white" role="status"
-                     style="top:50%; left: 50%; position: absolute;"></div>
-            </div>
-            <div class="col">
-                <div class="card">
-                    <h1 class="card-header">{{ form.vars.value.id ? 'Éditer le scénario' : 'Créer un scénario' }}</h1>
-                    <div class="card-body">
-                        {{ form_start(form) }}
-                        {{ form_errors(form) }}
-                        <div class="form-group mb-3">
-                            {{ form_row(form.name) }}
-                            {{ form_row(form.active) }}
-                        </div>
-
-                        <div x-data="window.drsoftfrproductwizard.alpine.stepManager({{ form.steps|length }})">
-                            <h2 class="mb-2">Étapes du scénario</h2>
-                            <div id="steps-collection" class="sortable-list">
-                                {% for step_form in form.steps %}
-                                    {% include '@Modules/drsoftfrproductwizard/views/templates/admin/configurator/form/partial/_step_form.html.twig' with { step_form, 'step_id': step_form.vars.value.id, 'step_iteration': loop.index0, 'is_virtual': false } %}
-                                {% else %}
-                                    <div class="alert alert-info">Aucune étape définie pour ce scénario.</div>
-                                {% endfor %}
-                            </div>
-
-                            <template id="step-prototype">
-                                {% include '@Modules/drsoftfrproductwizard/views/templates/admin/configurator/form/partial/_step_form.html.twig' with { 'step_form': form.steps.vars.prototype, 'step_id': '__step__', 'step_iteration': '__iteration__', 'is_virtual': true } %}
-                            </template>
-                            <button type="button" class="btn btn-outline-primary mt-2" @click="addStep">Ajouter une
-                                étape
-                            </button>
-                        </div>
-
-                        <div class="mt-4">
-                            <button type="submit" class="btn btn-success"
-                                    :class="!$store.wizardData.data.isValid ? 'disabled' : ''">Enregistrer
-                            </button>
-                            <a class="btn btn-secondary"
-                               href="{{ path('admin_drsoft_fr_product_wizard_configurator_index') }}">Retour</a>
-                        </div>
-
-                        {% if form._token is defined %}
-                            {{ form_widget(form._token) }}
-                        {% endif %}
-
-                        {{ form_end(form, {render_rest: false}) }}
-                        <div class="form-check mt-3">
-                            <input x-model.boolean="$store.wizardData.data.devMode" name="devMode" type="checkbox"
-                                   class="form-check-input"
-                                   value="1" id="devMode">
-                            <label for="devMode" class="form-check-label">DEV MODE - see data in real time</label>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <p class="mt-3">{{ 'Chargement de l'interface d'administration...'|trans }}</p>
         </div>
     </div>
 {% endblock %}
@@ -90,7 +25,8 @@
     {{ parent() }}
 
     {% if manifest is defined %}
-        <script src="{{ asset('../modules/drsoftfrproductwizard/views/' ~ manifest.url('src/js/admin/configurator/form/index.js')['file']) }}"
+        <script type="module"
+                src="{{ asset('../modules/drsoftfrproductwizard/views/' ~ manifest.url('src/js/admin/configurator/form/index.js', 'admin-configurator-form')['file']) }}"
                 async defer></script>
     {% endif %}
 {% endblock %}
