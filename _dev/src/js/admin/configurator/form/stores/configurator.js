@@ -9,6 +9,7 @@ export const useConfiguratorStore = defineStore('configurator', {
     steps: [],
     
     // UI state
+    loading: false,
     isValid: true,
     
     // Form submission
@@ -30,6 +31,11 @@ export const useConfiguratorStore = defineStore('configurator', {
       this.steps = data.steps || []
       this.isValid = true
       this.loading = false
+    },
+
+    // Set loading state
+    setLoading(loading) {
+      this.loading = loading
     },
   }
 })
