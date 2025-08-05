@@ -266,6 +266,9 @@ final class ConfiguratorController extends FrameworkBundleAdminController
                         'General information' => $this->trans('General information', 'Modules.Drsoftfrproductwizard.Admin'),
                         'Name of scenario' => $this->trans('Name of scenario', 'Modules.Drsoftfrproductwizard.Admin'),
                         'Active' => $this->trans('Active', 'Modules.Drsoftfrproductwizard.Admin'),
+                        'Steps in the scenario' => $this->trans('Steps in the scenario', 'Modules.Drsoftfrproductwizard.Admin'),
+                        'No steps defined for this scenario.' => $this->trans('No steps defined for this scenario.', 'Modules.Drsoftfrproductwizard.Admin'),
+                        'Add a step' => $this->trans('Add a step', 'Modules.Drsoftfrproductwizard.Admin'),
                     ],
                     'Modules.Drsoftfrproductwizard.Error' => [
                         'Error loading the configurator' => $this->trans('Error loading the configurator', 'Modules.Drsoftfrproductwizard.Error'),

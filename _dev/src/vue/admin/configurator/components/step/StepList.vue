@@ -2,6 +2,7 @@
 import { computed, inject } from 'vue'
 import { useConfiguratorStore } from '@/js/admin/configurator/form/stores/configurator'
 import StepItem from './StepItem.vue'
+import Step from '@/vue/admin/configurator/components/step/Step.vue'
 
 const $t = inject('$t')
 
@@ -24,7 +25,7 @@ const addStep = () => {
         <i class="material-icons">info</i>
         {{ $t('No steps defined for this scenario.') }}
       </div>
-      <!--      TODO rajouter la boucle sur Step -->
+      <Step v-for="step in steps" :key="step.id" :step-id="step.id" />
     </div>
     <button type="button" class="btn btn-outline-primary" @click="addStep">
       <i class="material-icons">add</i>
