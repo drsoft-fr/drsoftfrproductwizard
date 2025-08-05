@@ -25,6 +25,17 @@ export const useConfiguratorStore = defineStore('configurator', {
     getStep: (state) => (stepId) => {
       return state.steps.find((step) => step.id === stepId) || {}
     },
+
+    // Get a product choice by step ID and choice ID
+    getProductChoice: (state) => (stepId, choiceId) => {
+      const step = state.steps.find((step) => step.id === stepId)
+
+      if (!step || !step.product_choices) {
+        return {}
+      }
+
+      return step.product_choices.find((choice) => choice.id === choiceId) || {}
+    },
   },
 
   actions: {
@@ -91,6 +102,19 @@ export const useConfiguratorStore = defineStore('configurator', {
       })
 
       return newChoiceId
+    },
+
+    // Remove a product choice
+    removeProductChoice(stepId, choiceId) {
+      const step = this.getStep(stepId)
+
+      if (!step || !step.product_choices) {
+        return
+      }
+
+      step.product_choices = step.product_choices.filter(
+        (choice) => choice.id !== choiceId,
+      )
     },
 
     // Set loading state
