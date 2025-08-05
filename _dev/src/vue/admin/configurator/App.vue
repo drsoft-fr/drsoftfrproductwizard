@@ -86,6 +86,65 @@ const fetchConfigurator = async () => {
   }
 }
 
+const handleSubmit = async () => {
+  try {
+    store.setLoading(true)
+
+    const response = await fetch($r('save'), {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        configurator: {
+          id: store.id,
+          name: store.name,
+          active: store.active,
+          steps: store.steps,
+        },
+      }),
+    })
+
+    const data = await response.json()
+
+    if (!data.success) {
+      showAlert(
+        'danger',
+        data.message || $t('Error while saving the configurator'),
+      )
+      store.setLoading(false)
+
+      return
+    }
+
+    showAlert('success', $t('Configurator successfully saved'))
+
+    // If it was a new configurator, redirect to edit page
+    if (
+      isNewConfigurator.value &&
+      data.configurator &&
+      data.configurator.id &&
+      data.route
+    ) {
+      setTimeout(() => {
+        window.location.href = data.route
+      }, 1000)
+    } else {
+      // Or update store with returned data
+      store.initializeStore(data.configurator)
+    }
+  } catch (error) {
+    console.error($t('Error saving configurator:'), error)
+    showAlert('danger', $t('An error occurred while saving the configurator.'))
+  } finally {
+    store.setLoading(false)
+  }
+}
+
+const handleCancel = () => {
+  window.location.href = $r('home')
+}
+
 onMounted(() => {
   fetchConfigurator()
 })
@@ -110,6 +169,8 @@ onMounted(() => {
               <Loader v-if="store.loading" />
               <ConfiguratorForm
                 v-else
+                @submit="handleSubmit"
+                @cancel="handleCancel"
               />
             </Transition>
           </div>
