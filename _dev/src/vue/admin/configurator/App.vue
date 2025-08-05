@@ -1,7 +1,7 @@
 <script setup>
 import { reactive, onMounted, computed, inject } from 'vue'
 import { useConfiguratorStore } from '@/js/admin/configurator/form/stores/configurator'
-import ConfiguratorForm from '@/vue/admin/configurator/components/configurator/ConfiguratorForm.vue'
+import Configurator from '@/vue/admin/configurator/components/configurator/Configurator.vue'
 import Alert from '@/vue/admin/configurator/components/core/Alert.vue'
 import Loader from '@/vue/admin/configurator/components/core/Loader.vue'
 
@@ -167,7 +167,7 @@ onMounted(() => {
           <div class="card-body">
             <Transition name="fade" mode="out-in">
               <Loader v-if="store.loading" />
-              <ConfiguratorForm
+              <Configurator
                 v-else
                 @submit="handleSubmit"
                 @cancel="handleCancel"

@@ -1,6 +1,7 @@
 <script setup>
 import { computed, inject } from 'vue'
 import { useConfiguratorStore } from '@/js/admin/configurator/form/stores/configurator'
+import StepList from '@/vue/admin/configurator/components/step/StepList.vue'
 
 const $t = inject('$t')
 
@@ -64,7 +65,7 @@ const handleCancel = () => {
         </div>
       </div>
     </div>
-<!--    @TODO add Steps -->
+    <StepList />
     <div class="mt-3">
       <button
         type="submit"
