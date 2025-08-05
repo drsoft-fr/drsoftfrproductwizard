@@ -1,6 +1,7 @@
 <script setup>
 import { reactive, computed, inject } from 'vue'
 import { useConfiguratorStore } from '@/js/admin/configurator/form/stores/configurator'
+import ConfiguratorForm from '@/vue/admin/configurator/components/configurator/ConfiguratorForm.vue'
 import Alert from '@/vue/admin/configurator/components/core/Alert.vue'
 import Loader from '@/vue/admin/configurator/components/core/Loader.vue'
 
@@ -56,6 +57,9 @@ const closeAlert = () => {
           <div class="card-body">
             <Transition name="fade" mode="out-in">
               <Loader v-if="store.loading" />
+              <ConfiguratorForm
+                v-else
+              />
             </Transition>
           </div>
           <div class="card-footer">
