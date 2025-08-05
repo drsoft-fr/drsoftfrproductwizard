@@ -3,12 +3,7 @@
  *
  * @returns {Object} An object containing the r function for solving routes
  */
-export function useRouter() {
-  const { drsoftfrproductwizard } = window?.prestashop?.modules || {
-    routes: {},
-  }
-  const routes = drsoftfrproductwizard.routes || {}
-
+export function useRouter(routes) {
   /**
    * Retrieves the URL of a route by its name
    *

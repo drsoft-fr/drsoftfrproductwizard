@@ -3,12 +3,7 @@
  *
  * @returns {Object} An object containing the t function for translating messages
  */
-export function useTranslator() {
-  const { drsoftfrproductwizard } = window?.prestashop?.modules || {
-    messages: {},
-  }
-  const messages = drsoftfrproductwizard.messages || {}
-
+export function useTranslator(messages) {
   /**
    * Translates a message by replacing wildcards with the corresponding values
    *
