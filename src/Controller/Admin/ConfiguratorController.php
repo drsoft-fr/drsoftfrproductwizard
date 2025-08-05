@@ -262,6 +262,9 @@ final class ConfiguratorController extends FrameworkBundleAdminController
                         'DEV MODE - view data in real time' => $this->trans('DEV MODE - view data in real time', 'Modules.Drsoftfrproductwizard.Admin'),
                         'Real-time data' => $this->trans('Real-time data', 'Modules.Drsoftfrproductwizard.Admin'),
                         'Loading...' => $this->trans('Loading...', 'Modules.Drsoftfrproductwizard.Admin'),
+                        'General information' => $this->trans('General information', 'Modules.Drsoftfrproductwizard.Admin'),
+                        'Name of scenario' => $this->trans('Name of scenario', 'Modules.Drsoftfrproductwizard.Admin'),
+                        'Active' => $this->trans('Active', 'Modules.Drsoftfrproductwizard.Admin'),
                     ],
                     'Modules.Drsoftfrproductwizard.Error' => [
                         'Error loading the configurator' => $this->trans('Error loading the configurator', 'Modules.Drsoftfrproductwizard.Error'),
