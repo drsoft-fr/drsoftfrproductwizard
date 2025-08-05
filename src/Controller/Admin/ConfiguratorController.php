@@ -121,7 +121,7 @@ final class ConfiguratorController extends FrameworkBundleAdminController
             $em->persist($configurator);
             $em->flush();
 
-            $this->addFlash('success', 'Scénario créé avec succès.');
+            $this->addFlash('success', $this->trans('Scenario created successfully', 'Modules.Drsoftfrproductwizard.Success'));;
 
             return $this->redirectToRoute(self::PAGE_INDEX_ROUTE);
         }
@@ -168,7 +168,7 @@ final class ConfiguratorController extends FrameworkBundleAdminController
 
             $em->flush();
 
-            $this->addFlash('success', 'Scénario modifié.');
+            $this->addFlash('success', $this->trans('Updated scenario', 'Modules.Drsoftfrproductwizard.Success'));
 
             return $this->redirectToRoute(self::PAGE_INDEX_ROUTE);
         }
@@ -201,7 +201,7 @@ final class ConfiguratorController extends FrameworkBundleAdminController
         if ($this->isCsrfTokenValid('delete' . $configurator->getId(), $request->request->get('_token'))) {
             $em->remove($configurator);
             $em->flush();
-            $this->addFlash('success', 'Scénario supprimé.');
+            $this->addFlash('success', $this->trans('Deleted scenario', 'Modules.Drsoftfrproductwizard.Success'));
         }
         return $this->redirectToRoute(self::PAGE_INDEX_ROUTE);
     }
@@ -281,7 +281,7 @@ final class ConfiguratorController extends FrameworkBundleAdminController
         } catch (\Throwable $e) {
             $results = [
                 'id' => 0,
-                'name' => 'Erreur: ' . $e->getMessage(),
+                'name' => 'Error: ' . $e->getMessage(),
             ];
         }
 
