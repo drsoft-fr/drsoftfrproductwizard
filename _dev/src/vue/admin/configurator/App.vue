@@ -1,11 +1,15 @@
 <script setup>
 import { reactive, computed, inject } from 'vue'
+import { useConfiguratorStore } from '@/js/admin/configurator/form/stores/configurator'
 import Alert from '@/vue/admin/configurator/components/core/Alert.vue'
+import Loader from '@/vue/admin/configurator/components/core/Loader.vue'
 
 const props = defineProps({
   configuratorId: { type: Number, default: null },
 })
 const $t = inject('$t')
+
+const store = useConfiguratorStore()
 
 const alert = reactive({
   show: false,
@@ -48,7 +52,9 @@ const closeAlert = () => {
         <h1>{{ pageTitle }}</h1>
       </div>
       <div class="card-body">
-        <Transition name="fade" mode="out-in"> TODO </Transition>
+        <Transition name="fade" mode="out-in">
+          <Loader v-if="store.loading" />
+        </Transition>
       </div>
     </div>
   </div>
