@@ -8,7 +8,6 @@ use Doctrine\ORM\EntityManagerInterface;
 use DrSoftFr\Module\ProductWizard\Entity\Configurator;
 use DrSoftFr\Module\ProductWizard\Entity\ProductChoice;
 use DrSoftFr\Module\ProductWizard\Entity\Step;
-use DrSoftFr\Module\ProductWizard\Form\ConfiguratorType;
 use DrSoftFr\Module\ProductWizard\Form\ProductChoiceType;
 use DrSoftFr\Module\ProductWizard\Form\StepType;
 use DrSoftFr\Module\ProductWizard\Repository\ConfiguratorRepository;
@@ -94,42 +93,18 @@ final class ConfiguratorController extends FrameworkBundleAdminController
      *     message="You do not have permission to create this."
      * )
      *
-     * @param Request $request
-     * @param EntityManagerInterface $em
-     *
      * @return Response
      */
-    public function newAction(Request $request, EntityManagerInterface $em): Response
+    public function newAction(): Response
     {
         $configurator = new Configurator();
 
-        $this->defineJsProps($configurator);
-
-        $form = $this->createForm(ConfiguratorType::class, $configurator);
-
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-
-            foreach ($configurator->getSteps() as $step) {
-                $step->setConfigurator($configurator);
-                foreach ($step->getProductChoices() as $choice) {
-                    $choice->setStep($step);
-                }
-            }
-
-            $em->persist($configurator);
-            $em->flush();
-
-            $this->addFlash('success', $this->trans('Scenario created successfully', 'Modules.Drsoftfrproductwizard.Success'));;
-
-            return $this->redirectToRoute(self::PAGE_INDEX_ROUTE);
-        }
+        $this->defineJsProps();
 
         return $this->render(self::TEMPLATE_FOLDER . 'form/index.html.twig', [
-            'form' => $form->createView(),
+            'configurator_id' => null,
+            'return_url' => $this->generateUrl(self::PAGE_INDEX_ROUTE),
             'module' => $this->getModule(),
-            'steps_choices' => $this->prepareStepChoices($configurator),
             'manifest' => $this->manifest,
         ]);
     }
@@ -144,39 +119,17 @@ final class ConfiguratorController extends FrameworkBundleAdminController
      * )
      *
      * @param Configurator $configurator
-     * @param Request $request
-     * @param EntityManagerInterface $em
      *
      * @return Response
      */
-    public function editAction(Configurator $configurator, Request $request, EntityManagerInterface $em): Response
+    public function editAction(Configurator $configurator): Response
     {
-        $this->defineJsProps($configurator);
-
-        $form = $this->createForm(ConfiguratorType::class, $configurator);
-
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-
-            foreach ($configurator->getSteps() as $step) {
-                $step->setConfigurator($configurator);
-                foreach ($step->getProductChoices() as $choice) {
-                    $choice->setStep($step);
-                }
-            }
-
-            $em->flush();
-
-            $this->addFlash('success', $this->trans('Updated scenario', 'Modules.Drsoftfrproductwizard.Success'));
-
-            return $this->redirectToRoute(self::PAGE_INDEX_ROUTE);
-        }
+        $this->defineJsProps();
 
         return $this->render(self::TEMPLATE_FOLDER . 'form/index.html.twig', [
-            'form' => $form->createView(),
+            'configurator_id' => $configurator->getId(),
+            'return_url' => $this->generateUrl(self::PAGE_INDEX_ROUTE),
             'module' => $this->getModule(),
-            'steps_choices' => $this->prepareStepChoices($configurator),
             'manifest' => $this->manifest,
         ]);
     }
@@ -201,8 +154,10 @@ final class ConfiguratorController extends FrameworkBundleAdminController
         if ($this->isCsrfTokenValid('delete' . $configurator->getId(), $request->request->get('_token'))) {
             $em->remove($configurator);
             $em->flush();
+
             $this->addFlash('success', $this->trans('Deleted scenario', 'Modules.Drsoftfrproductwizard.Success'));
         }
+
         return $this->redirectToRoute(self::PAGE_INDEX_ROUTE);
     }
 
@@ -292,56 +247,12 @@ final class ConfiguratorController extends FrameworkBundleAdminController
         ]);
     }
 
-    /**
-     * Prepare step choices for the configurator form.
-     *
-     * @param Configurator $configurator
-     *
-     * @return array
-     */
-    private function prepareStepChoices(Configurator $configurator): array
-    {
-        $stepsChoices = [];
-        /**
-         * @var int $stepIdx
-         * @var Step $step
-         */
-        foreach ($configurator->getSteps() as $step) {
-            $stepsChoices[$step->getId()] = [
-                'idx' => $step->getId(),
-                'label' => $step->getLabel(),
-                'choices' => [],
-                'position' => $step->getPosition(),
-            ];
-
-            /**
-             * @var int $choiceIdx
-             * @var ProductChoice $choice
-             */
-            foreach ($step->getProductChoices() as $choice) {
-                $stepsChoices[$step->getId()]['choices'][] = [
-                    'idx' => $choice->getId(),
-                    'label' => $choice->getLabel()
-                ];
-            }
-        }
-
-        return $stepsChoices;
-    }
-
-    /**
-     * @param Configurator $configurator
-     *
-     * @return void
-     */
-    private function defineJsProps(Configurator $configurator): void
+    private function defineJsProps(): void
     {
         \Media::addJsDef([
             'drsoftfrproductwizard' => [
-                'routes' => [
-                    'product_search' => $this->generateUrl('admin_drsoft_fr_product_wizard_configurator_product_search'),
-                ],
-                'data' => $configurator->toArray(),
+                'routes' => [],
+                'messages' => [],
             ],
         ]);
     }
