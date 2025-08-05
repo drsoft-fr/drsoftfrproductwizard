@@ -1,2 +1,6 @@
 _admin_drsoft_fr_product_wizard_configurator_routing:
   resource: "routes/configurator.yml"
+
+_admin_drsoft_fr_product_wizard_configurator_api_routing:
+  resource: "routes/configurator_api.yml"
+  prefix: /api

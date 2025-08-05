@@ -7,6 +7,12 @@ services:
     arguments:
       - '@=service("prestashop.adapter.legacy.context").getLanguage().id'
       - '@=service("prestashop.adapter.legacy.context").getContext().shop.id'
+      
+  DrSoftFr\Module\ProductWizard\Controller\Admin\ConfiguratorApiController:
+    tags: [ 'controller.service_arguments' ]
+    arguments:
+      - '@=service("prestashop.adapter.legacy.context").getLanguage().id'
+      - '@=service("prestashop.adapter.legacy.context").getContext().shop.id'
 
   DrSoftFr\Module\ProductWizard\Form\ConfiguratorType:
     tags:

@@ -1,0 +1,7 @@
+admin_drsoft_fr_product_wizard_configurator_api_get:
+  path: /
+  methods: [ GET ]
+  defaults:
+    _controller: DrSoftFr\Module\ProductWizard\Controller\Admin\ConfiguratorApiController::getAction
+    _legacy_controller: AdminDrSoftFrProductWizardConfiguratorApi
+    _legacy_link: AdminDrSoftFrProductWizardConfiguratorApi:get

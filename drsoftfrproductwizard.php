@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use DrSoftFr\Module\ProductWizard\Config;
+use DrSoftFr\Module\ProductWizard\Controller\Admin\ConfiguratorApiController;
 use DrSoftFr\Module\ProductWizard\Controller\Admin\ConfiguratorController;
 use DrSoftFr\Module\ProductWizard\Controller\Hook\ActionFrontControllerSetMediaController;
 use DrSoftFr\Module\ProductWizard\Controller\Hook\ActionFrontControllerSetVariablesController;
@@ -61,6 +62,12 @@ class drsoftfrproductwizard extends Module
                 'parent_class_name' => 'AdminCatalog',
                 'route_name' => 'admin_drsoft_fr_product_wizard_configurator_index',
                 'visible' => true,
+            ],
+            [
+                'class_name' => ConfiguratorApiController::TAB_CLASS_NAME,
+                'name' => 'Configurator API',
+                'parent_class_name' => ConfiguratorController::TAB_CLASS_NAME,
+                'visible' => false,
             ],
         ];
         $this->version = '1.0.0';
