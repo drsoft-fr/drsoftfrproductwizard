@@ -65,6 +65,34 @@ export const useConfiguratorStore = defineStore('configurator', {
       })
     },
 
+    // Add a product choice to a step
+    addProductChoice(stepId) {
+      const step = this.getStep(stepId)
+      if (!step) {
+        return null
+      }
+
+      if (!step.product_choices) {
+        step.product_choices = []
+      }
+
+      const newChoiceId = `virtual-${this.nextTempId--}`
+
+      step.product_choices.push({
+        id: newChoiceId,
+        label: 'Nouveau choix',
+        active: true,
+        is_default: false,
+        product_id: null,
+        allow_quantity: true,
+        forced_quantity: null,
+        display_conditions: [],
+        is_virtual: true,
+      })
+
+      return newChoiceId
+    },
+
     // Set loading state
     setLoading(loading) {
       this.loading = loading
