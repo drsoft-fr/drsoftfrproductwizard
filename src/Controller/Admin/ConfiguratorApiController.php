@@ -4,12 +4,16 @@ declare(strict_types=1);
 
 namespace DrSoftFr\Module\ProductWizard\Controller\Admin;
 
+use Doctrine\ORM\EntityManagerInterface;
+use DrSoftFr\Module\ProductWizard\Entity\Configurator;
+use DrSoftFr\Module\ProductWizard\Exception\Configurator\ConfiguratorNotFoundException;
 use DrSoftFr\Module\ProductWizard\Repository\ConfiguratorRepository;
 use PrestaShopBundle\Controller\Admin\FrameworkBundleAdminController;
 use PrestaShopBundle\Security\Annotation\AdminSecurity;
 use PrestaShopBundle\Security\Annotation\ModuleActivated;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Class ConfiguratorApiController.
@@ -75,6 +79,81 @@ final class ConfiguratorApiController extends FrameworkBundleAdminController
             'success' => true,
             'configurator' => $configurator->toArray(),
         ]);
+    }
+
+    /**
+     * Save Configurator
+     *
+     * @AdminSecurity(
+     *     "is_granted(['update', 'create'], request.get('_legacy_controller'))",
+     *     redirectRoute="admin_drsoft_fr_product_wizard_configurator_index",
+     *     message="You do not have permission to save this."
+     * )
+     *
+     * @param Request $request
+     * @param EntityManagerInterface $em
+     *
+     * @return JsonResponse
+     */
+    public function saveAction(
+        Request                $request,
+        EntityManagerInterface $em
+    ): JsonResponse
+    {
+        $data = json_decode($request->getContent(), true);
+
+        if (!isset($data['configurator'])) {
+            return $this->json([
+                'success' => false,
+                'message' => 'Invalid request data',
+            ], Response::HTTP_BAD_REQUEST);
+        }
+
+        $configuratorData = $data['configurator'];
+        $isNew = empty($configuratorData['id']);
+
+        try {
+            $em->beginTransaction();
+
+            if ($isNew) {
+                $configurator = new Configurator();
+            } else {
+                $configurator = $this->getConfiguratorRepository()->find($configuratorData['id']);
+
+                if (!$configurator) {
+                    throw new ConfiguratorNotFoundException('Configurator not found');
+                }
+            }
+
+            $configurator->setName($configuratorData['name']);
+            $configurator->setActive($configuratorData['active']);
+
+            if ($isNew) {
+                $em->persist($configurator);
+                $em->flush(); // Flush to get ID
+            }
+
+            // TODO save Steps
+
+            $em->flush();
+            $em->commit();
+
+            return $this->json([
+                'success' => true,
+                'message' => $isNew ? 'Configurator created successfully' : 'Configurator updated successfully',
+                'configurator' => $configurator->toArray(),
+                'route' => $this->generateUrl('admin_drsoft_fr_product_wizard_configurator_edit', [
+                    'id' => $configurator->getId(),
+                ])
+            ]);
+        } catch (\Throwable $t) {
+            $em->rollback();
+
+            return $this->json([
+                'success' => false,
+                'message' => 'Error saving configurator: ' . $t->getMessage(),
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
     }
 
     /**

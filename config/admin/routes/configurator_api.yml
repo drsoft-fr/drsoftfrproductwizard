@@ -5,3 +5,11 @@ admin_drsoft_fr_product_wizard_configurator_api_get:
     _controller: DrSoftFr\Module\ProductWizard\Controller\Admin\ConfiguratorApiController::getAction
     _legacy_controller: AdminDrSoftFrProductWizardConfiguratorApi
     _legacy_link: AdminDrSoftFrProductWizardConfiguratorApi:get
+
+admin_drsoft_fr_product_wizard_configurator_api_save:
+  path: /save
+  methods: [ POST ]
+  defaults:
+    _controller: DrSoftFr\Module\ProductWizard\Controller\Admin\ConfiguratorApiController::saveAction
+    _legacy_controller: AdminDrSoftFrProductWizardConfiguratorApi
+    _legacy_link: AdminDrSoftFrProductWizardConfiguratorApi:save

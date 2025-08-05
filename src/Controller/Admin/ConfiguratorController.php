@@ -254,6 +254,7 @@ final class ConfiguratorController extends FrameworkBundleAdminController
                 'routes' => [
                     'home' => $this->generateUrl('admin_drsoft_fr_product_wizard_configurator_index'),
                     'get' => $this->generateUrl('admin_drsoft_fr_product_wizard_configurator_api_get'),
+                    'save' => $this->generateUrl('admin_drsoft_fr_product_wizard_configurator_api_save'),
                 ],
                 'messages' => [
                     'Modules.Drsoftfrproductwizard.Admin' => [
