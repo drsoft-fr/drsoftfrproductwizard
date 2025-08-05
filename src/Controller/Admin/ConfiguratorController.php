@@ -276,6 +276,9 @@ final class ConfiguratorController extends FrameworkBundleAdminController
                         'Wording' => $this->trans('Wording', 'Modules.Drsoftfrproductwizard.Admin'),
                         'New' => $this->trans('New', 'Modules.Drsoftfrproductwizard.Admin'),
                         'Step' => $this->trans('Step', 'Modules.Drsoftfrproductwizard.Admin'),
+                        'Add a product selection' => $this->trans('Add a product selection', 'Modules.Drsoftfrproductwizard.Admin'),
+                        'No product selection defined for this step.' => $this->trans('No product selection defined for this step.', 'Modules.Drsoftfrproductwizard.Admin'),
+                        'Product selection' => $this->trans('Product selection', 'Modules.Drsoftfrproductwizard.Admin'),
                     ],
                     'Modules.Drsoftfrproductwizard.Error' => [
                         'Error loading the configurator' => $this->trans('Error loading the configurator', 'Modules.Drsoftfrproductwizard.Error'),
