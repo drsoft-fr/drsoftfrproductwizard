@@ -55,6 +55,16 @@ export const useConfiguratorStore = defineStore('configurator', {
       return newStepId
     },
 
+    // Remove a step
+    removeStep(stepId) {
+      this.steps = this.steps.filter((step) => step.id !== stepId)
+
+      // Update positions
+      this.steps.forEach((step, index) => {
+        step.position = index
+      })
+    },
+
     // Set loading state
     setLoading(loading) {
       this.loading = loading
