@@ -236,14 +236,26 @@ class ProductChoice
 
         /** @var array $condition */
         foreach ($displayConditions as $condition) {
-            $key = $condition['step'] . '_' . $condition['choice'];
+            if (false === isset(
+                    $condition['step'],
+                    $condition['choice']
+                )) {
+                continue;
+            }
+
+            $arr = [
+                'choice' => (int)$condition['choice'],
+                'step' => (int)$condition['step'],
+            ];
+
+            $key = $arr['step'] . '_' . $arr['choice'];
 
             if (isset($conditionsMap[$key])) {
                 continue;
             }
 
             $conditionsMap[$key] = true;
-            $uniqueConditions[] = $condition;
+            $uniqueConditions[] = $arr;
         }
 
         $this->displayConditions = $uniqueConditions;
