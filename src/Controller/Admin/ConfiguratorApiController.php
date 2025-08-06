@@ -8,6 +8,8 @@ use Doctrine\ORM\EntityManagerInterface;
 use DrSoftFr\Module\ProductWizard\Entity\Configurator;
 use DrSoftFr\Module\ProductWizard\Exception\Configurator\ConfiguratorNotFoundException;
 use DrSoftFr\Module\ProductWizard\Repository\ConfiguratorRepository;
+use DrSoftFr\Module\ProductWizard\Repository\StepRepository;
+use DrSoftFr\Module\ProductWizard\Repository\ProductChoiceRepository;
 use PrestaShop\PrestaShop\Adapter\Product\Repository\ProductRepository;
 use PrestaShop\PrestaShop\Core\Domain\Language\ValueObject\LanguageId;
 use PrestaShop\PrestaShop\Core\Domain\Shop\ValueObject\ShopId;
@@ -231,5 +233,23 @@ final class ConfiguratorApiController extends FrameworkBundleAdminController
     {
         /** @type ConfiguratorRepository */
         return $this->get('drsoft_fr.module.product_wizard.repository.configurator_repository');
+    }
+
+    /**
+     * @return StepRepository
+     */
+    private function getStepRepository(): StepRepository
+    {
+        /** @type StepRepository */
+        return $this->get('drsoft_fr.module.product_wizard.repository.step_repository');
+    }
+
+    /**
+     * @return ProductChoiceRepository
+     */
+    private function getProductChoiceRepository(): ProductChoiceRepository
+    {
+        /** @type ProductChoiceRepository */
+        return $this->get('drsoft_fr.module.product_wizard.repository.product_choice_repository');
     }
 }
