@@ -174,7 +174,7 @@ class ProductChoice
         return $this->productId;
     }
 
-    public function setProductId(int $productId): ProductChoice
+    public function setProductId(?int $productId): ProductChoice
     {
         $this->productId = $productId;
         return $this;
@@ -207,7 +207,7 @@ class ProductChoice
         return $this->forcedQuantity;
     }
 
-    public function setForcedQuantity(int $forcedQuantity): ProductChoice
+    public function setForcedQuantity(?int $forcedQuantity): ProductChoice
     {
         $this->forcedQuantity = $forcedQuantity;
         return $this;
