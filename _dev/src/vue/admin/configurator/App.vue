@@ -129,14 +129,16 @@ const handleSubmit = async () => {
       setTimeout(() => {
         window.location.href = data.route
       }, 1000)
-    } else {
-      // Or update store with returned data
-      store.initializeStore(data.configurator)
+
+      return
     }
+
+    // Or update store with returned data
+    store.initializeStore(data.configurator)
+    store.setLoading(false)
   } catch (error) {
     console.error($t('Error saving configurator:'), error)
     showAlert('danger', $t('An error occurred while saving the configurator.'))
-  } finally {
     store.setLoading(false)
   }
 }
