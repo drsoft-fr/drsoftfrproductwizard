@@ -7,6 +7,7 @@ namespace DrSoftFr\Module\ProductWizard\Controller\Admin;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
 use DrSoftFr\Module\ProductWizard\Entity\Configurator;
+use DrSoftFr\Module\ProductWizard\Entity\ProductChoice;
 use DrSoftFr\Module\ProductWizard\Entity\Step;
 use DrSoftFr\Module\ProductWizard\Exception\Configurator\ConfiguratorNotFoundException;
 use DrSoftFr\Module\ProductWizard\Repository\ConfiguratorRepository;
@@ -122,20 +123,20 @@ final class ConfiguratorApiController extends FrameworkBundleAdminController
         try {
             $em->beginTransaction();
 
-            if ($isNew) {
+            if (true === $isNew) {
                 $configurator = new Configurator();
             } else {
                 $configurator = $this->getConfiguratorRepository()->find($configuratorData['id']);
+            }
 
-                if (!$configurator) {
-                    throw new ConfiguratorNotFoundException('Configurator not found');
-                }
+            if (null === $configurator) {
+                throw new ConfiguratorNotFoundException('Configurator not found');
             }
 
             $configurator->setName($configuratorData['name']);
             $configurator->setActive($configuratorData['active']);
 
-            if ($isNew) {
+            if (true === $isNew) {
                 $em->persist($configurator);
             }
 
@@ -249,8 +250,7 @@ final class ConfiguratorApiController extends FrameworkBundleAdminController
             }
 
             $processedSteps->add($step);
-
-            // TODO Process product choices
+            $this->processProductChoices($step, $stepData['product_choices'] ?? []);
         }
 
         // Remove steps that were not in the request
@@ -260,6 +260,59 @@ final class ConfiguratorApiController extends FrameworkBundleAdminController
             }
 
             $stepsCollection->removeElement($step);
+        }
+    }
+
+    /**
+     * Process product choices data
+     *
+     * @param Step $step
+     * @param array $productChoicesData
+     */
+    private function processProductChoices(
+        Step  $step,
+        array $productChoicesData
+    ): void
+    {
+        $choicesCollection = $step->getProductChoices();
+        $processedChoices = new ArrayCollection();
+
+        foreach ($productChoicesData as $choiceData) {
+            $isNew = !isset($choiceData['id']) || str_starts_with((string)$choiceData['id'], 'virtual-');
+
+            if (true === $isNew) {
+                $choice = new ProductChoice();
+            } else {
+                $choice = $choicesCollection->filter(fn(ProductChoice $c) => (string)$c->getId() === (string)$choiceData['id'])->first() ?: null;;
+            }
+
+            if (null === $choice) {
+                continue;
+            }
+
+            $choice->setStep($step);
+            $choice->setLabel($choiceData['label']);
+            $choice->setProductId($choiceData['product_id'] ?? null);
+            $choice->setIsDefault($choiceData['is_default'] ?? false);
+            $choice->setAllowQuantity($choiceData['allow_quantity'] ?? true);
+            $choice->setForcedQuantity($choiceData['forced_quantity'] ?? null);
+            $choice->setActive($choiceData['active'] ?? true);
+            $choice->setDisplayConditions($choiceData['display_conditions'] ?? []);
+
+            if (true === $isNew) {
+                $choicesCollection->add($choice);
+            }
+
+            $processedChoices->add($choice);
+        }
+
+        // Remove choices that were not in the request
+        foreach ($choicesCollection as $choice) {
+            if (true === $processedChoices->contains($choice)) {
+                continue;
+            }
+
+            $choicesCollection->removeElement($choice);
         }
     }
 
