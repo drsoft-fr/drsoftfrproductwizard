@@ -8,6 +8,9 @@ use Doctrine\ORM\EntityManagerInterface;
 use DrSoftFr\Module\ProductWizard\Entity\Configurator;
 use DrSoftFr\Module\ProductWizard\Exception\Configurator\ConfiguratorNotFoundException;
 use DrSoftFr\Module\ProductWizard\Repository\ConfiguratorRepository;
+use PrestaShop\PrestaShop\Adapter\Product\Repository\ProductRepository;
+use PrestaShop\PrestaShop\Core\Domain\Language\ValueObject\LanguageId;
+use PrestaShop\PrestaShop\Core\Domain\Shop\ValueObject\ShopId;
 use PrestaShopBundle\Controller\Admin\FrameworkBundleAdminController;
 use PrestaShopBundle\Security\Annotation\AdminSecurity;
 use PrestaShopBundle\Security\Annotation\ModuleActivated;
@@ -153,6 +156,71 @@ final class ConfiguratorApiController extends FrameworkBundleAdminController
                 'success' => false,
                 'message' => 'Error saving configurator: ' . $t->getMessage(),
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    /**
+     * Search products by name
+     *
+     * @AdminSecurity(
+     *     "is_granted(['read'], request.get('_legacy_controller'))",
+     *     redirectRoute="admin_drsoft_fr_product_wizard_configurator_index",
+     *     message="You do not have permission to access this."
+     * )
+     *
+     * @param Request $request
+     * @param ProductRepository $repository
+     *
+     * @return JsonResponse
+     */
+    public function productSearchAction(Request $request, ProductRepository $repository): JsonResponse
+    {
+        try {
+            $q = $request->query->get('q');
+
+            if (empty($q)) {
+                return $this->json([
+                    'success' => true,
+                    'items' => []
+                ]);
+            }
+
+            $results = $repository->searchProducts(pSQL($q), new LanguageId($this->languageId), new ShopId($this->shopId), 20);
+
+            return $this->json([
+                'success' => true,
+                'items' => array_map(function ($p) {
+                    return [
+                        'id' => $p['id_product'],
+                        'text' => $p['name'],
+                        'image_url' => $this->getProductImageUrl($p['id_product']),
+                        'price' => $p['price_amount'] ?? null
+                    ];
+                }, $results)
+            ]);
+        } catch (\Throwable $t) {
+            return $this->json([
+                'success' => false,
+                'message' => 'Error searching products: ' . $t->getMessage(),
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    /**
+     * Get product image URL
+     *
+     * @param int $productId
+     *
+     * @return string|null
+     */
+    private function getProductImageUrl(int $productId): ?string
+    {
+        try {
+            $link = $this->get('prestashop.link');
+
+            return $link->getImageLink('product', $productId, 'home_default');
+        } catch (\Throwable $t) {
+            return null;
         }
     }
 

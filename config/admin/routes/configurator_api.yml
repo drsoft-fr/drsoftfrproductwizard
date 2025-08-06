@@ -13,3 +13,11 @@ admin_drsoft_fr_product_wizard_configurator_api_save:
     _controller: DrSoftFr\Module\ProductWizard\Controller\Admin\ConfiguratorApiController::saveAction
     _legacy_controller: AdminDrSoftFrProductWizardConfiguratorApi
     _legacy_link: AdminDrSoftFrProductWizardConfiguratorApi:save
+
+admin_drsoft_fr_product_wizard_configurator_api_product_search:
+  path: /product-search
+  methods: [ GET ]
+  defaults:
+    _controller: DrSoftFr\Module\ProductWizard\Controller\Admin\ConfiguratorApiController::productSearchAction
+    _legacy_controller: AdminDrSoftFrProductWizardConfiguratorApi
+    _legacy_link: AdminDrSoftFrProductWizardConfiguratorApi:productSearch

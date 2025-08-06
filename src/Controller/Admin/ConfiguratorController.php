@@ -14,9 +14,6 @@ use DrSoftFr\Module\ProductWizard\Repository\ConfiguratorRepository;
 use DrSoftFr\PrestaShopModuleHelper\Domain\Asset\Package;
 use DrSoftFr\PrestaShopModuleHelper\Domain\Asset\VersionStrategy\JsonManifestVersionStrategy;
 use drsoftfrproductwizard;
-use PrestaShop\PrestaShop\Adapter\Product\Repository\ProductRepository;
-use PrestaShop\PrestaShop\Core\Domain\Language\ValueObject\LanguageId;
-use PrestaShop\PrestaShop\Core\Domain\Shop\ValueObject\ShopId;
 use PrestaShopBundle\Controller\Admin\FrameworkBundleAdminController;
 use PrestaShopBundle\Security\Annotation\AdminSecurity;
 use PrestaShopBundle\Security\Annotation\ModuleActivated;
@@ -36,26 +33,13 @@ final class ConfiguratorController extends FrameworkBundleAdminController
     const TEMPLATE_FOLDER = '@Modules/drsoftfrproductwizard/views/templates/admin/configurator/';
 
     /**
-     * @var int
-     */
-    private $languageId;
-
-    /**
-     * @var int
-     */
-    private $shopId;
-
-    /**
      * @var Package
      */
     private $manifest;
 
-    public function __construct(int $languageId, int $shopId)
+    public function __construct()
     {
         parent::__construct();
-
-        $this->languageId = $languageId;
-        $this->shopId = $shopId;
 
         $this->manifest = new Package(
             new JsonManifestVersionStrategy(
@@ -209,44 +193,6 @@ final class ConfiguratorController extends FrameworkBundleAdminController
         ]);
     }
 
-    /**
-     * Search products by name
-     *
-     * @AdminSecurity(
-     *     "is_granted('read', request.get('_legacy_controller'))",
-     *     redirectRoute="admin_drsoft_fr_product_wizard_configurator_index",
-     *     message="You do not have permission to access this."
-     * )
-     *
-     * @param Request $request
-     * @param ProductRepository $repository
-     *
-     * @return Response
-     */
-    public function productSearchAction(Request $request, ProductRepository $repository): Response
-    {
-        try {
-            $q = $request->query->get('q');
-
-            if (empty($q)) {
-                return $this->json(['items' => []]);
-            }
-
-            $results = $repository->searchProducts(pSQL($q), new LanguageId($this->languageId), new ShopId($this->shopId), 20);
-        } catch (\Throwable $e) {
-            $results = [
-                'id' => 0,
-                'name' => 'Error: ' . $e->getMessage(),
-            ];
-        }
-
-        return $this->json([
-            'items' => array_map(function ($p) {
-                return ['id' => $p['id_product'], 'text' => $p['name']];
-            }, $results)
-        ]);
-    }
-
     private function defineJsProps(): void
     {
         \Media::addJsDef([
@@ -255,6 +201,7 @@ final class ConfiguratorController extends FrameworkBundleAdminController
                     'home' => $this->generateUrl('admin_drsoft_fr_product_wizard_configurator_index'),
                     'get' => $this->generateUrl('admin_drsoft_fr_product_wizard_configurator_api_get'),
                     'save' => $this->generateUrl('admin_drsoft_fr_product_wizard_configurator_api_save'),
+                    'product_search' => $this->generateUrl('admin_drsoft_fr_product_wizard_configurator_api_product_search'),
                 ],
                 'messages' => [
                     'Modules.Drsoftfrproductwizard.Admin' => [
