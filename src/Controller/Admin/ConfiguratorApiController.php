@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace DrSoftFr\Module\ProductWizard\Controller\Admin;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
 use DrSoftFr\Module\ProductWizard\Entity\Configurator;
+use DrSoftFr\Module\ProductWizard\Entity\Step;
 use DrSoftFr\Module\ProductWizard\Exception\Configurator\ConfiguratorNotFoundException;
 use DrSoftFr\Module\ProductWizard\Repository\ConfiguratorRepository;
 use DrSoftFr\Module\ProductWizard\Repository\StepRepository;
@@ -135,10 +137,12 @@ final class ConfiguratorApiController extends FrameworkBundleAdminController
 
             if ($isNew) {
                 $em->persist($configurator);
-                $em->flush(); // Flush to get ID
             }
 
-            // TODO save Steps
+            $this->processSteps(
+                $configurator,
+                $configuratorData['steps'] ?? []
+            );
 
             $em->flush();
             $em->commit();
@@ -205,6 +209,57 @@ final class ConfiguratorApiController extends FrameworkBundleAdminController
                 'success' => false,
                 'message' => 'Error searching products: ' . $t->getMessage(),
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    /**
+     * Process steps data
+     *
+     * @param Configurator $configurator
+     * @param array $stepsData
+     */
+    private function processSteps(
+        Configurator $configurator,
+        array        $stepsData
+    ): void
+    {
+        $stepsCollection = $configurator->getSteps();
+        $processedSteps = new ArrayCollection();
+
+        foreach ($stepsData as $stepData) {
+            $isNew = !isset($stepData['id']) || str_starts_with((string)$stepData['id'], 'virtual-');
+
+            if (true === $isNew) {
+                $step = new Step();
+            } else {
+                $step = $stepsCollection->filter(fn(Step $s) => (string)$s->getId() === (string)$stepData['id'])->first() ?: null;
+            }
+
+            if (null === $step) {
+                continue;
+            }
+
+            $step->setConfigurator($configurator);
+            $step->setLabel($stepData['label']);
+            $step->setPosition($stepData['position']);
+            $step->setActive($stepData['active']);
+
+            if (true === $isNew) {
+                $stepsCollection->add($step);
+            }
+
+            $processedSteps->add($step);
+
+            // TODO Process product choices
+        }
+
+        // Remove steps that were not in the request
+        foreach ($stepsCollection as $step) {
+            if (true === $processedSteps->contains($step)) {
+                continue;
+            }
+
+            $stepsCollection->removeElement($step);
         }
     }
 
