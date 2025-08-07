@@ -1,4 +1,6 @@
 <script setup>
+import { useProductSearchStore } from '@/js/admin/configurator/form/stores/productSearch'
+
 const props = defineProps({
   value: { type: [Number, String], default: null },
   placeholder: { type: String, default: 'Search for a product...' },
@@ -6,6 +8,8 @@ const props = defineProps({
   disabled: { type: Boolean, default: false },
   productChoiceId: { type: [Number, String], default: null },
 })
+
+const productSearchStore = useProductSearchStore()
 </script>
 
 <template>
