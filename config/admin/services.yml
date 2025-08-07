@@ -2,6 +2,19 @@ imports:
   - { resource: ../common.yml }
 
 services:
+  DrSoftFr\Module\ProductWizard\Controller\Admin\ConfiguratorController:
+    tags: [ 'controller.service_arguments' ]
+
+  DrSoftFr\Module\ProductWizard\Controller\Admin\ConfiguratorApiController:
+    tags: [ 'controller.service_arguments' ]
+    arguments:
+      - '@=service("prestashop.adapter.legacy.context").getLanguage().id'
+      - '@=service("prestashop.adapter.legacy.context").getContext().shop.id'
+
+  DrSoftFr\Module\ProductWizard\Service\ConfiguratorFactory:
+    class: DrSoftFr\Module\ProductWizard\Service\ConfiguratorFactory
+    autowire: true
+
   drsoft_fr.module.product_wizard.module:
     class: drsoftfrproductwizard
     public: true

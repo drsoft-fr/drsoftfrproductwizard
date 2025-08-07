@@ -2,12 +2,18 @@ services:
   _defaults:
     public: true
 
+  DrSoftFr\Module\ProductWizard\Normalizer\ConfiguratorNormalizer:
+    class: DrSoftFr\Module\ProductWizard\Normalizer\ConfiguratorNormalizer
+
   # repository
   drsoft_fr.module.product_wizard.repository.configurator_repository:
     class: DrSoftFr\Module\ProductWizard\Repository\ConfiguratorRepository
     factory: [ '@doctrine.orm.default_entity_manager', getRepository ]
     arguments:
       - DrSoftFr\Module\ProductWizard\Entity\Configurator
+
+  DrSoftFr\Module\ProductWizard\Repository\ConfiguratorRepository:
+    alias: drsoft_fr.module.product_wizard.repository.configurator_repository
 
   drsoft_fr.module.product_wizard.repository.step_repository:
     class: DrSoftFr\Module\ProductWizard\Repository\StepRepository
