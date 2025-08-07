@@ -24,14 +24,14 @@ useSortable(() => stepsContainer.value)
   <div class="steps-container">
     <h2 class="mb-3">{{ $t('Steps in the scenario') }}</h2>
     <div ref="stepsContainer" class="steps-list sortable-list">
-      <TransitionGroup name="fade">
+      <Transition name="fade" mode="out-in">
         <div v-if="!hasSteps" class="alert alert-info">
           {{ $t('No steps defined for this scenario.') }}
         </div>
-        <template v-else>
+        <div v-else>
           <Step v-for="step in steps" :key="step.id" :step-id="step.id" />
-        </template>
-      </TransitionGroup>
+        </div>
+      </Transition>
     </div>
     <button type="button" class="btn btn-outline-primary mt-3" @click="addStep">
       <i class="material-icons">add</i>

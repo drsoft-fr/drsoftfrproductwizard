@@ -31,19 +31,20 @@ const addProductChoice = () => {
       <h5 class="mb-0">{{ $t('Product selection') }}</h5>
     </div>
 
-    <div v-if="!hasProductChoices" class="alert alert-info">
-      <i class="material-icons">info</i>
-      {{ $t('No product selection defined for this step.') }}
-    </div>
+    <Transition name="fade" mode="out-in">
+      <div v-if="!hasProductChoices" class="alert alert-info">
+        {{ $t('No product selection defined for this step.') }}
+      </div>
 
-    <div v-else class="product-choices-list mb-3">
-      <ProductChoice
-        v-for="productChoice in productChoices"
-        :key="productChoice.id"
-        :step-id="stepId"
-        :product-choice-id="productChoice.id"
-      />
-    </div>
+      <div v-else class="product-choices-list mb-3">
+        <ProductChoice
+          v-for="productChoice in productChoices"
+          :key="productChoice.id"
+          :step-id="stepId"
+          :product-choice-id="productChoice.id"
+        />
+      </div>
+    </Transition>
 
     <button
       type="button"
