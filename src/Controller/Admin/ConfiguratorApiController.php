@@ -28,22 +28,12 @@ final class ConfiguratorApiController extends FrameworkBundleAdminController
 {
     const TAB_CLASS_NAME = 'AdminDrSoftFrProductWizardConfiguratorApi';
 
-    /**
-     * @var int
-     */
-    private $languageId;
-
-    /**
-     * @var int
-     */
-    private $shopId;
-
-    public function __construct(int $languageId, int $shopId)
+    public function __construct(
+        private readonly int $languageId,
+        private readonly int $shopId
+    )
     {
         parent::__construct();
-
-        $this->languageId = $languageId;
-        $this->shopId = $shopId;
     }
 
     /**
@@ -56,10 +46,14 @@ final class ConfiguratorApiController extends FrameworkBundleAdminController
      * )
      *
      * @param Request $request
+     * @param ConfiguratorRepository $repository
      *
      * @return JsonResponse
      */
-    public function getAction(Request $request): JsonResponse
+    public function getAction(
+        Request                $request,
+        ConfiguratorRepository $repository
+    ): JsonResponse
     {
         $configuratorId = $request->query->get('configuratorId');
 
@@ -70,7 +64,7 @@ final class ConfiguratorApiController extends FrameworkBundleAdminController
             ]);
         }
 
-        $configurator = $this->getConfiguratorRepository()->find($configuratorId);
+        $configurator = $repository->find($configuratorId);
 
         if (null === $configurator) {
             return $this->json([
@@ -210,14 +204,5 @@ final class ConfiguratorApiController extends FrameworkBundleAdminController
         } catch (\Throwable $t) {
             return null;
         }
-    }
-
-    /**
-     * @return ConfiguratorRepository
-     */
-    private function getConfiguratorRepository(): ConfiguratorRepository
-    {
-        /** @type ConfiguratorRepository */
-        return $this->get('drsoft_fr.module.product_wizard.repository.configurator_repository');
     }
 }
