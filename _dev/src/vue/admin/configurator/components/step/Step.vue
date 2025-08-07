@@ -124,11 +124,11 @@ const toggleCollapse = () => {
         <input
           type="checkbox"
           class="form-check-input"
-          id="active-{{ stepId }}"
+          :id="`active-${stepId}`"
           :checked="step ? step.active : true"
           @change="updateActive"
         />
-        <label class="form-check-label" for="active-{{ stepId }}">
+        <label class="form-check-label" :for="`active-${stepId}`">
           {{ $t('Active') }}
         </label>
       </div>
