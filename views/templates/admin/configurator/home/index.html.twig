@@ -6,9 +6,11 @@
             <div class="card">
                 <h1 class="card-header">Scénarios de configuration</h1>
                 <div class="card-body card-block">
-                    <a class="btn btn-primary mb-3"
-                       href="{{ path('admin_drsoft_fr_product_wizard_configurator_new') }}">Ajouter un
-                        scénario</a>
+                    {% if is_granted('ROLE_MOD_TAB_ADMINDRSOFTFRPRODUCTWIZARDCONFIGURATOR_CREATE') %}
+                        <a class="btn btn-primary mb-3"
+                           href="{{ path('admin_drsoft_fr_product_wizard_configurator_new') }}">Ajouter un
+                            scénario</a>
+                    {% endif %}
                     <table class="table">
                         <thead>
                         <tr>
@@ -29,15 +31,20 @@
                                 <td>[drsoft-fr-product-wizard id="{{ configurator.id }}"]</td>
                                 <td>{{ configurator.dateAdd|date('d/m/Y H:i') }}</td>
                                 <td>
-                                    <a href="{{ path('admin_drsoft_fr_product_wizard_configurator_edit', {id: configurator.id}) }}"
-                                       class="btn btn-sm btn-warning">Éditer</a>
-                                    <form method="post"
-                                          action="{{ path('admin_drsoft_fr_product_wizard_configurator_delete', {id: configurator.id}) }}"
-                                          style="display:inline;" onsubmit="return confirm('Supprimer ce scénario ?');">
-                                        <input type="hidden" name="_token"
-                                               value="{{ csrf_token('delete' ~ configurator.id) }}">
-                                        <button class="btn btn-sm btn-danger">Supprimer</button>
-                                    </form>
+                                    {% if is_granted('ROLE_MOD_TAB_ADMINDRSOFTFRPRODUCTWIZARDCONFIGURATOR_UPDATE') %}
+                                        <a href="{{ path('admin_drsoft_fr_product_wizard_configurator_edit', {id: configurator.id}) }}"
+                                           class="btn btn-sm btn-warning">Éditer</a>
+                                    {% endif %}
+                                    {% if is_granted('ROLE_MOD_TAB_ADMINDRSOFTFRPRODUCTWIZARDCONFIGURATOR_DELETE') %}
+                                        <form method="post"
+                                              action="{{ path('admin_drsoft_fr_product_wizard_configurator_delete', {id: configurator.id}) }}"
+                                              style="display:inline;"
+                                              onsubmit="return confirm('Supprimer ce scénario ?');">
+                                            <input type="hidden" name="_token"
+                                                   value="{{ csrf_token('delete' ~ configurator.id) }}">
+                                            <button class="btn btn-sm btn-danger">Supprimer</button>
+                                        </form>
+                                    {% endif %}
                                 </td>
                             </tr>
                         {% else %}
