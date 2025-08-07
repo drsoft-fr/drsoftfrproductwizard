@@ -145,13 +145,13 @@ const toggleCollapse = () => {
             <input
               type="checkbox"
               class="form-check-input"
-              id="is-default-{{ productChoiceId }}"
+              :id="`is-default-${productChoiceId}`"
               :checked="productChoice ? productChoice.is_default : false"
               @change="updateIsDefault"
             />
             <label
               class="form-check-label"
-              for="is-default-{{ productChoiceId }}"
+              :for="`is-default-${productChoiceId}`"
             >
               {{ $t('Default choice') }}
             </label>
@@ -163,11 +163,11 @@ const toggleCollapse = () => {
             <input
               type="checkbox"
               class="form-check-input"
-              id="active-{{ productChoiceId }}"
+              :id="`active-${productChoiceId}`"
               :checked="productChoice ? productChoice.active : true"
               @change="updateActive"
             />
-            <label class="form-check-label" for="active-{{ productChoiceId }}">
+            <label class="form-check-label" :for="`active-${productChoiceId}`">
               {{ $t('Active') }}
             </label>
           </div>
@@ -180,13 +180,13 @@ const toggleCollapse = () => {
             <input
               type="checkbox"
               class="form-check-input"
-              id="allow-quantity-{{ productChoiceId }}"
+              :id="`allow-quantity-${productChoiceId}`"
               :checked="productChoice ? productChoice.allow_quantity : true"
               @change="updateAllowQuantity"
             />
             <label
               class="form-check-label"
-              for="allow-quantity-{{ productChoiceId }}"
+              :for="`allow-quantity-${productChoiceId}`"
             >
               {{ $t('Allow selection of quantity') }}
             </label>
