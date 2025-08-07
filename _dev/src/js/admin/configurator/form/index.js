@@ -27,6 +27,7 @@ if (appContainer) {
   const router = useRouter(routes)
   const translator = useTranslator(messages)
 
+  pinia.use(() => ({ $r: router.r }))
   app.use(pinia)
   app.provide('$r', router.r)
   app.provide('$t', translator.t)
