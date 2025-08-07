@@ -37,7 +37,9 @@ final class ConfiguratorController extends FrameworkBundleAdminController
      */
     private $manifest;
 
-    public function __construct()
+    public function __construct(
+        private readonly drsoftfrproductwizard $module
+    )
     {
         parent::__construct();
 
@@ -56,16 +58,20 @@ final class ConfiguratorController extends FrameworkBundleAdminController
      * )
      *
      * @param Request $request
+     * @param ConfiguratorRepository $repository
      *
      * @return Response
      */
-    public function indexAction(Request $request): Response
+    public function indexAction(
+        Request                $request,
+        ConfiguratorRepository $repository
+    ): Response
     {
         return $this->render(self::TEMPLATE_FOLDER . 'home/index.html.twig', [
-            'configurators' => $this->getRepository()->findAll(),
+            'configurators' => $repository->findAll(),
             'enableSidebar' => true,
             'help_link' => $this->generateSidebarLink($request->attributes->get('_legacy_controller')),
-            'module' => $this->getModule(),
+            'module' => $this->module,
             'manifest' => $this->manifest,
         ]);
     }
@@ -88,7 +94,7 @@ final class ConfiguratorController extends FrameworkBundleAdminController
         return $this->render(self::TEMPLATE_FOLDER . 'form/index.html.twig', [
             'configurator_id' => null,
             'return_url' => $this->generateUrl(self::PAGE_INDEX_ROUTE),
-            'module' => $this->getModule(),
+            'module' => $this->module,
             'manifest' => $this->manifest,
         ]);
     }
@@ -113,7 +119,7 @@ final class ConfiguratorController extends FrameworkBundleAdminController
         return $this->render(self::TEMPLATE_FOLDER . 'form/index.html.twig', [
             'configurator_id' => $configurator->getId(),
             'return_url' => $this->generateUrl(self::PAGE_INDEX_ROUTE),
-            'module' => $this->getModule(),
+            'module' => $this->module,
             'manifest' => $this->manifest,
         ]);
     }
@@ -249,23 +255,5 @@ final class ConfiguratorController extends FrameworkBundleAdminController
                 ],
             ],
         ]);
-    }
-
-    /**
-     * @return drsoftfrproductwizard
-     */
-    protected function getModule(): drsoftfrproductwizard
-    {
-        /** @type drsoftfrproductwizard */
-        return $this->get('drsoft_fr.module.product_wizard.module');
-    }
-
-    /**
-     * @return ConfiguratorRepository
-     */
-    private function getRepository(): ConfiguratorRepository
-    {
-        /** @type ConfiguratorRepository */
-        return $this->get('drsoft_fr.module.product_wizard.repository.configurator_repository');
     }
 }
