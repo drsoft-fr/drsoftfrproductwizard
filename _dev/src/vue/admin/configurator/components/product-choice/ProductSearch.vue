@@ -37,9 +37,10 @@ watch(searchQuery, search)
       <button
         class="btn btn-outline-secondary"
         type="button"
-        :disabled="disabled"
+        :disabled="disabled || productSearchStore.loading"
       >
-        <i class="material-icons">search</i>
+        <i class="material-icons" v-if="productSearchStore.loading">refresh</i>
+        <i class="material-icons" v-else>search</i>
       </button>
     </div>
   </div>
