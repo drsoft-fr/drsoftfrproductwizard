@@ -26,10 +26,10 @@ final class ConfiguratorNormalizer
                 $choiceDto = new ProductChoiceDto();
                 $choiceDto->id = $choiceData['id'] ?? null;
                 $choiceDto->label = $choiceData['label'] ?? '';
-                $choiceDto->productId = (int)($choiceData['product_id'] ?? null);
+                $choiceDto->productId = false === empty($choiceData['product_id']) ? (int)$choiceData['product_id'] : null;
                 $choiceDto->isDefault = (bool)($choiceData['is_default'] ?? false);
                 $choiceDto->allowQuantity = (bool)($choiceData['allow_quantity'] ?? true);
-                $choiceDto->forcedQuantity = isset($choiceData['forced_quantity']) ? (int)$choiceData['forced_quantity'] : null;
+                $choiceDto->forcedQuantity = false === empty($choiceData['forced_quantity']) ? (int)$choiceData['forced_quantity'] : null;
                 $choiceDto->active = (bool)($choiceData['active'] ?? true);
                 $choiceDto->displayConditions = $choiceData['display_conditions'] ?? [];
 
