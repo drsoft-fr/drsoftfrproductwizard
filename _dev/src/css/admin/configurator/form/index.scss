@@ -1,30 +1,3 @@
-@import 'tom-select/dist/css/tom-select.bootstrap4.min.css';
-
-.sortable-list > * {
-  transition: all 0.3s ease;
-  overflow: hidden;
-}
-
-.sortable-ghost {
-  background-color: var(--light) !important;
-  border: 2px dashed var(--gray) !important;
-  opacity: 0.7 !important;
-}
-
-.sortable-chosen {
-  background-color: var(--white) !important;
-}
-
-.sortable-drag {
-  background-color: var(--white) !important;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2) !important;
-  opacity: 0.9 !important;
-  max-height: 50px !important;
-  overflow: hidden !important;
-  z-index: 9999 !important;
-  border-radius: 4px !important;
-}
-
 .fade-enter-active,
 .fade-leave-active {
   transition: opacity 0.25s ease-in-out;

@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, inject } from 'vue'
+import { computed, inject } from 'vue'
 import { useConfiguratorStore } from '@/js/admin/configurator/form/stores/configurator'
 import ProductChoiceList from '@/vue/admin/configurator/components/product-choice/ProductChoiceList.vue'
 
@@ -13,12 +13,15 @@ const emit = defineEmits(['remove'])
 
 const store = useConfiguratorStore()
 
-const isCollapsed = ref(false)
-
 const step = computed(() => store.getStep(props.stepId))
+const stepUIState = computed(() => store.getStepUIState(props.stepId))
+const isCollapsed = computed(() => stepUIState.value.isCollapsed)
 const isVirtual = computed(() => step.value && step.value.is_virtual === true)
 const stepIndex = computed(() => {
-  if (!store.steps) return -1
+  if (!store.steps || !step.value) {
+    return -1
+  }
+
   return store.steps.findIndex((s) => s.id === props.stepId)
 })
 
@@ -47,7 +50,7 @@ const handleRemove = () => {
 }
 
 const toggleCollapse = () => {
-  isCollapsed.value = !isCollapsed.value
+  store.toggleStepCollapse(props.stepId)
 }
 </script>
 
@@ -71,7 +74,12 @@ const toggleCollapse = () => {
 
       <div class="d-flex align-items-center">
         <span class="badge bg-primary js-badge-position">{{ stepIndex }}</span>
-        <button class="btn btn-link" type="button" @click="toggleCollapse">
+        <button
+          class="btn btn-link"
+          type="button"
+          @click="toggleCollapse"
+          :disabled="store.isDragging"
+        >
           <i class="material-icons">{{
             isCollapsed ? 'expand_more' : 'expand_less'
           }}</i>
