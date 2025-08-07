@@ -147,6 +147,8 @@ const toggleCollapse = () => {
           :product-choice-id="productChoiceId"
           @update:value="updateProductId"
           :placeholder="$t('Search for a product...')"
+          :required="false"
+          :disabled="false"
         />
       </div>
 
