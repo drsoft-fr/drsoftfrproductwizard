@@ -18,11 +18,17 @@ final class ConfiguratorDto
 
     public static function fromEntity(Configurator $configurator): self
     {
+        $arr = [];
+
+        foreach ($configurator->getSteps() as $step) {
+            $arr[] = StepDto::fromEntity($step);
+        }
+
         return new self(
             $configurator->getId(),
             $configurator->getName(),
             $configurator->isActive(),
-            $configurator->getSteps()->toArray()
+            $arr
         );
     }
 }

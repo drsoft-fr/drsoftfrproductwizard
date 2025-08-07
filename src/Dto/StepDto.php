@@ -19,12 +19,18 @@ final class StepDto
 
     public static function fromEntity(Step $step): self
     {
+        $arr = [];
+
+        foreach ($step->getProductChoices() as $productChoice) {
+            $arr[] = ProductChoiceDto::fromEntity($productChoice);
+        }
+
         return new self(
             $step->getId(),
             $step->getLabel(),
             $step->getPosition(),
             $step->isActive(),
-            $step->getProductChoices()->toArray()
+            $arr
         );
     }
 }
