@@ -106,7 +106,7 @@ const toggleCollapse = () => {
           {{ $t('Product choice') }} #{{ productChoiceId }}
           <span v-if="productChoice">{{ productChoice.label }}</span>
         </strong>
-        <span v-if="isVirtual" class="badge bg-info ms-2">{{ $t('New') }}</span>
+        <span v-if="isVirtual" class="badge bg-info ml-2">{{ $t('New') }}</span>
       </div>
 
       <div class="d-flex align-items-center">
