@@ -60,16 +60,16 @@ const toggleCollapse = () => {
     :data-step-id="stepId"
     :data-position="step ? step.position : 0"
   >
-    <div class="card-header d-flex align-items-center justify-content-between">
+    <div class="card-header d-flex justify-content-between">
       <div>
-        <span class="step-drag-handle" style="cursor: grab">
+        <span class="step-drag-handle align-bottom" style="cursor: grab">
           <i class="material-icons">drag_indicator</i>
         </span>
         <strong>
           {{ $t('Step') }} #{{ stepId }}
           <span v-if="step">{{ step.label }}</span>
         </strong>
-        <span v-if="isVirtual" class="badge bg-info ms-2">{{ $t('New') }}</span>
+        <span v-if="isVirtual" class="badge bg-info ml-2">{{ $t('New') }}</span>
       </div>
 
       <div class="d-flex align-items-center">
