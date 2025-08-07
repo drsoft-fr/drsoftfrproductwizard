@@ -10,12 +10,19 @@ const props = defineProps({
   productChoiceId: { type: [Number, String], default: null },
 })
 
-const productSearchStore = useProductSearchStore()
+const store = useProductSearchStore()
 
 const searchQuery = ref('')
+const searchTimeout = ref(null)
 
 const search = async () => {
-  // TODO ...
+  if (searchTimeout.value) {
+    clearTimeout(searchTimeout.value)
+  }
+
+  searchTimeout.value = setTimeout(async () => {
+    await store.searchProducts(searchQuery.value)
+  }, 300)
 }
 
 watch(searchQuery, search)
@@ -37,9 +44,9 @@ watch(searchQuery, search)
       <button
         class="btn btn-outline-secondary"
         type="button"
-        :disabled="disabled || productSearchStore.loading"
+        :disabled="disabled || store.loading"
       >
-        <i class="material-icons" v-if="productSearchStore.loading">refresh</i>
+        <i class="material-icons" v-if="store.loading">refresh</i>
         <i class="material-icons" v-else>search</i>
       </button>
     </div>
