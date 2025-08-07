@@ -1,4 +1,5 @@
 <script setup>
+import { ref, watch } from 'vue'
 import { useProductSearchStore } from '@/js/admin/configurator/form/stores/productSearch'
 
 const props = defineProps({
@@ -10,6 +11,14 @@ const props = defineProps({
 })
 
 const productSearchStore = useProductSearchStore()
+
+const searchQuery = ref('')
+
+const search = async () => {
+  // TODO ...
+}
+
+watch(searchQuery, search)
 </script>
 
 <template>
@@ -20,6 +29,7 @@ const productSearchStore = useProductSearchStore()
         type="text"
         class="form-control"
         :placeholder="placeholder"
+        v-model="searchQuery"
         :disabled="disabled"
         :required="required"
         autocomplete="off"
