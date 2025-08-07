@@ -4,6 +4,8 @@ imports:
 services:
   DrSoftFr\Module\ProductWizard\Controller\Admin\ConfiguratorController:
     tags: [ 'controller.service_arguments' ]
+    arguments:
+      - '@drsoft_fr.module.product_wizard.module'
 
   DrSoftFr\Module\ProductWizard\Controller\Admin\ConfiguratorApiController:
     tags: [ 'controller.service_arguments' ]
