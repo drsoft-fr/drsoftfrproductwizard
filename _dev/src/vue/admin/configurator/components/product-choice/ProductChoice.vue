@@ -1,6 +1,7 @@
 <script setup>
 import { ref, computed, inject } from 'vue'
 import { useConfiguratorStore } from '@/js/admin/configurator/form/stores/configurator'
+import ProductSearch from '@/vue/admin/configurator/components/product-choice/ProductSearch.vue'
 
 const props = defineProps({
   stepId: { type: [String, Number], required: true },
@@ -85,6 +86,12 @@ const updateActive = (event) => {
   }
 }
 
+const updateProductId = (productId) => {
+  if (productChoice.value) {
+    productChoice.value.product_id = productId
+  }
+}
+
 const handleRemove = () => {
   store.removeProductChoice(props.stepId, props.productChoiceId)
   emit('remove', props.productChoiceId)
@@ -133,7 +140,15 @@ const toggleCollapse = () => {
       </div>
 
       <!-- Product Search -->
-      <!--      TODO Product search -->
+      <div class="form-group mb-3">
+        <label class="form-label">{{ $t('Product') }}</label>
+        <ProductSearch
+          :value="productChoice ? productChoice.product_id : null"
+          :product-choice-id="productChoiceId"
+          @update:value="updateProductId"
+          :placeholder="$t('Search for a product...')"
+        />
+      </div>
 
       <!-- Conditions -->
       <!--      TODO Condition -->
