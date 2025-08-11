@@ -40,10 +40,10 @@ const handleSubmit = (event) => {
         <h2>{{ $t('General information') }}</h2>
       </template>
       <template #content>
-        <FloatLabel class="mt-3">
-          <InputText id="configurator-name" v-model="store.name" required />
+        <div class="mt-3 d-flex flex-column gap-2">
           <label for="configurator-name">{{ $t('Name of scenario') }}</label>
-        </FloatLabel>
+          <InputText id="configurator-name" v-model="store.name" required />
+        </div>
         <div class="d-flex align-items-center mt-3">
           <ToggleSwitch
             inputId="configurator-active"
