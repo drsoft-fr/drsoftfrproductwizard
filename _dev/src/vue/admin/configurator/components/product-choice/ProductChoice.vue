@@ -167,21 +167,19 @@ const toggleMenu = (event) => {
         }}</label>
       </div>
 
-      <div class="col-md-6">
-        <div class="form-check mb-3 d-flex align-items-center">
-          <ToggleSwitch
-            :inputId="`pc-active-${productChoiceId}`"
-            v-model="productChoice.active"
-            class="mr-3"
-          />
-          <label :for="`pc-active-${productChoiceId}`" class="m-0">{{
-            $t('Active')
-          }}</label>
-        </div>
+      <div class="col-md-6 d-flex align-items-center">
+        <ToggleSwitch
+          :inputId="`pc-active-${productChoiceId}`"
+          v-model="productChoice.active"
+          class="mr-3"
+        />
+        <label :for="`pc-active-${productChoiceId}`" class="m-0">{{
+          $t('Active')
+        }}</label>
       </div>
     </div>
 
-    <div class="row">
+    <div class="row mt-3">
       <div class="col-md-6 mb-3 mb-md-0 d-flex align-items-center">
         <ToggleSwitch
           :inputId="`pc-allow-quantity-${productChoiceId}`"
