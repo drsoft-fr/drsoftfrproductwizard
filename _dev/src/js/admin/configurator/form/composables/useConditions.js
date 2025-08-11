@@ -53,11 +53,27 @@ export function useConditions(stepId, productChoiceId) {
     )
   })
 
+  /**
+   * Remove a condition
+   *
+   * @param {String|Number} conditionStepId - The step ID of the condition to remove
+   * @param {String|Number} conditionChoiceId - The choice ID of the condition to remove
+   */
+  const removeCondition = (conditionStepId, conditionChoiceId) => {
+    store.removeCondition(
+      stepId,
+      productChoiceId,
+      conditionStepId,
+      conditionChoiceId,
+    )
+  }
+
   return {
     addCondition,
     currentProductChoice,
     conditions,
     hasConditions,
     isVirtual,
+    removeCondition,
   }
 }

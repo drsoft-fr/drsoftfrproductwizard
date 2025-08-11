@@ -60,6 +60,7 @@ const { addCondition, conditions, hasConditions, isVirtual } = useConditions(
             :condition
             :product-choice-id="productChoiceId"
             :step-id="stepId"
+            :class="0 < index ? 'mt-3' : ''"
           />
         </TransitionGroup>
       </Transition>

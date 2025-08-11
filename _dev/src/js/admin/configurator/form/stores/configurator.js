@@ -245,6 +245,21 @@ export const useConfiguratorStore = defineStore('configurator', {
       return newCondition
     },
 
+    // Remove a condition
+    removeCondition(stepId, choiceId, conditionStepId, conditionChoiceId) {
+      const choice = this.getProductChoice(stepId, choiceId)
+
+      if (!choice || !choice.display_conditions) {
+        return
+      }
+
+      choice.display_conditions = choice.display_conditions.filter(
+        (condition) =>
+          condition.step !== conditionStepId ||
+          condition.choice !== conditionChoiceId,
+      )
+    },
+
     // Set loading state
     setLoading(loading) {
       this.loading = loading
