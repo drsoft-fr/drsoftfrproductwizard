@@ -2,6 +2,8 @@ import { fileURLToPath, URL } from 'node:url'
 import { resolve } from 'path'
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
+import Components from 'unplugin-vue-components/vite'
+import { PrimeVueResolver } from '@primevue/auto-import-resolver'
 
 export default defineConfig({
   build: {
@@ -13,10 +15,7 @@ export default defineConfig({
           __dirname,
           'src/js/admin/configurator/form/index.js',
         ),
-        'front-app': resolve(
-          __dirname,
-          'src/js/front/configurator/main.js',
-        ),
+        'front-app': resolve(__dirname, 'src/js/front/configurator/main.js'),
       },
       output: {
         assetFileNames: (assetInfo) => {
@@ -43,7 +42,12 @@ export default defineConfig({
     },
     outDir: '../views',
   },
-  plugins: [vue()],
+  plugins: [
+    vue(),
+    Components({
+      resolvers: [PrimeVueResolver()],
+    }),
+  ],
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url)),
