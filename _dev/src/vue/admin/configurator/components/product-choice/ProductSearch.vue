@@ -70,7 +70,7 @@ onMounted(async () => {
       :id="`pc-product-${productChoiceId}`"
       :loading="store.loading"
       :options="store.searchResults"
-      optionLabel="text"
+      optionLabel="name"
       optionValue="id"
       :required="required"
       showClear

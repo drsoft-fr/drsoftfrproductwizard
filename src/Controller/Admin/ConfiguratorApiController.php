@@ -175,9 +175,7 @@ final class ConfiguratorApiController extends FrameworkBundleAdminController
                 'items' => array_map(function ($p) {
                     return [
                         'id' => $p['id_product'],
-                        'text' => $p['name'],
-                        'image_url' => $this->getProductImageUrl($p['id_product']),
-                        'price' => $p['price_amount'] ?? null
+                        'name' => $p['name'],
                     ];
                 }, $results)
             ]);
@@ -210,9 +208,7 @@ final class ConfiguratorApiController extends FrameworkBundleAdminController
             $product = $repository->get(new ProductId($productId), new ShopId($this->shopId));
             $productData = [
                 'id' => $product->id,
-                'text' => $product->name[$this->languageId],
-                'price' => $product->getPrice(),
-                'image_url' => $this->getProductImageUrl($product->id),
+                'name' => $product->name[$this->languageId],
             ];
 
             return $this->json([
@@ -224,24 +220,6 @@ final class ConfiguratorApiController extends FrameworkBundleAdminController
                 'success' => false,
                 'message' => 'Error fetching product: ' . $e->getMessage(),
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
-        }
-    }
-
-    /**
-     * Get product image URL
-     *
-     * @param int $productId
-     *
-     * @return string|null
-     */
-    private function getProductImageUrl(int $productId): ?string
-    {
-        try {
-            $link = $this->get('prestashop.link');
-
-            return $link->getImageLink('product', $productId, 'home_default');
-        } catch (\Throwable $t) {
-            return null;
         }
     }
 }
