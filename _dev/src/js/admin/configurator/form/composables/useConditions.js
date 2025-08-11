@@ -38,9 +38,26 @@ export function useConditions(stepId, productChoiceId) {
     return currentProductChoice.value.display_conditions
   })
 
+  /**
+   * Check if the current product choice has any conditions
+   */
+  const hasConditions = computed(() => conditions.value.length > 0)
+
+  /**
+   * Check if the current product choice is virtual
+   */
+  const isVirtual = computed(() => {
+    return (
+      currentProductChoice.value &&
+      currentProductChoice.value.is_virtual === true
+    )
+  })
+
   return {
     addCondition,
     currentProductChoice,
     conditions,
+    hasConditions,
+    isVirtual,
   }
 }
