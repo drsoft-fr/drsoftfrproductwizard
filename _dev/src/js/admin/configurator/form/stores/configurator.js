@@ -60,7 +60,7 @@ export const useConfiguratorStore = defineStore('configurator', {
     initializeStore(data) {
       this.id = data.id || null
       this.name = data.name || ''
-      this.active = data.active || true
+      this.active = !!data.active
       this.steps = data.steps || []
       this.isValid = true
       this.loading = false
