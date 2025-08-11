@@ -222,6 +222,29 @@ export const useConfiguratorStore = defineStore('configurator', {
       )
     },
 
+    // Add a condition to a product choice
+    addCondition(stepId, choiceId) {
+      const choice = this.getProductChoice(stepId, choiceId)
+
+      if (!choice) {
+        return null
+      }
+
+      if (!choice.display_conditions) {
+        choice.display_conditions = []
+      }
+
+      const newCondition = {
+        step: null,
+        choice: null,
+        is_virtual: true,
+      }
+
+      choice.display_conditions.push(newCondition)
+
+      return newCondition
+    },
+
     // Set loading state
     setLoading(loading) {
       this.loading = loading

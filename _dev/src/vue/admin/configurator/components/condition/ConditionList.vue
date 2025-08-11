@@ -1,6 +1,7 @@
 <script setup>
 import { computed, inject } from 'vue'
 import { useConditions } from '@/js/admin/configurator/form/composables/useConditions'
+import Condition from '@/vue/admin/configurator/components/condition/Condition.vue'
 
 const props = defineProps({
   productChoiceId: { type: [String, Number], required: true },
@@ -9,7 +10,7 @@ const props = defineProps({
 
 const $t = inject('$t')
 
-const { currentProductChoice, conditions } = useConditions(
+const { addCondition, currentProductChoice, conditions } = useConditions(
   props.stepId,
   props.productChoiceId,
 )
@@ -34,6 +35,13 @@ const isVirtual = computed(() => {
       <h6 class="my-0">{{ $t('Display conditions') }}</h6>
     </template>
 
+    <template #icons>
+      <Button severity="info" text @click="addCondition" class="align-bottom">
+        <i class="material-icons align-middle">add</i>
+        {{ $t('Add a condition') }}
+      </Button>
+    </template>
+
     <Message severity="info" v-if="isVirtual">{{
       $t(
         'This product selection is new, so you cannot set conditions yet. You must register before you can configure the conditions.',
@@ -47,7 +55,14 @@ const isVirtual = computed(() => {
         }}</Message>
 
         <div v-else class="conditions-list mt-3">
-          <!-- TODO ... -->
+          <Condition
+            v-for="(condition, index) in conditions"
+            :key="index"
+            :index
+            :condition
+            :product-choice-id="productChoiceId"
+            :step-id="stepId"
+          />
         </div>
       </Transition>
     </template>

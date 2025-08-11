@@ -12,6 +12,15 @@ import { useConfiguratorStore } from '@/js/admin/configurator/form/stores/config
 export function useConditions(stepId, productChoiceId) {
   const store = useConfiguratorStore()
 
+  /**
+   * Add a new condition
+   *
+   * @returns {Object} - The new condition
+   */
+  const addCondition = () => {
+    return store.addCondition(stepId, productChoiceId)
+  }
+
   // Get the current product choice
   const currentProductChoice = computed(() =>
     store.getProductChoice(stepId, productChoiceId),
@@ -30,6 +39,7 @@ export function useConditions(stepId, productChoiceId) {
   })
 
   return {
+    addCondition,
     currentProductChoice,
     conditions,
   }

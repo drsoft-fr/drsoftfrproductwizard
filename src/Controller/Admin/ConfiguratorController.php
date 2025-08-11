@@ -251,6 +251,7 @@ final class ConfiguratorController extends FrameworkBundleAdminController
                         'Display conditions' => $this->trans('Display conditions', 'Modules.Drsoftfrproductwizard.Admin'),
                         'This product selection is new, so you cannot set conditions yet. You must register before you can configure the conditions.' => $this->trans('This product selection is new, so you cannot set conditions yet. You must register before you can configure the conditions.', 'Modules.Drsoftfrproductwizard.Admin'),
                         'No conditions defined. This choice will always be displayed.' => $this->trans('No conditions defined. This choice will always be displayed.', 'Modules.Drsoftfrproductwizard.Admin'),
+                        'Add a condition' => $this->trans('Add a condition', 'Modules.Drsoftfrproductwizard.Admin'),
                     ],
                     'Modules.Drsoftfrproductwizard.Error' => [
                         'Error loading the configurator' => $this->trans('Error loading the configurator', 'Modules.Drsoftfrproductwizard.Error'),
