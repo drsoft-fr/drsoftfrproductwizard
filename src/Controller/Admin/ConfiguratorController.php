@@ -248,6 +248,9 @@ final class ConfiguratorController extends FrameworkBundleAdminController
                         'Product choice deleted successfully' => $this->trans('Product choice deleted successfully', 'Modules.Drsoftfrproductwizard.Admin'),
                         'Search for a product to pair with this selection.' => $this->trans('Search for a product to pair with this selection.', 'Modules.Drsoftfrproductwizard.Admin'),
                         'No product found with this name.' => $this->trans('No product found with this name.', 'Modules.Drsoftfrproductwizard.Admin'),
+                        'Display conditions' => $this->trans('Display conditions', 'Modules.Drsoftfrproductwizard.Admin'),
+                        'This product selection is new, so you cannot set conditions yet. You must register before you can configure the conditions.' => $this->trans('This product selection is new, so you cannot set conditions yet. You must register before you can configure the conditions.', 'Modules.Drsoftfrproductwizard.Admin'),
+                        'No conditions defined. This choice will always be displayed.' => $this->trans('No conditions defined. This choice will always be displayed.', 'Modules.Drsoftfrproductwizard.Admin'),
                     ],
                     'Modules.Drsoftfrproductwizard.Error' => [
                         'Error loading the configurator' => $this->trans('Error loading the configurator', 'Modules.Drsoftfrproductwizard.Error'),
