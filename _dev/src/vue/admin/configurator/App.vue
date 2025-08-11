@@ -25,9 +25,11 @@ const store = useConfiguratorStore()
 const toastLifetime = ref(5000)
 
 const alert = reactive({
-  show: false,
-  type: 'info',
+  closable: true,
+  visible: false,
+  severity: 'info',
   message: '',
+  life: 5000,
 })
 
 const isNewConfigurator = computed(() => !props.configuratorId)
@@ -35,20 +37,22 @@ const pageTitle = computed(() =>
   isNewConfigurator.value ? $t('Create a scenario') : $t('Edit the scenario'),
 )
 
-const showAlert = (type, message, duration = 5000) => {
-  alert.show = true
-  alert.type = type
+const showAlert = (severity, message, closable = true, life = 5000) => {
+  alert.visible = true
+  alert.severity = severity
   alert.message = message
 
-  if (duration) {
-    setTimeout(() => {
-      closeAlert()
-    }, duration)
+  if (closable) {
+    alert.closable = closable
+  }
+
+  if (life) {
+    alert.life = life
   }
 }
 
 const closeAlert = () => {
-  alert.show = false
+  alert.visible = false
 }
 
 const fetchConfigurator = async () => {
@@ -169,9 +173,11 @@ provide('toast', {
 <template>
   <div>
     <Alert
-      :show="alert.show"
-      :type="alert.type"
+      :closable="alert.closable"
+      :visible="alert.visible"
+      :severity="alert.severity"
       :message="alert.message"
+      :life="alert.life"
       @close="closeAlert"
     />
     <Splitter>
