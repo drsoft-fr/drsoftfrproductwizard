@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
 import { useConditions } from '@/js/admin/configurator/form/composables/useConditions'
 
 const props = defineProps({
@@ -48,6 +48,14 @@ const handleChoiceChange = (event) => {
 const handleRemove = () => {
   removeCondition(selectedStepId.value, selectedChoiceId.value)
 }
+
+onMounted(() => {
+  if (!props.condition.step) {
+    return
+  }
+
+  availableChoices.value = getAvailableChoices(props.condition.step)
+})
 </script>
 
 <template>
