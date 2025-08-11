@@ -27,33 +27,33 @@ const addProductChoice = () => {
 
 <template>
   <div class="product-choices-container">
-    <div class="d-flex justify-content-between align-items-center mb-3">
-      <h5 class="mb-0">{{ $t('Product selection') }}</h5>
-    </div>
+    <Menubar>
+      <template #start>
+        <h4 class="mb-0">{{ $t('Product selection') }}</h4>
+      </template>
+      <template #end>
+        <Button type="button" @click="addProductChoice">
+          <i class="material-icons">add</i>
+          {{ $t('Add a product selection') }}
+        </Button>
+      </template>
+    </Menubar>
 
     <Transition name="fade" mode="out-in">
-      <div v-if="!hasProductChoices" class="alert alert-info">
+      <Message v-if="!hasProductChoices" severity="info" class="mt-3">
         {{ $t('No product selection defined for this step.') }}
-      </div>
+      </Message>
 
-      <div v-else class="product-choices-list mb-3">
+      <div v-else class="product-choices-list mt-3">
         <ProductChoice
-          v-for="productChoice in productChoices"
+          v-for="(productChoice, index) in productChoices"
           :key="productChoice.id"
           :step-id="stepId"
           :product-choice-id="productChoice.id"
+          :class="0 < index ? 'mt-3' : ''"
         />
       </div>
     </Transition>
-
-    <button
-      type="button"
-      class="btn btn-outline-primary"
-      @click="addProductChoice"
-    >
-      <i class="material-icons">add</i>
-      {{ $t('Add a product selection') }}
-    </button>
   </div>
 </template>
 
