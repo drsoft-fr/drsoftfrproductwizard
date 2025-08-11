@@ -208,6 +208,7 @@ final class ConfiguratorController extends FrameworkBundleAdminController
                     'get' => $this->generateUrl('admin_drsoft_fr_product_wizard_configurator_api_get'),
                     'save' => $this->generateUrl('admin_drsoft_fr_product_wizard_configurator_api_save'),
                     'product_search' => $this->generateUrl('admin_drsoft_fr_product_wizard_configurator_api_product_search'),
+                    'product' => $this->generateUrl('admin_drsoft_fr_product_wizard_configurator_api_product'),
                 ],
                 'messages' => [
                     'Modules.Drsoftfrproductwizard.Admin' => [
@@ -245,6 +246,8 @@ final class ConfiguratorController extends FrameworkBundleAdminController
                         'Step deleted successfully' => $this->trans('Step deleted successfully', 'Modules.Drsoftfrproductwizard.Admin'),
                         'Do you want to delete this product choice?' => $this->trans('Do you want to delete this product choice?', 'Modules.Drsoftfrproductwizard.Admin'),
                         'Product choice deleted successfully' => $this->trans('Product choice deleted successfully', 'Modules.Drsoftfrproductwizard.Admin'),
+                        'Search for a product to pair with this selection.' => $this->trans('Search for a product to pair with this selection.', 'Modules.Drsoftfrproductwizard.Admin'),
+                        'No product found with this name.' => $this->trans('No product found with this name.', 'Modules.Drsoftfrproductwizard.Admin'),
                     ],
                     'Modules.Drsoftfrproductwizard.Error' => [
                         'Error loading the configurator' => $this->trans('Error loading the configurator', 'Modules.Drsoftfrproductwizard.Error'),
@@ -253,6 +256,7 @@ final class ConfiguratorController extends FrameworkBundleAdminController
                         'Error while saving the configurator' => $this->trans('Error while saving the configurator', 'Modules.Drsoftfrproductwizard.Error'),
                         'Error saving configurator:' => $this->trans('Error saving configurator:', 'Modules.Drsoftfrproductwizard.Error'),
                         'An error occurred while saving the configurator.' => $this->trans('An error occurred while saving the configurator.', 'Modules.Drsoftfrproductwizard.Error'),
+                        'Error' => $this->trans('Error', 'Modules.Drsoftfrproductwizard.Error'),
                     ],
                     'Modules.Drsoftfrproductwizard.Success' => [
                         'Configurator successfully saved' => $this->trans('Configurator successfully saved', 'Modules.Drsoftfrproductwizard.Success'),

@@ -49,5 +49,42 @@ export const useProductSearchStore = defineStore('productSearch', {
         this.loading = false
       }
     },
+
+    async getProduct(productId) {
+      if (!productId) {
+        return null
+      }
+
+      this.loading = true
+      this.error = null
+
+      try {
+        const response = await fetch(
+          `${this.$r('product')}&product-id=${productId}`,
+          {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          },
+        )
+        const data = await response.json()
+
+        if (!data.success) {
+          throw new Error(data.message || 'Error getting product')
+        }
+
+        this.searchResults = [data.product] || []
+
+        return data.product
+      } catch (error) {
+        this.error = error.message || 'Error getting product'
+        console.error('Product search error:', error)
+
+        return null
+      } finally {
+        this.loading = false
+      }
+    },
   },
 })

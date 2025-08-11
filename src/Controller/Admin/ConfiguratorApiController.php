@@ -11,6 +11,7 @@ use DrSoftFr\Module\ProductWizard\Repository\ConfiguratorRepository;
 use DrSoftFr\Module\ProductWizard\Service\ConfiguratorFactory;
 use PrestaShop\PrestaShop\Adapter\Product\Repository\ProductRepository;
 use PrestaShop\PrestaShop\Core\Domain\Language\ValueObject\LanguageId;
+use PrestaShop\PrestaShop\Core\Domain\Product\ValueObject\ProductId;
 use PrestaShop\PrestaShop\Core\Domain\Shop\ValueObject\ShopId;
 use PrestaShopBundle\Controller\Admin\FrameworkBundleAdminController;
 use PrestaShopBundle\Security\Annotation\AdminSecurity;
@@ -184,6 +185,44 @@ final class ConfiguratorApiController extends FrameworkBundleAdminController
             return $this->json([
                 'success' => false,
                 'message' => 'Error searching products: ' . $t->getMessage(),
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    /**
+     * Get product
+     *
+     * @AdminSecurity(
+     *     "is_granted(['read'], request.get('_legacy_controller'))",
+     *     redirectRoute="admin_drsoft_fr_product_wizard_configurator_index",
+     *     message="You do not have permission to access this."
+     * )
+     *
+     * @param Request $request
+     * @param ProductRepository $repository
+     *
+     * @return JsonResponse
+     */
+    public function getProductAction(Request $request, ProductRepository $repository): JsonResponse
+    {
+        try {
+            $productId = $request->query->getInt('product-id');
+            $product = $repository->get(new ProductId($productId), new ShopId($this->shopId));
+            $productData = [
+                'id' => $product->id,
+                'text' => $product->name[$this->languageId],
+                'price' => $product->getPrice(),
+                'image_url' => $this->getProductImageUrl($product->id),
+            ];
+
+            return $this->json([
+                'success' => true,
+                'product' => $productData
+            ]);
+        } catch (\Throwable $e) {
+            return $this->json([
+                'success' => false,
+                'message' => 'Error fetching product: ' . $e->getMessage(),
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }

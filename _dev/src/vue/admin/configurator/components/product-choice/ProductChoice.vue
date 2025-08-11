@@ -141,7 +141,7 @@ const toggleMenu = (event) => {
     <!-- Product Search -->
     <div class="mt-3">
       <ProductSearch
-        :value="productChoice ? productChoice.product_id : null"
+        :product-id="productChoice ? productChoice.product_id : null"
         :product-choice-id="productChoiceId"
         @update:value="updateProductId"
         :placeholder="$t('Search for a product...')"

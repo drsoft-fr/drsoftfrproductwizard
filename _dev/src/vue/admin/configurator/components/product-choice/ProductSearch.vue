@@ -1,9 +1,10 @@
 <script setup>
-import { computed, inject, ref, watch } from 'vue'
+import { inject, onMounted, ref } from 'vue'
 import { useProductSearchStore } from '@/js/admin/configurator/form/stores/productSearch'
+import { useToast } from 'primevue/usetoast'
 
 const props = defineProps({
-  value: { type: Number, default: null },
+  productId: { type: Number, default: null },
   placeholder: { type: String, default: 'Search for a product...' },
   required: { type: Boolean, default: false },
   disabled: { type: Boolean, default: false },
@@ -17,7 +18,9 @@ const $t = inject('$t')
 const store = useProductSearchStore()
 
 const searchTimeout = ref(null)
-const selectedProduct = ref(null)
+const selectedProduct = ref(props.productId)
+
+const toast = useToast()
 
 const search = async (event) => {
   if (searchTimeout.value) {
@@ -30,25 +33,48 @@ const search = async (event) => {
 }
 
 const selectProduct = (event) => {
-  selectedProduct.value = event.value
-  emit('update:value', event.value.id)
+  emit('update:value', event.value)
 }
+
+onMounted(async () => {
+  if (!props.productId) {
+    return
+  }
+
+  const product = await store.getProduct(props.productId)
+
+  if (product) {
+    selectedProduct.value = product.id
+  } else {
+    selectedProduct.value = null
+  }
+
+  if (store.error) {
+    toast.add({ severity: 'error', detail: store.error, summary: $t('Error') })
+  }
+})
 </script>
 
 <template>
   <div class="product-search d-flex flex-column gap-2">
     <label :for="`pc-product-${productChoiceId}`">{{ $t('Product') }}</label>
     <Select
-      showClear
-      filter
-      v-model="selectedProduct"
-      optionLabel="text"
-      :options="store.searchResults"
-      @filter="search"
-      :disabled="disabled"
-      :required="required"
-      :id="`pc-product-${productChoiceId}`"
+      :autoFilterFocus="true"
       @change="selectProduct"
+      :disabled="disabled"
+      :emptyFilterMessage="$t('No product found with this name.')"
+      :emptyMessage="$t('Search for a product to pair with this selection.')"
+      filter
+      @filter="search"
+      fluid
+      :id="`pc-product-${productChoiceId}`"
+      :loading="store.loading"
+      :options="store.searchResults"
+      optionLabel="text"
+      optionValue="id"
+      :required="required"
+      showClear
+      v-model="selectedProduct"
     />
   </div>
 </template>
