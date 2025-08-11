@@ -3,6 +3,7 @@ import { ref, computed, inject } from 'vue'
 import { useConfiguratorStore } from '@/js/admin/configurator/form/stores/configurator'
 import { useConfirm } from 'primevue/useconfirm'
 import { useToast } from 'primevue/usetoast'
+import ConditionList from '@/vue/admin/configurator/components/condition/ConditionList.vue'
 import ProductSearch from '@/vue/admin/configurator/components/product-choice/ProductSearch.vue'
 
 const props = defineProps({
@@ -151,7 +152,11 @@ const toggleMenu = (event) => {
     </div>
 
     <!-- Conditions -->
-      <!--      TODO Condition -->
+    <ConditionList
+      :step-id="stepId"
+      :product-choice-id="productChoiceId"
+      class="mt-3"
+    />
 
     <!-- Options -->
     <div class="row mt-3">
