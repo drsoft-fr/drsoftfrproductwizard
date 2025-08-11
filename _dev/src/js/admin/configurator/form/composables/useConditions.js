@@ -23,7 +23,7 @@ export function useConditions(stepId, productChoiceId) {
 
   // Available steps for conditions (steps with position < current step position)
   const availableSteps = computed(() =>
-    store.getAvailableStepsForConditions(currentStepPosition.value)
+    store.getAvailableStepsForConditions(currentStepPosition.value),
   )
 
   // Get the current product choice
@@ -48,6 +48,17 @@ export function useConditions(stepId, productChoiceId) {
 
     return currentProductChoice.value.display_conditions
   })
+
+  /**
+   * Get available choices for a selected step
+   *
+   * @param {String|Number} selectedStepId - The ID of the selected step
+   *
+   * @returns {Array} - Array of available choices
+   */
+  const getAvailableChoices = (selectedStepId) => {
+    return store.getAvailableChoicesForStep(selectedStepId)
+  }
 
   /**
    * Check if the current product choice has any conditions
@@ -79,13 +90,30 @@ export function useConditions(stepId, productChoiceId) {
     )
   }
 
+  /**
+   * Update a condition's step
+   *
+   * @param {Object} condition - The condition to update
+   * @param {String|Number} newStepId - The new step ID
+   */
+  const updateConditionStep = (condition, newStepId) => {
+    if (!condition) {
+      return
+    }
+
+    condition.step = newStepId
+    condition.choice = null // Reset choice when step changes
+  }
+
   return {
     addCondition,
     availableSteps,
     currentProductChoice,
     conditions,
+    getAvailableChoices,
     hasConditions,
     isVirtual,
     removeCondition,
+    updateConditionStep,
   }
 }

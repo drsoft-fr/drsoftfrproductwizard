@@ -9,17 +9,32 @@ const props = defineProps({
   index: { type: Number, required: true },
 })
 
-const { availableSteps, removeCondition } = useConditions(
-  props.stepId,
-  props.productChoiceId,
-)
+const {
+  availableSteps,
+  getAvailableChoices,
+  removeCondition,
+  updateConditionStep,
+} = useConditions(props.stepId, props.productChoiceId)
 
 const selectedStepId = ref(props.condition.step)
 const selectedChoiceId = ref(props.condition.choice)
 const availableChoices = ref([])
 
 const handleStepChange = (event) => {
-  // TODO: update available choices
+  const newStepId = event.value
+
+  selectedStepId.value = newStepId
+  updateConditionStep(props.condition, newStepId)
+
+  // Reset choice when step changes
+  selectedChoiceId.value = null
+
+  // Update available choices
+  if (newStepId) {
+    availableChoices.value = getAvailableChoices(newStepId)
+  } else {
+    availableChoices.value = []
+  }
 }
 
 const handleChoiceChange = (event) => {

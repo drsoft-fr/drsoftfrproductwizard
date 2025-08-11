@@ -62,6 +62,19 @@ export const useConfiguratorStore = defineStore('configurator', {
           (!step.is_virtual || step.is_virtual === false),
       )
     },
+
+    // Get available choices for a step (for conditions)
+    getAvailableChoicesForStep: (state) => (stepId) => {
+      const step = state.getStep(stepId)
+      if (!step || !step.product_choices) {
+        return []
+      }
+
+      return step.product_choices.filter(
+        (choice) =>
+          choice.active && (!choice.is_virtual || choice.is_virtual === false),
+      )
+    },
   },
 
   actions: {
