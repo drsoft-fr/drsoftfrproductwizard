@@ -33,15 +33,18 @@ useSortable(() => stepsContainer.value)
         </Button>
       </template>
     </Menubar>
+    <Transition name="fade" mode="out-in">
+      <div v-if="!hasSteps" class="alert alert-info mt-3">
+        {{ $t('No steps defined for this scenario.') }}
+      </div>
+    </Transition>
     <div ref="stepsContainer" class="steps-list sortable-list mt-3">
-      <Transition name="fade" mode="out-in">
-        <div v-if="!hasSteps" class="alert alert-info">
-          {{ $t('No steps defined for this scenario.') }}
-        </div>
-        <div v-else>
-          <Step v-for="step in steps" :key="step.id" :step-id="step.id" />
-        </div>
-      </Transition>
+      <Step
+        v-for="(step, index) in steps"
+        :key="step.id"
+        :step-id="step.id"
+        :class="0 < index ? 'mt-3' : ''"
+      />
     </div>
   </div>
 </template>
