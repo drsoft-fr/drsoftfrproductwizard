@@ -1,5 +1,7 @@
 <script setup>
-import { computed, inject } from 'vue'
+import { computed, inject, ref } from 'vue'
+import { useConfirm } from 'primevue/useconfirm'
+import { useToast } from 'primevue/usetoast'
 import { useConfiguratorStore } from '@/js/admin/configurator/form/stores/configurator'
 import ProductChoiceList from '@/vue/admin/configurator/components/product-choice/ProductChoiceList.vue'
 
@@ -8,10 +10,16 @@ const props = defineProps({
 })
 
 const $t = inject('$t')
+const { lifetime } = inject('toast')
 
 const emit = defineEmits(['remove'])
 
 const store = useConfiguratorStore()
+
+const menu = ref(null)
+
+const confirm = useConfirm()
+const toast = useToast()
 
 const step = computed(() => store.getStep(props.stepId))
 const stepUIState = computed(() => store.getStepUIState(props.stepId))
@@ -25,128 +33,128 @@ const stepIndex = computed(() => {
   return store.steps.findIndex((s) => s.id === props.stepId)
 })
 
-const updateLabel = (event) => {
-  if (step.value) {
-    step.value.label = event.target.value
-  }
-}
-
-const updatePosition = (event) => {
-  if (step.value) {
-    const position = parseInt(event.target.value, 10)
-    step.value.position = isNaN(position) ? 0 : position
-  }
-}
-
-const updateActive = (event) => {
-  if (step.value) {
-    step.value.active = event.target.checked
-  }
-}
-
-const handleRemove = () => {
-  store.removeStep(props.stepId)
-  emit('remove', props.stepId)
-}
+const menuItems = [
+  {
+    label: $t('Delete'),
+    command: () => {
+      confirm.require({
+        message: $t('Do you want to delete this step?'),
+        header: 'Danger Zone',
+        rejectLabel: 'Cancel',
+        rejectProps: {
+          label: 'Cancel',
+          severity: 'secondary',
+          outlined: true,
+        },
+        acceptProps: {
+          label: 'Delete',
+          severity: 'danger',
+        },
+        accept() {
+          store.removeStep(props.stepId)
+          emit('remove', props.stepId)
+          toast.add({
+            severity: 'success',
+            summary: 'Confirmed',
+            detail: $t('Step deleted successfully'),
+            life: lifetime.value,
+          })
+        },
+      })
+    },
+  },
+]
 
 const toggleCollapse = () => {
   store.toggleStepCollapse(props.stepId)
 }
+
+const toggleMenu = (event) => {
+  menu.value.toggle(event)
+}
 </script>
 
 <template>
-  <div
-    class="step-item card mb-3 shadow-sm position-relative"
+  <Panel
+    :collapsed="isCollapsed"
+    :toggleable="!store.isDragging"
+    @toggle="toggleCollapse"
+    class="step-item"
     :data-step-id="stepId"
     :data-position="step ? step.position : 0"
   >
-    <div class="card-header d-flex justify-content-between">
-      <div>
-        <span class="step-drag-handle align-bottom" style="cursor: grab">
+    <template #header>
+      <div class="d-flex align-items-center">
+        <Tag
+          severity="info"
+          class="js-badge-position mr-3"
+          :value="stepIndex"
+        ></Tag>
+        <span class="step-drag-handle align-bottom mx-3" style="cursor: grab">
           <i class="material-icons">drag_indicator</i>
         </span>
-        <strong>
+        <h3 class="mx-3 my-0">
           {{ $t('Step') }} #{{ stepId }}
           <span v-if="step">{{ step.label }}</span>
-        </strong>
-        <span v-if="isVirtual" class="badge bg-info ml-2">{{ $t('New') }}</span>
+        </h3>
+        <Tag
+          severity="info"
+          v-if="isVirtual"
+          class="ml-3"
+          :value="$t('New')"
+        ></Tag>
       </div>
+    </template>
 
-      <div class="d-flex align-items-center">
-        <span class="badge bg-primary js-badge-position">{{ stepIndex }}</span>
-        <button
-          class="btn btn-link"
-          type="button"
-          @click="toggleCollapse"
-          :disabled="store.isDragging"
-        >
-          <i class="material-icons">{{
-            isCollapsed ? 'expand_more' : 'expand_less'
-          }}</i>
-        </button>
-      </div>
+    <template #icons>
+      <Button
+        severity="secondary"
+        rounded
+        text
+        @click="toggleMenu"
+        class="align-text-bottom p-0"
+      >
+        <i class="material-icons">settings</i>
+      </Button>
+      <Menu ref="menu" :model="menuItems" popup />
+    </template>
+
+    <!-- Label -->
+    <div class="mt-3 d-flex flex-column gap-2">
+      <label :for="`label-${stepId}`">{{ $t('Wording') }}</label>
+      <InputText v-model="step.label" required :id="`label-${stepId}`" />
     </div>
 
-    <div class="card-body" v-if="!isCollapsed">
-      <!-- Label -->
-      <div class="form-group mb-3">
-        <label class="form-label">{{ $t('Wording') }}</label>
-        <input
-          type="text"
-          class="form-control"
-          :value="step ? step.label : ''"
-          @input="updateLabel"
-          :placeholder="$t('Step description')"
-        />
-      </div>
-
-      <!-- Position -->
-      <div class="form-group mb-3">
-        <label class="form-label">{{ $t('Position') }}</label>
-        <input
-          type="number"
-          class="form-control"
-          :value="step ? step.position : 0"
-          @input="updatePosition"
-          min="0"
-        />
-        <small class="form-text text-muted">
-          {{
-            $t(
-              'The position is automatically updated when dragging and dropping.',
-            )
-          }}
-        </small>
-      </div>
-
-      <!-- Active -->
-      <div class="form-check mb-3">
-        <input
-          type="checkbox"
-          class="form-check-input"
-          :id="`active-${stepId}`"
-          :checked="step ? step.active : true"
-          @change="updateActive"
-        />
-        <label class="form-check-label" :for="`active-${stepId}`">
-          {{ $t('Active') }}
-        </label>
-      </div>
-
-      <!-- Remove Button -->
-      <div class="text-end mb-3">
-        <button type="button" class="btn btn-danger" @click="handleRemove">
-          <i class="material-icons align-middle me-1">delete</i>
-          {{ $t('Delete') }}
-        </button>
-      </div>
-
-      <hr />
-
-      <!-- Product Choices -->
-      <ProductChoiceList :step-id="stepId" />
+    <!-- Position -->
+    <div class="mt-3 d-flex flex-column gap-2">
+      <label :for="`position-${stepId}`">{{ $t('Position') }}</label>
+      <InputNumber
+        v-model.number="step.position"
+        :min="0"
+        required
+        fluid
+        :inputId="`position-${stepId}`"
+      />
+      <Message size="small" severity="secondary" variant="simple">{{
+        $t('The position is automatically updated when dragging and dropping.')
+      }}</Message>
     </div>
-  </div>
+
+    <!-- Active -->
+    <div class="d-flex align-items-center mt-3">
+      <ToggleSwitch
+        :inputId="`active-${stepId}`"
+        v-model="step.active"
+        class="mr-3"
+      />
+      <label :for="`active-${stepId}`" class="m-0">{{ $t('Active') }}</label>
+    </div>
+
+    <Divider />
+
+    <!-- Product Choices -->
+    <ProductChoiceList :step-id="stepId" />
+  </Panel>
 </template>
 
 <style scoped lang="scss"></style>
