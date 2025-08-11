@@ -243,6 +243,8 @@ final class ConfiguratorController extends FrameworkBundleAdminController
                         'No results found' => $this->trans('No results found', 'Modules.Drsoftfrproductwizard.Admin'),
                         'Do you want to delete this step?' => $this->trans('Do you want to delete this step?', 'Modules.Drsoftfrproductwizard.Admin'),
                         'Step deleted successfully' => $this->trans('Step deleted successfully', 'Modules.Drsoftfrproductwizard.Admin'),
+                        'Do you want to delete this product choice?' => $this->trans('Do you want to delete this product choice?', 'Modules.Drsoftfrproductwizard.Admin'),
+                        'Product choice deleted successfully' => $this->trans('Product choice deleted successfully', 'Modules.Drsoftfrproductwizard.Admin'),
                     ],
                     'Modules.Drsoftfrproductwizard.Error' => [
                         'Error loading the configurator' => $this->trans('Error loading the configurator', 'Modules.Drsoftfrproductwizard.Error'),

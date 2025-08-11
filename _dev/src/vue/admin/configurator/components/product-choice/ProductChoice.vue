@@ -1,6 +1,8 @@
 <script setup>
 import { ref, computed, inject } from 'vue'
 import { useConfiguratorStore } from '@/js/admin/configurator/form/stores/configurator'
+import { useConfirm } from 'primevue/useconfirm'
+import { useToast } from 'primevue/usetoast'
 import ProductSearch from '@/vue/admin/configurator/components/product-choice/ProductSearch.vue'
 
 const props = defineProps({
@@ -9,12 +11,48 @@ const props = defineProps({
 })
 
 const $t = inject('$t')
+const { lifetime } = inject('toast')
 
 const emit = defineEmits(['remove'])
 
 const store = useConfiguratorStore()
 
-const isCollapsed = ref(false)
+const menu = ref(null)
+
+const confirm = useConfirm()
+const toast = useToast()
+
+const menuItems = [
+  {
+    label: $t('Delete'),
+    command: () => {
+      confirm.require({
+        message: $t('Do you want to delete this product choice?'),
+        header: 'Danger Zone',
+        rejectLabel: 'Cancel',
+        rejectProps: {
+          label: 'Cancel',
+          severity: 'secondary',
+          outlined: true,
+        },
+        acceptProps: {
+          label: 'Delete',
+          severity: 'danger',
+        },
+        accept() {
+          store.removeProductChoice(props.stepId, props.productChoiceId)
+          emit('remove', props.productChoiceId)
+          toast.add({
+            severity: 'success',
+            summary: 'Confirmed',
+            detail: $t('Product choice deleted successfully'),
+            life: lifetime.value,
+          })
+        },
+      })
+    },
+  },
+]
 
 const productChoice = computed(() => {
   return store.getProductChoice(props.stepId, props.productChoiceId)
@@ -23,24 +61,6 @@ const productChoice = computed(() => {
 const isVirtual = computed(() => {
   return productChoice.value && productChoice.value.is_virtual === true
 })
-
-const productChoiceIndex = computed(() => {
-  const step = store.getStep(props.stepId)
-
-  if (!step || !step.product_choices) {
-    return -1
-  }
-
-  return step.product_choices.findIndex(
-    (choice) => choice.id === props.productChoiceId,
-  )
-})
-
-const updateLabel = (event) => {
-  if (productChoice.value) {
-    productChoice.value.label = event.target.value
-  }
-}
 
 const updateIsDefault = (event) => {
   if (productChoice.value) {
@@ -62,179 +82,131 @@ const updateIsDefault = (event) => {
   }
 }
 
-const updateAllowQuantity = (event) => {
-  if (productChoice.value) {
-    productChoice.value.allow_quantity = event.target.checked
-
-    // Reset forced quantity if allow quantity is disabled
-    if (!event.target.checked) {
-      productChoice.value.forced_quantity = null
-    }
-  }
-}
-
-const updateForcedQuantity = (event) => {
-  if (productChoice.value) {
-    const value = event.target.value ? parseInt(event.target.value, 10) : null
-    productChoice.value.forced_quantity = value
-  }
-}
-
-const updateActive = (event) => {
-  if (productChoice.value) {
-    productChoice.value.active = event.target.checked
-  }
-}
-
 const updateProductId = (productId) => {
   if (productChoice.value) {
     productChoice.value.product_id = productId
   }
 }
 
-const handleRemove = () => {
-  store.removeProductChoice(props.stepId, props.productChoiceId)
-  emit('remove', props.productChoiceId)
-}
-
-const toggleCollapse = () => {
-  isCollapsed.value = !isCollapsed.value
+const toggleMenu = (event) => {
+  menu.value.toggle(event)
 }
 </script>
 
 <template>
-  <div
-    class="product-choice-item card mb-3"
-    :class="{ 'border-primary': !isCollapsed }"
+  <Panel
+    toggleable
+    class="product-choice-item"
+    :data-product-choice-id="productChoiceId"
+    :data-step-id="stepId"
   >
-    <div class="card-header d-flex justify-content-between align-items-center">
-      <div>
-        <strong>
+    <template #header>
+      <div class="d-flex align-items-center">
+        <h5 class="my-0">
           {{ $t('Product choice') }} #{{ productChoiceId }}
           <span v-if="productChoice">{{ productChoice.label }}</span>
-        </strong>
-        <span v-if="isVirtual" class="badge bg-info ml-2">{{ $t('New') }}</span>
+        </h5>
+        <Tag
+          v-if="isVirtual"
+          severity="info"
+          class="ml-3"
+          :value="$t('New')"
+        ></Tag>
       </div>
+    </template>
 
-      <div class="d-flex align-items-center">
-        <span class="badge bg-secondary me-2">{{ productChoiceIndex }}</span>
-        <button class="btn btn-link" type="button" @click="toggleCollapse">
-          <i class="material-icons">{{
-            isCollapsed ? 'expand_more' : 'expand_less'
-          }}</i>
-        </button>
-      </div>
+    <template #icons>
+      <Button
+        severity="secondary"
+        rounded
+        text
+        @click="toggleMenu"
+        class="align-text-bottom p-0"
+      >
+        <i class="material-icons">settings</i>
+      </Button>
+      <Menu ref="menu" :model="menuItems" popup />
+    </template>
+
+    <!-- Label -->
+    <div class="mt-3 d-flex flex-column gap-2">
+      <label :for="`pc-label-${productChoiceId}`">{{ $t('Wording') }}</label>
+      <InputText
+        v-model="productChoice.label"
+        required
+        :id="`pc-label-${productChoiceId}`"
+      />
     </div>
 
-    <div class="card-body" v-if="!isCollapsed">
-      <!-- Label -->
-      <div class="form-group mb-3">
-        <label class="form-label">{{ $t('Wording') }}</label>
-        <input
-          type="text"
-          class="form-control"
-          :value="productChoice ? productChoice.label : ''"
-          @input="updateLabel"
-          :placeholder="$t('Choice wording')"
-        />
-      </div>
+    <!-- Product Search -->
+    <div class="mt-3">
+      <ProductSearch
+        :value="productChoice ? productChoice.product_id : null"
+        :product-choice-id="productChoiceId"
+        @update:value="updateProductId"
+        :placeholder="$t('Search for a product...')"
+        :required="false"
+        :disabled="false"
+      />
+    </div>
 
-      <!-- Product Search -->
-      <div class="form-group mb-3">
-        <label class="form-label">{{ $t('Product') }}</label>
-        <ProductSearch
-          :value="productChoice ? productChoice.product_id : null"
-          :product-choice-id="productChoiceId"
-          @update:value="updateProductId"
-          :placeholder="$t('Search for a product...')"
-          :required="false"
-          :disabled="false"
-        />
-      </div>
-
-      <!-- Conditions -->
+    <!-- Conditions -->
       <!--      TODO Condition -->
 
-      <!-- Options -->
-      <div class="row mt-3">
-        <div class="col-md-6">
-          <div class="form-check mb-3">
-            <input
-              type="checkbox"
-              class="form-check-input"
-              :id="`is-default-${productChoiceId}`"
-              :checked="productChoice ? productChoice.is_default : false"
-              @change="updateIsDefault"
-            />
-            <label
-              class="form-check-label"
-              :for="`is-default-${productChoiceId}`"
-            >
-              {{ $t('Default choice') }}
-            </label>
-          </div>
-        </div>
-
-        <div class="col-md-6">
-          <div class="form-check mb-3">
-            <input
-              type="checkbox"
-              class="form-check-input"
-              :id="`active-${productChoiceId}`"
-              :checked="productChoice ? productChoice.active : true"
-              @change="updateActive"
-            />
-            <label class="form-check-label" :for="`active-${productChoiceId}`">
-              {{ $t('Active') }}
-            </label>
-          </div>
-        </div>
+    <!-- Options -->
+    <div class="row mt-3">
+      <div class="col-md-6 mb-3 mb-md-0 d-flex align-items-center">
+        <ToggleSwitch
+          :inputId="`pc-is-default-${productChoiceId}`"
+          v-model="productChoice.is_default"
+          class="mr-3"
+          @change="updateIsDefault"
+        />
+        <label :for="`pc-is-default-${productChoiceId}`" class="m-0">{{
+          $t('Default choice')
+        }}</label>
       </div>
 
-      <div class="row">
-        <div class="col-md-6">
-          <div class="form-check mb-3">
-            <input
-              type="checkbox"
-              class="form-check-input"
-              :id="`allow-quantity-${productChoiceId}`"
-              :checked="productChoice ? productChoice.allow_quantity : true"
-              @change="updateAllowQuantity"
-            />
-            <label
-              class="form-check-label"
-              :for="`allow-quantity-${productChoiceId}`"
-            >
-              {{ $t('Allow selection of quantity') }}
-            </label>
-          </div>
+      <div class="col-md-6">
+        <div class="form-check mb-3 d-flex align-items-center">
+          <ToggleSwitch
+            :inputId="`pc-active-${productChoiceId}`"
+            v-model="productChoice.active"
+            class="mr-3"
+          />
+          <label :for="`pc-active-${productChoiceId}`" class="m-0">{{
+            $t('Active')
+          }}</label>
         </div>
-
-        <div class="col-md-6">
-          <div class="form-group mb-3">
-            <label class="form-label">{{ $t('Forced quantity') }}</label>
-            <input
-              type="number"
-              class="form-control"
-              :value="productChoice ? productChoice.forced_quantity : null"
-              @input="updateForcedQuantity"
-              :disabled="productChoice ? !productChoice.allow_quantity : false"
-              min="1"
-              :placeholder="$t('Quantity')"
-            />
-          </div>
-        </div>
-      </div>
-
-      <!-- Remove Button -->
-      <div class="text-end mt-3">
-        <button type="button" class="btn btn-danger" @click="handleRemove">
-          <i class="material-icons">delete</i>
-          {{ $t('Delete') }}
-        </button>
       </div>
     </div>
-  </div>
+
+    <div class="row">
+      <div class="col-md-6 mb-3 mb-md-0 d-flex align-items-center">
+        <ToggleSwitch
+          :inputId="`pc-allow-quantity-${productChoiceId}`"
+          v-model="productChoice.allow_quantity"
+          class="mr-3"
+        />
+        <label :for="`pc-allow-quantity-${productChoiceId}`" class="m-0">{{
+          $t('Allow selection of quantity')
+        }}</label>
+      </div>
+
+      <div class="col-md-6 d-flex flex-column gap-2">
+        <label :for="`pc-label-${productChoiceId}`">{{
+          $t('Forced quantity')
+        }}</label>
+        <InputNumber
+          v-model.number="productChoice.forced_quantity"
+          :min="1"
+          required
+          fluid
+          :inputId="`pc-label-${productChoiceId}`"
+        />
+      </div>
+    </div>
+  </Panel>
 </template>
 
 <style scoped lang="scss"></style>

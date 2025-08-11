@@ -49,6 +49,9 @@ watch(searchQuery, search)
 <template>
   <div class="product-search">
     <div class="input-group">
+      <label :for="`pc-product-${productChoiceId}`" class="form-label">{{
+        $t('Product')
+      }}</label>
       <input
         ref="inputElement"
         type="text"
@@ -58,6 +61,7 @@ watch(searchQuery, search)
         :disabled="disabled"
         :required="required"
         autocomplete="off"
+        :id="`pc-product-${productChoiceId}`"
       />
       <button
         class="btn btn-outline-secondary"
