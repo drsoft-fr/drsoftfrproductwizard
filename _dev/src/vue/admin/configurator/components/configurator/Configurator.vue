@@ -12,80 +12,68 @@ const store = useConfiguratorStore()
 const isValid = computed(() => store.isValid)
 const isLoading = computed(() => store.loading)
 
-const updateName = (event) => {
-  store.name = event.target.value
-}
-
-const updateActive = (event) => {
-  store.active = event.target.checked
-}
+const btnItems = [
+  {
+    label: $t('Back'),
+    command: () => {
+      emit('cancel')
+    },
+  },
+  {
+    label: $t('DEV MODE - view data in real time'),
+    command: () => {
+      store.devMode = !store.devMode
+    },
+  },
+]
 
 const handleSubmit = (event) => {
   event.preventDefault()
   emit('submit')
 }
-
-const handleCancel = () => {
-  emit('cancel')
-}
 </script>
 
 <template>
   <form @submit="handleSubmit" class="configurator-form">
-    <div class="card">
-      <div class="card-header">
-        <h3>{{ $t('General information') }}</h3>
-      </div>
-      <div class="card-body">
-        <div class="form-group">
-          <label for="configurator-name" class="form-label">{{
-            $t('Name of scenario')
+    <Card>
+      <template #title>
+        <h2>{{ $t('General information') }}</h2>
+      </template>
+      <template #content>
+        <FloatLabel class="mt-3">
+          <InputText id="configurator-name" v-model="store.name" required />
+          <label for="configurator-name">{{ $t('Name of scenario') }}</label>
+        </FloatLabel>
+        <div class="d-flex align-items-center mt-3">
+          <ToggleSwitch
+            inputId="configurator-active"
+            v-model="store.active"
+            class="mr-3"
+          />
+          <label for="configurator-active" class="m-0">{{
+            $t('Active')
           }}</label>
-          <input
-            type="text"
-            id="configurator-name"
-            class="form-control"
-            :value="store.name"
-            @input="updateName"
-            :placeholder="$t('Name of scenario')"
-            required
-          />
         </div>
-        <div class="form-check mt-3">
-          <input
-            type="checkbox"
-            id="configurator-active"
-            class="form-check-input"
-            :checked="store.active"
-            @change="updateActive"
-          />
-          <label for="configurator-active" class="form-check-label">
-            {{ $t('Active') }}
-          </label>
-        </div>
-      </div>
-    </div>
+      </template>
+    </Card>
+    <Divider />
     <StepList />
-    <div class="mt-3">
-      <button
-        type="submit"
-        class="btn btn-success me-2"
-        :disabled="!isValid || isLoading"
-      >
-        <i class="material-icons" v-if="isLoading">refresh</i>
-        <i class="material-icons" v-else>save</i>
-        {{ $t('Save') }}
-      </button>
-      <button
-        type="button"
-        class="btn btn-secondary ml-2"
-        @click="handleCancel"
-        :disabled="isLoading"
-      >
-        <i class="material-icons">arrow_back</i>
-        {{ $t('Back') }}
-      </button>
-    </div>
+    <Toolbar class="mt-3">
+      <template #end>
+        <SplitButton
+          type="submit"
+          :label="$t('Save')"
+          :model="btnItems"
+          :disabled="!isValid || isLoading"
+          @click="handleSubmit"
+        >
+          <template #icon>
+            <i class="material-icons" v-if="isLoading">refresh</i>
+            <i class="material-icons" v-else>save</i>
+          </template>
+        </SplitButton>
+      </template>
+    </Toolbar>
   </form>
 </template>
 

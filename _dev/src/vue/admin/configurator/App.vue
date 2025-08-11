@@ -160,45 +160,25 @@ onMounted(() => {
       :message="alert.message"
       @close="closeAlert"
     />
-    <div :class="{ row: store.devMode }">
-      <div :class="{ 'col-8': store.devMode }">
-        <div class="card">
-          <div class="card-header">
-            <h1>{{ pageTitle }}</h1>
-          </div>
-          <div class="card-body">
-            <Transition name="fade" mode="out-in">
-              <Loader v-if="store.loading" />
-              <Configurator
-                v-else
-                @submit="handleSubmit"
-                @cancel="handleCancel"
-              />
-            </Transition>
-          </div>
-          <div class="card-footer d-flex align-items-center">
-            <ToggleSwitch
-              inputId="devMode"
-              v-model="store.devMode"
-              class="mr-3"
+    <Splitter>
+      <SplitterPanel :size="store.devMode ? 80 : 100">
+        <Panel :header="pageTitle">
+          <Transition name="fade" mode="out-in">
+            <Loader v-if="store.loading" />
+            <Configurator
+              v-else
+              @submit="handleSubmit"
+              @cancel="handleCancel"
             />
-            <label for="devMode" class="m-0">{{
-              $t('DEV MODE - view data in real time')
-            }}</label>
-          </div>
-        </div>
-      </div>
-      <div v-if="store.devMode" class="col-4">
-        <div class="card">
-          <div class="card-header">
-            <h2>{{ $t('Real-time data') }}</h2>
-          </div>
-          <div class="card-body">
-            <pre><code>{{ JSON.stringify(store.$state, null, 2) }}</code></pre>
-          </div>
-        </div>
-      </div>
-    </div>
+          </Transition>
+        </Panel>
+      </SplitterPanel>
+      <SplitterPanel v-if="store.devMode" :size="20">
+        <Panel :header="$t('Real-time data')">
+          <pre><code>{{ JSON.stringify(store.$state, null, 2) }}</code></pre>
+        </Panel>
+      </SplitterPanel>
+    </Splitter>
   </div>
 </template>
 

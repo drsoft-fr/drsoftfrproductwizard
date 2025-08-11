@@ -35,6 +35,8 @@ if (appContainer) {
       preset: Aura,
       options: {
         prefix: 'p',
+        darkModeSelector: '.theme-dark',
+        cssLayer: false,
       },
     },
   })
