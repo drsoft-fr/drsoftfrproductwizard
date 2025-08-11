@@ -9,10 +9,22 @@ const props = defineProps({
   index: { type: Number, required: true },
 })
 
-const { removeCondition } = useConditions(props.stepId, props.productChoiceId)
+const { availableSteps, removeCondition } = useConditions(
+  props.stepId,
+  props.productChoiceId,
+)
 
 const selectedStepId = ref(props.condition.step)
 const selectedChoiceId = ref(props.condition.choice)
+const availableChoices = ref([])
+
+const handleStepChange = (event) => {
+  // TODO: update available choices
+}
+
+const handleChoiceChange = (event) => {
+  // TODO: update available choices
+}
 
 const handleRemove = () => {
   removeCondition(selectedStepId.value, selectedChoiceId.value)
@@ -21,8 +33,30 @@ const handleRemove = () => {
 
 <template>
   <div class="row align-items-center condition-block">
-    <div class="col-md-5">Step placeholder</div>
-    <div class="col-md-5">Step placeholder</div>
+    <div class="col-md-5">
+      <Select
+        @change="handleStepChange"
+        fluid
+        :options="availableSteps"
+        optionLabel="label"
+        optionValue="id"
+        :required="required"
+        showClear
+        v-model="selectedStepId"
+      />
+    </div>
+    <div class="col-md-5">
+      <Select
+        @change="handleChoiceChange"
+        fluid
+        :options="availableChoices"
+        optionLabel="label"
+        optionValue="id"
+        :required="required"
+        showClear
+        v-model="selectedChoiceId"
+      />
+    </div>
     <div class="col-md-2">
       <Button
         type="button"

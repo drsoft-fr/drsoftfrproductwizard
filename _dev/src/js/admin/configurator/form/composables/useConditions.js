@@ -21,10 +21,21 @@ export function useConditions(stepId, productChoiceId) {
     return store.addCondition(stepId, productChoiceId)
   }
 
+  // Available steps for conditions (steps with position < current step position)
+  const availableSteps = computed(() =>
+    store.getAvailableStepsForConditions(currentStepPosition.value)
+  )
+
   // Get the current product choice
   const currentProductChoice = computed(() =>
     store.getProductChoice(stepId, productChoiceId),
   )
+
+  // Get the current step
+  const currentStep = computed(() => store.getStep(stepId))
+
+  // Get the current step position
+  const currentStepPosition = computed(() => currentStep.value.position || 0)
 
   // Get all conditions for the current product choice
   const conditions = computed(() => {
@@ -70,6 +81,7 @@ export function useConditions(stepId, productChoiceId) {
 
   return {
     addCondition,
+    availableSteps,
     currentProductChoice,
     conditions,
     hasConditions,

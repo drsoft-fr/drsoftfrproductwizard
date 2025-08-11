@@ -53,6 +53,15 @@ export const useConfiguratorStore = defineStore('configurator', {
 
       return step.product_choices.find((choice) => choice.id === choiceId) || {}
     },
+
+    // Get available steps for conditions (steps with position < current step position)
+    getAvailableStepsForConditions: (state) => (currentStepPosition) => {
+      return state.steps.filter(
+        (step) =>
+          step.position < currentStepPosition &&
+          (!step.is_virtual || step.is_virtual === false),
+      )
+    },
   },
 
   actions: {
