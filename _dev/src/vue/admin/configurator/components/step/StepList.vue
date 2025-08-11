@@ -22,8 +22,18 @@ useSortable(() => stepsContainer.value)
 
 <template>
   <div class="steps-container">
-    <h2 class="mb-3">{{ $t('Steps in the scenario') }}</h2>
-    <div ref="stepsContainer" class="steps-list sortable-list">
+    <Menubar>
+      <template #start>
+        <h2 class="m-0">{{ $t('Steps in the scenario') }}</h2>
+      </template>
+      <template #end>
+        <Button type="button" @click="addStep">
+          <i class="material-icons">add</i>
+          {{ $t('Add a step') }}
+        </Button>
+      </template>
+    </Menubar>
+    <div ref="stepsContainer" class="steps-list sortable-list mt-3">
       <Transition name="fade" mode="out-in">
         <div v-if="!hasSteps" class="alert alert-info">
           {{ $t('No steps defined for this scenario.') }}
@@ -33,10 +43,6 @@ useSortable(() => stepsContainer.value)
         </div>
       </Transition>
     </div>
-    <button type="button" class="btn btn-outline-primary mt-3" @click="addStep">
-      <i class="material-icons">add</i>
-      {{ $t('Add a step') }}
-    </button>
   </div>
 </template>
 
