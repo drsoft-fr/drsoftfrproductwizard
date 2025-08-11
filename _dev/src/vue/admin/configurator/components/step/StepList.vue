@@ -34,9 +34,9 @@ useSortable(() => stepsContainer.value)
       </template>
     </Menubar>
     <Transition name="fade" mode="out-in">
-      <div v-if="!hasSteps" class="alert alert-info mt-3">
+      <Message v-if="!hasSteps" severity="info" class="mt-3">
         {{ $t('No steps defined for this scenario.') }}
-      </div>
+      </Message>
     </Transition>
     <div ref="stepsContainer" class="steps-list sortable-list mt-3">
       <Step
