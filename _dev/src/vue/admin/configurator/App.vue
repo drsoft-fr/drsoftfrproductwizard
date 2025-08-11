@@ -176,18 +176,15 @@ onMounted(() => {
               />
             </Transition>
           </div>
-          <div class="card-footer">
-            <div class="form-check">
-              <input
-                v-model="store.devMode"
-                type="checkbox"
-                class="form-check-input"
-                id="devMode"
-              />
-              <label for="devMode" class="form-check-label">
-                {{ $t('DEV MODE - view data in real time') }}
-              </label>
-            </div>
+          <div class="card-footer d-flex align-items-center">
+            <ToggleSwitch
+              inputId="devMode"
+              v-model="store.devMode"
+              class="mr-3"
+            />
+            <label for="devMode" class="m-0">{{
+              $t('DEV MODE - view data in real time')
+            }}</label>
           </div>
         </div>
       </div>
