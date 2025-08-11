@@ -171,7 +171,7 @@ provide('toast', {
 </script>
 
 <template>
-  <div>
+  <div class="position-relative">
     <Alert
       :closable="alert.closable"
       :visible="alert.visible"

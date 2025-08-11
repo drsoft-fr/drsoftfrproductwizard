@@ -41,10 +41,8 @@ const computedText = computed(() => {
 <template>
   <div :class="loaderClass">
     <div class="loader-content">
-      <div :class="spinnerClass" role="status">
-        <span class="sr-only">{{ computedText }}</span>
-      </div>
-      <p v-if="showText" class="mt-3">{{ computedText }}</p>
+      <ProgressSpinner />
+      <p v-if="showText" class="mt-3 mb-0">{{ computedText }}</p>
     </div>
   </div>
 </template>
