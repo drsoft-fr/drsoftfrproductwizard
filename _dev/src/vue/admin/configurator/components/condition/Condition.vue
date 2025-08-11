@@ -13,6 +13,7 @@ const {
   availableSteps,
   getAvailableChoices,
   removeCondition,
+  updateConditionChoice,
   updateConditionStep,
 } = useConditions(props.stepId, props.productChoiceId)
 
@@ -38,7 +39,10 @@ const handleStepChange = (event) => {
 }
 
 const handleChoiceChange = (event) => {
-  // TODO: update available choices
+  const newChoiceId = event.value
+
+  selectedChoiceId.value = newChoiceId
+  updateConditionChoice(props.condition, newChoiceId)
 }
 
 const handleRemove = () => {

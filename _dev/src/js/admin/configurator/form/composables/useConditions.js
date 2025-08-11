@@ -91,6 +91,20 @@ export function useConditions(stepId, productChoiceId) {
   }
 
   /**
+   * Update a condition's choice
+   *
+   * @param {Object} condition - The condition to update
+   * @param {String|Number} newChoiceId - The new choice ID
+   */
+  const updateConditionChoice = (condition, newChoiceId) => {
+    if (!condition) {
+      return
+    }
+
+    condition.choice = newChoiceId
+  }
+
+  /**
    * Update a condition's step
    *
    * @param {Object} condition - The condition to update
@@ -114,6 +128,7 @@ export function useConditions(stepId, productChoiceId) {
     hasConditions,
     isVirtual,
     removeCondition,
+    updateConditionChoice,
     updateConditionStep,
   }
 }
