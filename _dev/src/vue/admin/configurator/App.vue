@@ -1,5 +1,13 @@
 <script setup>
-import { reactive, onMounted, computed, inject } from 'vue'
+import {
+  reactive,
+  onMounted,
+  computed,
+  inject,
+  provide,
+  readonly,
+  ref,
+} from 'vue'
 import { useConfiguratorStore } from '@/js/admin/configurator/form/stores/configurator'
 import Configurator from '@/vue/admin/configurator/components/configurator/Configurator.vue'
 import Alert from '@/vue/admin/configurator/components/core/Alert.vue'
@@ -13,6 +21,8 @@ const $r = inject('$r')
 const $t = inject('$t')
 
 const store = useConfiguratorStore()
+
+const toastLifetime = ref(5000)
 
 const alert = reactive({
   show: false,
@@ -150,6 +160,10 @@ const handleCancel = () => {
 onMounted(() => {
   fetchConfigurator()
 })
+
+provide('toast', {
+  lifetime: readonly(toastLifetime),
+})
 </script>
 
 <template>
@@ -180,6 +194,8 @@ onMounted(() => {
       </SplitterPanel>
     </Splitter>
   </div>
+  <ConfirmDialog></ConfirmDialog>
+  <Toast />
 </template>
 
 <style scoped lang="scss"></style>
