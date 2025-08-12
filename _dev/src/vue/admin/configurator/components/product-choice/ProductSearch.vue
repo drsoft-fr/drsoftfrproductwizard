@@ -1,5 +1,5 @@
 <script setup>
-import { inject, onMounted, ref } from 'vue'
+import { computed, inject, onMounted, ref } from 'vue'
 import { useProductSearchStore } from '@/js/admin/configurator/form/stores/productSearch'
 import { useToast } from 'primevue/usetoast'
 
@@ -18,9 +18,17 @@ const $t = inject('$t')
 const store = useProductSearchStore()
 
 const searchTimeout = ref(null)
-const selectedProduct = ref(props.productId)
+const selectedProduct = ref(null)
 
 const toast = useToast()
+
+const searchResults = computed(() => {
+  if (null === selectedProduct.value) {
+    return store.searchResults
+  }
+
+  return [...new Set([...[selectedProduct.value], ...store.searchResults])]
+})
 
 const search = async (event) => {
   if (searchTimeout.value) {
@@ -32,7 +40,16 @@ const search = async (event) => {
   }, 300)
 }
 
+const findProductById = (productId) => {
+  return null === productId
+    ? null
+    : searchResults.value.find((product) => product.id === productId)
+}
+
 const selectProduct = (event) => {
+  selectedProduct.value = findProductById(event.value)
+  props.productId = event.value
+
   emit('update:value', event.value)
 }
 
@@ -44,7 +61,7 @@ onMounted(async () => {
   const product = await store.getProduct(props.productId)
 
   if (product) {
-    selectedProduct.value = product.id
+    selectedProduct.value = product
   } else {
     selectedProduct.value = null
   }
@@ -69,12 +86,12 @@ onMounted(async () => {
       fluid
       :id="`pc-product-${productChoiceId}`"
       :loading="store.loading"
-      :options="store.searchResults"
+      :options="searchResults"
       optionLabel="name"
       optionValue="id"
       :required="required"
       showClear
-      v-model="selectedProduct"
+      v-model="props.productId"
     />
   </div>
 </template>
