@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { useConditions } from '@/js/admin/configurator/form/composables/useConditions'
 
 const props = defineProps({
@@ -12,6 +12,7 @@ const props = defineProps({
 const {
   availableSteps,
   getAvailableChoices,
+  isValidStep,
   removeCondition,
   updateConditionChoice,
   updateConditionStep,
@@ -20,6 +21,10 @@ const {
 const selectedStepId = ref(props.condition.step)
 const selectedChoiceId = ref(props.condition.choice)
 const availableChoices = ref([])
+
+const isInvalidStep = computed(() => {
+  return selectedStepId.value && !isValidStep(selectedStepId.value)
+})
 
 const handleStepChange = (event) => {
   const newStepId = event.value
@@ -60,7 +65,7 @@ onMounted(() => {
 
 <template>
   <div class="row align-items-center condition-block">
-    <div class="col-md-5">
+    <div class="col-5">
       <Select
         @change="handleStepChange"
         fluid
@@ -70,9 +75,10 @@ onMounted(() => {
         :required="required"
         showClear
         v-model="selectedStepId"
+        :invalid="isInvalidStep"
       />
     </div>
-    <div class="col-md-5">
+    <div class="col-5">
       <Select
         @change="handleChoiceChange"
         fluid
@@ -84,7 +90,7 @@ onMounted(() => {
         v-model="selectedChoiceId"
       />
     </div>
-    <div class="col-md-2">
+    <div class="col-2 text-right">
       <Button
         type="button"
         severity="danger"

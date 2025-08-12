@@ -66,6 +66,23 @@ export function useConditions(stepId, productChoiceId) {
   const hasConditions = computed(() => conditions.value.length > 0)
 
   /**
+   * Check if a step is valid for conditions
+   *
+   * @param {String|Number} selectedStepId - The ID of the step to check
+   *
+   * @returns {Boolean} - True if the step is valid
+   */
+  const isValidStep = (selectedStepId) => {
+    if (!selectedStepId) {
+      return false
+    }
+
+    const step = store.getStep(selectedStepId)
+
+    return step && step.id && step.position < currentStepPosition.value
+  }
+
+  /**
    * Check if the current product choice is virtual
    */
   const isVirtual = computed(() => {
@@ -126,6 +143,7 @@ export function useConditions(stepId, productChoiceId) {
     conditions,
     getAvailableChoices,
     hasConditions,
+    isValidStep,
     isVirtual,
     removeCondition,
     updateConditionChoice,
