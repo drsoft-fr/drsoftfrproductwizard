@@ -261,6 +261,7 @@ final class ConfiguratorController extends FrameworkBundleAdminController
                         'Error saving configurator:' => $this->trans('Error saving configurator:', 'Modules.Drsoftfrproductwizard.Error'),
                         'An error occurred while saving the configurator.' => $this->trans('An error occurred while saving the configurator.', 'Modules.Drsoftfrproductwizard.Error'),
                         'Error' => $this->trans('Error', 'Modules.Drsoftfrproductwizard.Error'),
+                        'This condition no longer points to a valid step or choice. Modify or delete it.' => $this->trans('This condition no longer points to a valid step or choice. Modify or delete it.', 'Modules.Drsoftfrproductwizard.Error'),
                     ],
                     'Modules.Drsoftfrproductwizard.Success' => [
                         'Configurator successfully saved' => $this->trans('Configurator successfully saved', 'Modules.Drsoftfrproductwizard.Success'),

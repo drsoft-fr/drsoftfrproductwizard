@@ -1,5 +1,5 @@
 <script setup>
-import { computed, onMounted, ref } from 'vue'
+import { computed, inject, onMounted, ref } from 'vue'
 import { useConditions } from '@/js/admin/configurator/form/composables/useConditions'
 
 const props = defineProps({
@@ -8,6 +8,8 @@ const props = defineProps({
   condition: { type: Object, required: true },
   index: { type: Number, required: true },
 })
+
+const $t = inject('$t')
 
 const {
   availableSteps,
@@ -24,11 +26,18 @@ const selectedChoiceId = ref(props.condition.choice)
 const availableChoices = ref([])
 
 const isInvalidChoice = computed(() => {
-  return selectedChoiceId.value && !isValidChoice(selectedStepId.value, selectedChoiceId.value)
+  return (
+    selectedChoiceId.value &&
+    !isValidChoice(selectedStepId.value, selectedChoiceId.value)
+  )
 })
 
 const isInvalidStep = computed(() => {
   return selectedStepId.value && !isValidStep(selectedStepId.value)
+})
+
+const hasError = computed(() => {
+  return isInvalidStep.value || isInvalidChoice.value
 })
 
 const handleStepChange = (event) => {
@@ -106,6 +115,16 @@ onMounted(() => {
       >
         <i class="material-icons">delete</i>
       </Button>
+    </div>
+
+    <div v-if="hasError" class="col-12">
+      <Message severity="error" class="mt-2">
+        {{
+          $t(
+            'This condition no longer points to a valid step or choice. Modify or delete it.',
+          )
+        }}
+      </Message>
     </div>
   </div>
 </template>
