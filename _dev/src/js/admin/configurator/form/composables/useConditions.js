@@ -66,6 +66,24 @@ export function useConditions(stepId, productChoiceId) {
   const hasConditions = computed(() => conditions.value.length > 0)
 
   /**
+   * Check if a choice is valid for conditions
+   *
+   * @param {String|Number} selectedStepId - The ID of the step containing the choice
+   * @param {String|Number} selectedChoiceId - The ID of the choice to check
+   *
+   * @returns {Boolean} - True if the choice is valid
+   */
+  const isValidChoice = (selectedStepId, selectedChoiceId) => {
+    if (!isValidStep(selectedStepId) || !selectedChoiceId) {
+      return false
+    }
+
+    const choices = getAvailableChoices(selectedStepId)
+
+    return choices.some((choice) => choice.id === selectedChoiceId)
+  }
+
+  /**
    * Check if a step is valid for conditions
    *
    * @param {String|Number} selectedStepId - The ID of the step to check
@@ -143,6 +161,7 @@ export function useConditions(stepId, productChoiceId) {
     conditions,
     getAvailableChoices,
     hasConditions,
+    isValidChoice,
     isValidStep,
     isVirtual,
     removeCondition,

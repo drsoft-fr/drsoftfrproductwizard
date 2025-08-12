@@ -12,6 +12,7 @@ const props = defineProps({
 const {
   availableSteps,
   getAvailableChoices,
+  isValidChoice,
   isValidStep,
   removeCondition,
   updateConditionChoice,
@@ -21,6 +22,10 @@ const {
 const selectedStepId = ref(props.condition.step)
 const selectedChoiceId = ref(props.condition.choice)
 const availableChoices = ref([])
+
+const isInvalidChoice = computed(() => {
+  return selectedChoiceId.value && !isValidChoice(selectedStepId.value, selectedChoiceId.value)
+})
 
 const isInvalidStep = computed(() => {
   return selectedStepId.value && !isValidStep(selectedStepId.value)
@@ -88,6 +93,7 @@ onMounted(() => {
         :required="required"
         showClear
         v-model="selectedChoiceId"
+        :invalid="isInvalidChoice"
       />
     </div>
     <div class="col-2 text-right">
