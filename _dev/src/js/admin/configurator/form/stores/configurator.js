@@ -210,7 +210,14 @@ export const useConfiguratorStore = defineStore('configurator', {
     // Reorganize the steps according to a new ID order
     reorderSteps(orderedStepIds) {
       this.steps = orderedStepIds
-        .map((stepId) => this.steps.find((step) => step.id === stepId))
+        .map((stepId) =>
+          this.steps.find((step) => {
+            const type = typeof stepId
+            return 'number' === type
+              ? parseInt(step.id) === stepId
+              : step.id === stepId
+          }),
+        )
         .filter((step) => step !== undefined)
 
       this.updateStepPositions()
