@@ -39,23 +39,3 @@ admin_drsoft_fr_product_wizard_configurator_delete:
       id: id
   requirements:
     id: \d+
-
-admin_drsoft_fr_product_wizard_configurator_step_fragment:
-  path: /step/fragment/
-  methods: [ GET ]
-  defaults:
-    _controller: DrSoftFr\Module\ProductWizard\Controller\Admin\ConfiguratorController::stepFragmentAction
-    _legacy_controller: AdminDrSoftFrProductWizardConfigurator
-    _legacy_link: AdminDrSoftFrProductWizardConfigurator:stepFragment
-
-admin_drsoft_fr_product_wizard_configurator_product_choice_fragment:
-  path: /product-choice/fragment/
-  methods: [ GET ]
-  defaults:
-    _controller: DrSoftFr\Module\ProductWizard\Controller\Admin\ConfiguratorController::productChoiceFragmentAction
-    _legacy_controller: AdminDrSoftFrProductWizardConfigurator
-    _legacy_link: AdminDrSoftFrProductWizardConfigurator:productChoiceFragment
-    _legacy_parameters:
-      index: index
-  requirements:
-    index: \d+

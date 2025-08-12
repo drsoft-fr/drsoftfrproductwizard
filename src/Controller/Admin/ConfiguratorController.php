@@ -6,10 +6,6 @@ namespace DrSoftFr\Module\ProductWizard\Controller\Admin;
 
 use Doctrine\ORM\EntityManagerInterface;
 use DrSoftFr\Module\ProductWizard\Entity\Configurator;
-use DrSoftFr\Module\ProductWizard\Entity\ProductChoice;
-use DrSoftFr\Module\ProductWizard\Entity\Step;
-use DrSoftFr\Module\ProductWizard\Form\ProductChoiceType;
-use DrSoftFr\Module\ProductWizard\Form\StepType;
 use DrSoftFr\Module\ProductWizard\Repository\ConfiguratorRepository;
 use DrSoftFr\PrestaShopModuleHelper\Domain\Asset\Package;
 use DrSoftFr\PrestaShopModuleHelper\Domain\Asset\VersionStrategy\JsonManifestVersionStrategy;
@@ -149,54 +145,6 @@ final class ConfiguratorController extends FrameworkBundleAdminController
         }
 
         return $this->redirectToRoute(self::PAGE_INDEX_ROUTE);
-    }
-
-    /**
-     * @AdminSecurity(
-     *     "is_granted('delete', request.get('_legacy_controller'))",
-     *     redirectRoute="admin_drsoft_fr_product_wizard_configurator_index",
-     *     message="You do not have permission to delete this."
-     * )
-     *
-     * @param Request $request
-     *
-     * @return Response
-     */
-    public function stepFragmentAction(Request $request): Response
-    {
-        $index = (int)$request->query->get('index');
-        $step = new Step();
-        $stepForm = $this->createForm(StepType::class, $step, [
-            'block_name' => 'steps[' . $index . ']'
-        ]);
-        return $this->render(self::TEMPLATE_FOLDER . 'form/partial/_step_form.html.twig', [
-            'form' => $stepForm->createView(),
-            'index' => $index,
-        ]);
-    }
-
-    /**
-     * @AdminSecurity(
-     *     "is_granted('delete', request.get('_legacy_controller'))",
-     *     redirectRoute="admin_drsoft_fr_product_wizard_configurator_index",
-     *     message="You do not have permission to delete this."
-     * )
-     *
-     * @param Request $request
-     *
-     * @return Response
-     */
-    public function productChoiceFragmentAction(Request $request): Response
-    {
-        $index = (int)$request->query->get('index');
-        $choice = new ProductChoice();
-        $choiceForm = $this->createForm(ProductChoiceType::class, $choice, [
-            'block_name' => 'productChoices[' . $index . ']'
-        ]);
-        return $this->render(self::TEMPLATE_FOLDER . 'form/partial/_product_choice_form.html.twig', [
-            'form' => $choiceForm->createView(),
-            'index' => $index,
-        ]);
     }
 
     private function defineJsProps(): void
