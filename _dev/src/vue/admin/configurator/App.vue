@@ -60,6 +60,21 @@ const closeAlert = () => {
   clearTimeout(timer.value)
 }
 
+const checkValidity = () => {
+  const validity = store.recomputeValidity ? store.recomputeValidity() : true
+
+  if (!validity) {
+    const msg =
+      store.formErrors && store.formErrors.length
+        ? store.formErrors.join('\n')
+        : $t('Error while saving the configurator')
+
+    showAlert('error', msg)
+  }
+
+  return validity
+}
+
 const fetchConfigurator = async () => {
   try {
     store.setLoading(true)
@@ -107,6 +122,10 @@ const fetchConfigurator = async () => {
 
 const handleSubmit = async () => {
   try {
+    if (false === checkValidity()) {
+      return
+    }
+
     store.setLoading(true)
 
     const response = await fetch($r('save'), {
@@ -173,6 +192,8 @@ onMounted(() => {
 provide('toast', {
   lifetime: readonly(toastLifetime),
 })
+
+provide('checkValidity', readonly(checkValidity))
 </script>
 
 <template>

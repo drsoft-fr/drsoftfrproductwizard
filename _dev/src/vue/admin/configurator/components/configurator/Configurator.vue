@@ -1,8 +1,9 @@
 <script setup>
-import { computed, inject } from 'vue'
+import { computed, inject, watch } from 'vue'
 import { useConfiguratorStore } from '@/js/admin/configurator/form/stores/configurator'
 import StepList from '@/vue/admin/configurator/components/step/StepList.vue'
 
+const checkValidity = inject('checkValidity')
 const $t = inject('$t')
 
 const emit = defineEmits(['submit', 'cancel'])
@@ -31,6 +32,10 @@ const handleSubmit = (event) => {
   event.preventDefault()
   emit('submit')
 }
+
+watch(store.active, checkValidity)
+watch(store.name, checkValidity)
+watch(store.steps, checkValidity, { deep: true })
 </script>
 
 <template>

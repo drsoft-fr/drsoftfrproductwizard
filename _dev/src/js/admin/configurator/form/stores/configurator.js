@@ -318,5 +318,173 @@ export const useConfiguratorStore = defineStore('configurator', {
     toggleDevMode() {
       this.devMode = !this.devMode
     },
+
+    // Validate the whole configurator and update isValid + formErrors
+    recomputeValidity() {
+      const errors = []
+
+      // Helper maps
+      const stepById = new Map()
+      const stepByPosition = new Map()
+
+      // 1) Configurator name
+      if (!this.name || String(this.name).trim().length === 0) {
+        errors.push('The name of the scenario is mandatory.')
+      }
+
+      // 2) Steps basic checks
+      if (!Array.isArray(this.steps) || this.steps.length === 0) {
+        errors.push('At least one step is required.')
+      }
+
+      // Build maps and check step labels + positions
+      const seenPositions = new Set()
+      this.steps.forEach((step, idx) => {
+        if (!step || typeof step !== 'object') {
+          errors.push(`Step #${idx + 1}: Invalid data.`)
+
+          return
+        }
+
+        // Normalize id to string for map keys
+        const stepId = step.id
+        stepById.set(stepId, step)
+
+        if (!step.label || String(step.label).trim().length === 0) {
+          errors.push(`Step #${idx + 1}: The wording is mandatory.`)
+        }
+
+        // position checks
+        const pos = Number(step.position)
+        if (!Number.isInteger(pos) || pos < 0) {
+          errors.push(`Step #"${step.label || idx + 1}": Invalid position.`)
+        } else {
+          if (seenPositions.has(pos)) {
+            errors.push(`Two Steps share the same position (${pos}).`)
+          }
+          seenPositions.add(pos)
+          stepByPosition.set(pos, step)
+        }
+
+        // 3) Product choices validations per step
+        if (
+          !Array.isArray(step.product_choices) ||
+          step.product_choices.length === 0
+        ) {
+          errors.push('At least one choice by step is required.')
+
+          return
+        }
+
+        const choices = step.product_choices
+
+        // Only one default per step
+        let defaultCount = 0
+        choices.forEach((choice, cIdx) => {
+          if (!choice || typeof choice !== 'object') {
+            errors.push(`Step "${step.label}": Choice #${cIdx + 1} invalid.`)
+
+            return
+          }
+
+          if (!choice.label || String(choice.label).trim().length === 0) {
+            errors.push(
+              `Step "${step.label}": The wording of choice #${cIdx + 1} is mandatory.`,
+            )
+          }
+
+          if (choice.is_default) {
+            defaultCount++
+          }
+
+          // Quantity logic
+          const allowQty = !!choice.allow_quantity
+          const forcedQty = choice.forced_quantity
+          if (allowQty === false) {
+            if (
+              forcedQty === null ||
+              forcedQty === undefined ||
+              Number(forcedQty) < 1 ||
+              !Number.isInteger(Number(forcedQty))
+            ) {
+              errors.push(
+                `Step "${step.label}": The choice "${choice.label || '#' + (cIdx + 1)}" must have a valid quantity (integer >= 1) when quantity selection is disabled.`,
+              )
+            }
+          }
+
+          // Conditions must reference earlier steps and valid choices
+          const conditions = Array.isArray(choice.display_conditions)
+            ? choice.display_conditions
+            : []
+
+          conditions.forEach((cond, k) => {
+            if (!cond || typeof cond !== 'object') {
+              errors.push(`Step "${step.label}": Condition #${k + 1} invalid.`)
+
+              return
+            }
+
+            const refStepId = cond.step
+            const refChoiceId = cond.choice
+
+            const refStep = this.steps.find((s) => {
+              // step ids can be numbers or strings, compare loosely
+              return String(s.id) === String(refStepId)
+            })
+
+            if (!refStep) {
+              errors.push(
+                `Step "${step.label}": The condition #${k + 1} reference a non-existent step.`,
+              )
+
+              return
+            }
+
+            if (Number(refStep.position) >= Number(step.position)) {
+              errors.push(
+                `Step "${step.label}": The condition #${k + 1} must reference a previous step.`,
+              )
+            }
+
+            const refChoice = Array.isArray(refStep.product_choices)
+              ? refStep.product_choices.find(
+                  (c) => String(c.id) === String(refChoiceId),
+                )
+              : null
+
+            if (!refChoice) {
+              errors.push(
+                `Step "${step.label}": The condition #${k + 1} reference a choice that does not exist in the target step.`,
+              )
+            }
+          })
+        })
+
+        if (defaultCount > 1) {
+          errors.push(
+            `Step "${step.label}": There can only be one default choice..`,
+          )
+        }
+      })
+
+      // Optional: positions should cover 0..n-1 without gaps
+      if (this.steps.length > 0) {
+        for (let i = 0; i < this.steps.length; i++) {
+          if (!stepByPosition.has(i)) {
+            errors.push(
+              'The positions of the steps must be continuous starting from 0 (no gaps).',
+            )
+
+            break
+          }
+        }
+      }
+
+      this.formErrors = errors
+      this.isValid = errors.length === 0
+
+      return this.isValid
+    },
   },
 })
