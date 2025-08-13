@@ -1,5 +1,5 @@
 <script setup>
-import { inject } from 'vue'
+import { computed, inject, ref } from 'vue'
 import { useConditions } from '@/js/admin/configurator/form/composables/useConditions'
 import Condition from '@/vue/admin/configurator/components/condition/Condition.vue'
 
@@ -10,10 +10,55 @@ const props = defineProps({
 
 const $t = inject('$t')
 
+const emit = defineEmits(['onChange'])
+
 const { addCondition, conditions, hasConditions, isVirtual } = useConditions(
   props.stepId,
   props.productChoiceId,
 )
+
+const isValid = ref(true)
+const validity = computed((conditions) => {
+  const validity = {}
+
+  if (!conditions) {
+    return validity
+  }
+
+  for (const condition of conditions) {
+    validity[`${condition.step}-${condition.choice}`] = true
+  }
+
+  return validity
+})
+
+const checkValidity = () =>
+  (isValid.value = !(
+    true === Object.values(validity.value).some((value) => value === false)
+  ))
+
+const emitOnChange = () => {
+  checkValidity()
+  emit('onChange', {
+    isValid: isValid.value,
+  })
+}
+
+const handleChange = (event) => {
+  validity.value[event.item] = event.isValid
+
+  emitOnChange()
+}
+
+const handleDelete = (event) => {
+  if (false === validity.value.hasOwnProperty(event.item)) {
+    return
+  }
+
+  delete validity.value[event.item]
+
+  emitOnChange()
+}
 </script>
 
 <template>
@@ -61,6 +106,8 @@ const { addCondition, conditions, hasConditions, isVirtual } = useConditions(
             :product-choice-id="productChoiceId"
             :step-id="stepId"
             :class="0 < index ? 'mt-3' : ''"
+            @on-change="handleChange"
+            @on-delete="handleDelete"
           />
         </TransitionGroup>
       </Transition>

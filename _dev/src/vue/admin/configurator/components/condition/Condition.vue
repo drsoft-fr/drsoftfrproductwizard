@@ -1,5 +1,5 @@
 <script setup>
-import { computed, inject, onMounted, ref } from 'vue'
+import { computed, inject, onMounted, ref, watch } from 'vue'
 import { useConditions } from '@/js/admin/configurator/form/composables/useConditions'
 
 const props = defineProps({
@@ -10,6 +10,8 @@ const props = defineProps({
 })
 
 const $t = inject('$t')
+
+const emit = defineEmits(['onChange', 'onDelete'])
 
 const {
   availableSteps,
@@ -40,6 +42,19 @@ const hasError = computed(() => {
   return isInvalidStep.value || isInvalidChoice.value
 })
 
+const emitOnChange = () =>
+  emit('onChange', {
+    item: `${props.stepId}-${props.productChoiceId}`,
+    choice: selectedChoiceId.value,
+    step: selectedStepId.value,
+    isValid: !hasError.value,
+  })
+
+const emitOnDelete = () =>
+  emit('onDelete', {
+    item: `${props.stepId}-${props.productChoiceId}`,
+  })
+
 const handleStepChange = (event) => {
   const newStepId = event.value
 
@@ -66,7 +81,11 @@ const handleChoiceChange = (event) => {
 
 const handleRemove = () => {
   removeCondition(selectedStepId.value, selectedChoiceId.value)
+
+  emitOnDelete()
 }
+
+watch(hasError, emitOnChange)
 
 onMounted(() => {
   if (!props.condition.step) {

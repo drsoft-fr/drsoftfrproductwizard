@@ -18,6 +18,7 @@ const emit = defineEmits(['remove'])
 
 const store = useConfiguratorStore()
 
+const isValid = ref(true)
 const menu = ref(null)
 
 const confirm = useConfirm()
@@ -92,6 +93,10 @@ const updateProductId = (productId) => {
 const toggleMenu = (event) => {
   menu.value.toggle(event)
 }
+
+const handleConditionChange = (event) => {
+  isValid.value = event.isValid
+}
 </script>
 
 <template>
@@ -103,6 +108,9 @@ const toggleMenu = (event) => {
   >
     <template #header>
       <div class="d-flex align-items-center">
+        <i v-if="false === isValid" class="material-icons text-danger mr-3">
+          error
+        </i>
         <h5 class="my-0">
           {{ $t('Product choice') }} #{{ productChoiceId }}
           <span v-if="productChoice">{{ productChoice.label }}</span>
@@ -156,6 +164,7 @@ const toggleMenu = (event) => {
       :step-id="stepId"
       :product-choice-id="productChoiceId"
       class="mt-3"
+      @on-change="handleConditionChange"
     />
 
     <!-- Options -->
