@@ -23,6 +23,7 @@ const $t = inject('$t')
 const store = useConfiguratorStore()
 
 const toastLifetime = ref(5000)
+const timer = ref(null)
 
 const alert = reactive({
   closable: true,
@@ -49,10 +50,14 @@ const showAlert = (severity, message, closable = true, life = 5000) => {
   if (life) {
     alert.life = life
   }
+
+  timer.value = setTimeout(() => (alert.visible = false), life || 5000)
 }
 
 const closeAlert = () => {
   alert.visible = false
+
+  clearTimeout(timer.value)
 }
 
 const fetchConfigurator = async () => {
