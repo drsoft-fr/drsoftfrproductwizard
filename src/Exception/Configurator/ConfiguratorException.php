@@ -5,7 +5,7 @@ namespace DrSoftFr\Module\ProductWizard\Exception\Configurator;
 use Exception;
 
 /**
- * Base exception for Category subdomain
+ * Base exception for Configurator subdomain
  */
 class ConfiguratorException extends Exception
 {
