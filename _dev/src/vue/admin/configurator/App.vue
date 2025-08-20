@@ -1,12 +1,5 @@
 <script setup>
-import {
-  onMounted,
-  computed,
-  inject,
-  provide,
-  readonly,
-  ref,
-} from 'vue'
+import { onMounted, computed, inject, provide, readonly, ref } from 'vue'
 import { useConfiguratorStore } from '@/js/admin/configurator/form/stores/configurator'
 import Configurator from '@/vue/admin/configurator/components/configurator/Configurator.vue'
 import Loader from '@/vue/admin/configurator/components/core/Loader.vue'

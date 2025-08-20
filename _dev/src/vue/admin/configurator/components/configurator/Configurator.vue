@@ -33,8 +33,6 @@ const handleSubmit = (event) => {
   emit('submit')
 }
 
-watch(store.active, checkValidity)
-watch(store.name, checkValidity)
 watch(store.steps, checkValidity, { deep: true })
 </script>
 
@@ -47,7 +45,12 @@ watch(store.steps, checkValidity, { deep: true })
       <template #content>
         <div class="mt-3 d-flex flex-column gap-2">
           <label for="configurator-name">{{ $t('Name of scenario') }}</label>
-          <InputText id="configurator-name" v-model="store.name" required />
+          <InputText
+            id="configurator-name"
+            v-model="store.name"
+            required
+            @change="checkValidity"
+          />
         </div>
         <div class="d-flex align-items-center mt-3">
           <ToggleSwitch
