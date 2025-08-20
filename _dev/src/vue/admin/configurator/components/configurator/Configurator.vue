@@ -62,6 +62,44 @@ watch(store.steps, checkValidity, { deep: true })
             $t('Active')
           }}</label>
         </div>
+
+        <Divider />
+
+        <div class="row">
+          <div class="col-md-4 d-flex flex-column gap-2">
+            <label for="configurator-reduction">{{ $t('Reduction') }}</label>
+            <InputNumber
+              id="configurator-reduction"
+              v-model.number="store.reduction"
+              min="0"
+              :max="store.reduction_type === 'percentage' ? 100 : null"
+            />
+          </div>
+          <div class="col-md-4 d-flex flex-column gap-2">
+            <label for="configurator-reduction-type">{{
+              $t('Reduction type')
+            }}</label>
+            <Dropdown
+              inputId="configurator-reduction-type"
+              :options="[
+                { label: '%', value: 'percentage' },
+                { label: '€', value: 'amount' },
+              ]"
+              optionLabel="label"
+              optionValue="value"
+              v-model="store.reduction_type"
+            />
+          </div>
+          <div class="col-md-4 d-flex flex-column gap-2">
+            <label for="configurator-reduction-tax">{{
+              $t('Tax included?')
+            }}</label>
+            <ToggleSwitch
+              inputId="configurator-reduction-tax"
+              v-model="store.reduction_tax"
+            />
+          </div>
+        </div>
       </template>
     </Card>
     <Divider />

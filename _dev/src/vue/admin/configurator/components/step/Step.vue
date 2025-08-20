@@ -152,6 +152,45 @@ const toggleMenu = (event) => {
 
     <Divider />
 
+    <!-- Reduction settings -->
+    <div class="row mt-3">
+      <div class="col-md-4 d-flex flex-column gap-2">
+        <label :for="`step-reduction-${stepId}`">{{ $t('Reduction') }}</label>
+        <InputNumber
+          :inputId="`step-reduction-${stepId}`"
+          v-model.number="step.reduction"
+          min="0"
+          :max="step.reduction_type === 'percentage' ? 100 : null"
+        />
+      </div>
+      <div class="col-md-4 d-flex flex-column gap-2">
+        <label :for="`step-reduction-type-${stepId}`">{{
+          $t('Reduction type')
+        }}</label>
+        <Dropdown
+          :inputId="`step-reduction-type-${stepId}`"
+          :options="[
+            { label: '%', value: 'percentage' },
+            { label: '€', value: 'amount' },
+          ]"
+          optionLabel="label"
+          optionValue="value"
+          v-model="step.reduction_type"
+        />
+      </div>
+      <div class="col-md-4 d-flex flex-column gap-2">
+        <label :for="`step-reduction-tax-${stepId}`">{{
+          $t('Tax included?')
+        }}</label>
+        <ToggleSwitch
+          :inputId="`step-reduction-tax-${stepId}`"
+          v-model="step.reduction_tax"
+        />
+      </div>
+    </div>
+
+    <Divider />
+
     <!-- Product Choices -->
     <ProductChoiceList :step-id="stepId" />
   </Panel>

@@ -218,6 +218,46 @@ const handleConditionChange = (event) => {
         />
       </div>
     </div>
+
+    <Divider />
+
+    <div class="row mt-3">
+      <div class="col-md-4 d-flex flex-column gap-2">
+        <label :for="`pc-reduction-${productChoiceId}`">{{
+          $t('Reduction')
+        }}</label>
+        <InputNumber
+          :inputId="`pc-reduction-${productChoiceId}`"
+          v-model.number="productChoice.reduction"
+          min="0"
+          :max="productChoice.reduction_type === 'percentage' ? 100 : null"
+        />
+      </div>
+      <div class="col-md-4 d-flex flex-column gap-2">
+        <label :for="`pc-reduction-type-${productChoiceId}`">{{
+          $t('Reduction type')
+        }}</label>
+        <Dropdown
+          :inputId="`pc-reduction-type-${productChoiceId}`"
+          :options="[
+            { label: '%', value: 'percentage' },
+            { label: '€', value: 'amount' },
+          ]"
+          optionLabel="label"
+          optionValue="value"
+          v-model="productChoice.reduction_type"
+        />
+      </div>
+      <div class="col-md-4 d-flex flex-column gap-2">
+        <label :for="`pc-reduction-tax-${productChoiceId}`">{{
+          $t('Tax included?')
+        }}</label>
+        <ToggleSwitch
+          :inputId="`pc-reduction-tax-${productChoiceId}`"
+          v-model="productChoice.reduction_tax"
+        />
+      </div>
+    </div>
   </Panel>
 </template>
 

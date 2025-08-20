@@ -7,6 +7,9 @@ export const useConfiguratorStore = defineStore('configurator', {
     id: null,
     name: '',
     active: true,
+    reduction: 0,
+    reduction_tax: true,
+    reduction_type: 'amount',
     steps: [],
 
     // UI state
@@ -105,6 +108,9 @@ export const useConfiguratorStore = defineStore('configurator', {
       this.name = data.name || ''
       this.active = !!data.active
       this.steps = data.steps || []
+      this.reduction = data.reduction ?? 0
+      this.reduction_tax = data.reduction_tax ?? true
+      this.reduction_type = data.reduction_type ?? 'amount'
       this.isValid = true
       this.loading = false
 
@@ -131,6 +137,9 @@ export const useConfiguratorStore = defineStore('configurator', {
         label: 'Nouvelle étape',
         position,
         active: true,
+        reduction: 0,
+        reduction_tax: true,
+        reduction_type: 'amount',
         product_choices: [],
         is_virtual: true,
       }
@@ -252,6 +261,9 @@ export const useConfiguratorStore = defineStore('configurator', {
         product_id: null,
         allow_quantity: true,
         forced_quantity: null,
+        reduction: 0,
+        reduction_tax: true,
+        reduction_type: 'amount',
         display_conditions: [],
         is_virtual: true,
       })
