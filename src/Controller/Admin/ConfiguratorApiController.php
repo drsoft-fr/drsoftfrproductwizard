@@ -6,6 +6,7 @@ namespace DrSoftFr\Module\ProductWizard\Controller\Admin;
 
 use Doctrine\ORM\EntityManagerInterface;
 use DrSoftFr\Module\ProductWizard\Dto\ConfiguratorDto;
+use DrSoftFr\Module\ProductWizard\Entity\Configurator;
 use DrSoftFr\Module\ProductWizard\Normalizer\ConfiguratorNormalizer;
 use DrSoftFr\Module\ProductWizard\Repository\ConfiguratorRepository;
 use DrSoftFr\Module\ProductWizard\Service\ConfiguratorFactory;
@@ -54,6 +55,7 @@ final class ConfiguratorApiController extends FrameworkBundleAdminController
      */
     public function getAction(
         Request                $request,
+        ConfiguratorNormalizer $normalizer,
         ConfiguratorRepository $repository
     ): JsonResponse
     {
@@ -66,6 +68,7 @@ final class ConfiguratorApiController extends FrameworkBundleAdminController
             ]);
         }
 
+        /** @var Configurator $configurator */
         $configurator = $repository->find($configuratorId);
 
         if (null === $configurator) {
@@ -75,9 +78,11 @@ final class ConfiguratorApiController extends FrameworkBundleAdminController
             ]);
         }
 
+        $dto = ConfiguratorDto::fromEntity($configurator);
+
         return $this->json([
             'success' => true,
-            'configurator' => $configurator->toArray(),
+            'configurator' => $normalizer->normalize($dto),
         ]);
     }
 
