@@ -37,6 +37,9 @@ final class ConfiguratorFactory
 
         $configurator->setName($dto->name);
         $configurator->setActive($dto->active);
+        $configurator->setReduction($dto->reduction);
+        $configurator->setReductionTax($dto->reductionTax);
+        $configurator->setReductionType($dto->reductionType);
 
         if (true === $isNew) {
             $this->em->persist($configurator);
@@ -69,6 +72,9 @@ final class ConfiguratorFactory
             $step->setLabel($stepDto->label);
             $step->setPosition($stepDto->position);
             $step->setActive($stepDto->active);
+            $step->setReduction($stepDto->reduction);
+            $step->setReductionTax($stepDto->reductionTax);
+            $step->setReductionType($stepDto->reductionType);
 
             if (true === $isNew) {
                 $stepsCollection->add($step);
@@ -112,6 +118,9 @@ final class ConfiguratorFactory
             $choice->setAllowQuantity($choiceDto->allowQuantity);
             $choice->setForcedQuantity($choiceDto->forcedQuantity);
             $choice->setActive($choiceDto->active);
+            $choice->setReduction($choiceDto->reduction);
+            $choice->setReductionTax($choiceDto->reductionTax);
+            $choice->setReductionType($choiceDto->reductionType);
 
             $this->mapDisplayConditions($choice, $choiceDto->displayConditions);
 
