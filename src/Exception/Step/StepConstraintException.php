@@ -7,4 +7,7 @@ namespace DrSoftFr\Module\ProductWizard\Exception\Step;
  */
 class StepConstraintException extends StepException
 {
+    public const INVALID_LABEL = 1;
+    public const INVALID_POSITION = 2;
+    public const INVALID_PRODUCT_CHOICES = 3;
 }
