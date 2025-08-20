@@ -9,6 +9,7 @@ use DrSoftFr\Module\ProductWizard\Exception\Configurator\ConfiguratorConstraintE
 use DrSoftFr\Module\ProductWizard\Exception\DisplayCondition\DisplayConditionConstraintException;
 use DrSoftFr\Module\ProductWizard\Exception\ProductChoice\ProductChoiceConstraintException;
 use DrSoftFr\Module\ProductWizard\Exception\Step\StepConstraintException;
+use Exception;
 
 final class ConfiguratorValidatorService
 {
@@ -42,6 +43,7 @@ final class ConfiguratorValidatorService
      * @throws DisplayConditionConstraintException
      * @throws ProductChoiceConstraintException
      * @throws StepConstraintException
+     * @throws Exception
      */
     private function validateConfigurator(
         ConfiguratorDto $dto
@@ -58,6 +60,8 @@ final class ConfiguratorValidatorService
             $dto->steps,
             $dto
         );
+
+        $this->validateReduction($dto->reduction, $dto->reductionTax, $dto->reductionType, 'Configurator', new ConfiguratorConstraintException);
     }
 
     /**
@@ -130,6 +134,7 @@ final class ConfiguratorValidatorService
      * @throws DisplayConditionConstraintException
      * @throws ProductChoiceConstraintException
      * @throws StepConstraintException
+     * @throws Exception
      */
     private function validateStep(
         StepDto         $dto,
@@ -157,6 +162,8 @@ final class ConfiguratorValidatorService
             $dto,
             $configuratorDto
         );
+
+        $this->validateReduction($dto->reduction, $dto->reductionTax, $dto->reductionType, sprintf('Step "%s"', $dto->label), new StepConstraintException);
     }
 
     /**
@@ -225,6 +232,7 @@ final class ConfiguratorValidatorService
      *
      * @throws ProductChoiceConstraintException
      * @throws DisplayConditionConstraintException
+     * @throws Exception
      */
     private function validateChoice(
         ProductChoiceDto $dto,
@@ -257,6 +265,8 @@ final class ConfiguratorValidatorService
             $stepDto,
             $configuratorDto
         );
+
+        $this->validateReduction($dto->reduction, $dto->reductionTax, $dto->reductionType, sprintf('Step "%s" choice "%s"', $stepDto->label, $dto->label), new ProductChoiceConstraintException);
     }
 
     /**
@@ -363,5 +373,74 @@ final class ConfiguratorValidatorService
                 DisplayConditionConstraintException::INVALID_CHOICE
             );
         }
+    }
+
+    /**
+     * Validates the reduction value, type, and tax status based on the provided context and throws an exception when constraints are violated.
+     *
+     * @param float|null $reduction The reduction value to validate. Can be null, in which case it defaults to 0.
+     * @param bool|null $tax The tax status associated with the reduction. Must be either true, false, or null.
+     * @param string|null $type The type of reduction, either 'percentage' or 'amount'. Defaults to 'amount' if null.
+     * @param string $context The context in which the validation is performed, used for exception messages.
+     * @param Exception $exception The exception class to throw when validation fails.
+     *
+     * @return void
+     *
+     * @throws Exception If the reduction type is invalid.
+     * @throws Exception If the reduction value is out of the allowed range for its type.
+     * @throws Exception If the tax status is invalid.
+     */
+    private function validateReduction(?float $reduction, ?bool $tax, ?string $type, string $context, Exception $exception): void
+    {
+        $value = (float)($reduction ?? 0);
+        $t = ($type ?? 'amount');
+
+        if ($t === 'percentage') {
+            if ($value < 0 || $value > 100) {
+                throw new $exception(
+                    sprintf('%s: The percentage reduction must be between 0 and 100.', $context),
+                    $this->getExceptionCode('REDUCTION', $exception)
+                );
+            }
+        } elseif ($t === 'amount') {
+            if ($value < 0) {
+                throw new $exception(
+                    sprintf('%s: The amount reduction must be >= 0.', $context),
+                    $this->getExceptionCode('REDUCTION', $exception)
+                );
+            }
+        } else {
+            throw new $exception(
+                sprintf('%s: Invalid reduction type.', $context),
+                $this->getExceptionCode('REDUCTION_TYPE', $exception)
+            );
+        }
+
+        if (false === is_bool($tax)) {
+            throw new $exception(
+                sprintf('%s: Invalid reduction tax.', $context),
+                $this->getExceptionCode('REDUCTION_TAX', $exception)
+            );
+        }
+    }
+
+    /**
+     * Retrieves the exception code for a specific constant in an exception class.
+     *
+     * @param string $const The constant to generate the exception code from.
+     * @param Exception $class The exception class.
+     *
+     * @return int The exception code for the specified constant, or 0 if the constant does not exist.
+     */
+    private function getExceptionCode(string $const, Exception $class): int
+    {
+        $exceptionCodeConst = 'INVALID_' . strtoupper($const);
+        $fullyQualifiedConstantName = get_class($class) . '::' . $exceptionCodeConst;
+
+        if (defined($fullyQualifiedConstantName)) {
+            return (int)constant($fullyQualifiedConstantName);
+        }
+
+        return 0;
     }
 }
