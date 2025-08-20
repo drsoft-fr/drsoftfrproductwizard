@@ -11,6 +11,9 @@ final class StepDto
         public string  $label = '',
         public int     $position = 0,
         public bool    $active = true,
+        public float   $reduction = 0.0,
+        public bool    $reductionTax = true,
+        public string  $reductionType = 'amount',
         /** @var ProductChoiceDto[] */
         public array   $productChoices = []
     )
@@ -30,6 +33,9 @@ final class StepDto
             $step->getLabel(),
             $step->getPosition(),
             $step->isActive(),
+            $step->getReduction(),
+            $step->isReductionTax(),
+            $step->getReductionType(),
             $arr
         );
     }

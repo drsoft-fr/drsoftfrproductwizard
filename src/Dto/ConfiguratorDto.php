@@ -10,6 +10,9 @@ final class ConfiguratorDto
         public ?int   $id = null,
         public string $name = '',
         public bool   $active = true,
+        public float  $reduction = 0.0,
+        public bool   $reductionTax = true,
+        public string $reductionType = 'amount',
         /** @var StepDto[] */
         public array  $steps = []
     )
@@ -28,6 +31,9 @@ final class ConfiguratorDto
             $configurator->getId(),
             $configurator->getName(),
             $configurator->isActive(),
+            $configurator->getReduction(),
+            $configurator->isReductionTax(),
+            $configurator->getReductionType(),
             $arr
         );
     }
