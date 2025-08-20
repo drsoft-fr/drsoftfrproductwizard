@@ -69,6 +69,27 @@ class ProductChoice
     private $forcedQuantity;
 
     /**
+     * @var float $reduction
+     *
+     * @ORM\Column(name="reduction", type="float", nullable=false, options={"default":0})
+     */
+    private $reduction = 0.0;
+
+    /**
+     * @var bool $reductionTax TAX included ?
+     *
+     * @ORM\Column(name="reduction_tax", type="boolean", nullable=false, options={"default":1, "unsigned"=true})
+     */
+    private $reductionTax = true;
+
+    /**
+     * @var string $reductionType percentage OR amount ('amount' | 'percentage')
+     *
+     * @ORM\Column(name="reduction_type", type="string", nullable=false, options={"default":"amount"}, columnDefinition="ENUM('amount','percentage')")
+     */
+    private $reductionType = 'amount';
+
+    /**
      * @var Step $step
      *
      * @ORM\ManyToOne(targetEntity="DrSoftFr\Module\ProductWizard\Entity\Step", inversedBy="productChoices")
@@ -117,6 +138,9 @@ class ProductChoice
             'is_default' => $this->isDefault(),
             'allow_quantity' => $this->isAllowQuantity(),
             'forced_quantity' => $this->getForcedQuantity(),
+            'reduction' => $this->getReduction(),
+            'reduction_tax' => $this->isReductionTax(),
+            'reduction_type' => $this->getReductionType(),
             'display_conditions' => $this->getDisplayConditions(),
         ];
     }
@@ -260,6 +284,39 @@ class ProductChoice
 
         $this->displayConditions = $uniqueConditions;
 
+        return $this;
+    }
+
+    public function getReduction(): float
+    {
+        return $this->reduction;
+    }
+
+    public function setReduction(float $reduction): ProductChoice
+    {
+        $this->reduction = $reduction;
+        return $this;
+    }
+
+    public function isReductionTax(): bool
+    {
+        return $this->reductionTax;
+    }
+
+    public function setReductionTax(bool $reductionTax): ProductChoice
+    {
+        $this->reductionTax = $reductionTax;
+        return $this;
+    }
+
+    public function getReductionType(): string
+    {
+        return $this->reductionType;
+    }
+
+    public function setReductionType(string $reductionType): ProductChoice
+    {
+        $this->reductionType = $reductionType;
         return $this;
     }
 
