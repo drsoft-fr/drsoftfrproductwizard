@@ -147,7 +147,7 @@ const handleSubmit = async () => {
 
     if (!data.success) {
       showAlert(
-        'danger',
+        'error',
         data.message || $t('Error while saving the configurator'),
       )
       store.setLoading(false)
