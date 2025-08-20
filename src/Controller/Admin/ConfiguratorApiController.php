@@ -9,6 +9,7 @@ use DrSoftFr\Module\ProductWizard\Dto\ConfiguratorDto;
 use DrSoftFr\Module\ProductWizard\Normalizer\ConfiguratorNormalizer;
 use DrSoftFr\Module\ProductWizard\Repository\ConfiguratorRepository;
 use DrSoftFr\Module\ProductWizard\Service\ConfiguratorFactory;
+use DrSoftFr\Module\ProductWizard\Service\ConfiguratorValidatorService;
 use PrestaShop\PrestaShop\Adapter\Product\Repository\ProductRepository;
 use PrestaShop\PrestaShop\Core\Domain\Language\ValueObject\LanguageId;
 use PrestaShop\PrestaShop\Core\Domain\Product\ValueObject\ProductId;
@@ -113,6 +114,17 @@ final class ConfiguratorApiController extends FrameworkBundleAdminController
         }
 
         $dto = $normalizer->denormalize($data['configurator']);
+
+        try {
+            $validator = new ConfiguratorValidatorService();
+
+            $validator->validate($dto);
+        } catch (\Throwable $t) {
+            return $this->json([
+                'success' => false,
+                'message' => $t->getMessage()
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
 
         try {
             $em->beginTransaction();

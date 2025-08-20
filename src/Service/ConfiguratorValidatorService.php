@@ -1,0 +1,367 @@
+<?php
+
+namespace DrSoftFr\Module\ProductWizard\Service;
+
+use DrSoftFr\Module\ProductWizard\Dto\ConfiguratorDto;
+use DrSoftFr\Module\ProductWizard\Dto\ProductChoiceDto;
+use DrSoftFr\Module\ProductWizard\Dto\StepDto;
+use DrSoftFr\Module\ProductWizard\Exception\Configurator\ConfiguratorConstraintException;
+use DrSoftFr\Module\ProductWizard\Exception\DisplayCondition\DisplayConditionConstraintException;
+use DrSoftFr\Module\ProductWizard\Exception\ProductChoice\ProductChoiceConstraintException;
+use DrSoftFr\Module\ProductWizard\Exception\Step\StepConstraintException;
+
+final class ConfiguratorValidatorService
+{
+    /**
+     * Validates the provided configurator data transfer object.
+     *
+     * @param ConfiguratorDto $dto The configurator data transfer object to be validated.
+     *
+     * @return void
+     *
+     * @throws ConfiguratorConstraintException If the configurator data does not meet the required constraints.
+     * @throws DisplayConditionConstraintException
+     * @throws ProductChoiceConstraintException
+     * @throws StepConstraintException
+     */
+    public function validate(
+        ConfiguratorDto $dto
+    ): void
+    {
+        $this->validateConfigurator($dto);
+    }
+
+    /**
+     * Validates the configurator object to ensure it meets the required constraints.
+     *
+     * @param ConfiguratorDto $dto The configurator data transfer object to be validated.
+     *
+     * @return void
+     *
+     * @throws ConfiguratorConstraintException If the name is empty or invalid.
+     * @throws DisplayConditionConstraintException
+     * @throws ProductChoiceConstraintException
+     * @throws StepConstraintException
+     */
+    private function validateConfigurator(
+        ConfiguratorDto $dto
+    ): void
+    {
+        if (true === empty(trim($dto->name ?? ''))) {
+            throw new ConfiguratorConstraintException(
+                'The name of the scenario is mandatory.',
+                ConfiguratorConstraintException::INVALID_NAME
+            );
+        }
+
+        $this->validateSteps(
+            $dto->steps,
+            $dto
+        );
+    }
+
+    /**
+     * Validates the array of steps and ensures that all provided steps meet the required constraints.
+     *
+     * @param array $steps An array of step objects to be validated.
+     * @param ConfiguratorDto $configuratorDto The configurator data transfer object containing context for validation.
+     *
+     * @return void
+     *
+     * @throws ConfiguratorConstraintException If the steps array is empty.
+     * @throws DisplayConditionConstraintException
+     * @throws ProductChoiceConstraintException
+     * @throws StepConstraintException If the steps' positions are not continuous starting from 0.
+     */
+    private function validateSteps(
+        array           $steps,
+        ConfiguratorDto $configuratorDto
+    ): void
+    {
+        if (0 === count($steps)) {
+            throw new ConfiguratorConstraintException(
+                'At least one step is required.',
+                ConfiguratorConstraintException::INVALID_STEPS
+            );
+        }
+
+        $positions = [];
+
+        /** @var StepDto $step */
+        foreach ($steps as $idx => $step) {
+            $position = (int)($step->position ?? -1);
+            $positions[] = $position;
+
+            $this->validateStep(
+                $step,
+                $position,
+                $idx,
+                $configuratorDto
+            );
+        }
+
+        if (false === empty($positions)) {
+            sort($positions);
+
+            foreach ($positions as $idx => $p) {
+                if ($p === $idx) {
+                    continue;
+                }
+
+                throw new StepConstraintException(
+                    'The positions of the steps must be continuous starting from 0 (no gaps).',
+                    StepConstraintException::INVALID_POSITION
+                );
+            }
+        }
+    }
+
+    /**
+     * Validates a step's configuration. Ensures that the step has a valid label,
+     * a valid position, and that its product choices are properly validated.
+     *
+     * @param StepDto $dto The data transfer object containing step information being validated.
+     * @param int $position The position of the step within the configurator.
+     * @param int $idx The index of the step being processed.
+     * @param ConfiguratorDto $configuratorDto The configurator data containing all steps and choices.
+     *
+     * @return void Throws StepConstraintException if validation fails.
+     *
+     * @throws DisplayConditionConstraintException
+     * @throws ProductChoiceConstraintException
+     * @throws StepConstraintException
+     */
+    private function validateStep(
+        StepDto         $dto,
+        int             $position,
+        int             $idx,
+        ConfiguratorDto $configuratorDto
+    ): void
+    {
+        if (true === empty(trim($dto->label ?? ''))) {
+            throw new StepConstraintException(
+                sprintf('Step #%d: The wording is mandatory.', $idx + 1),
+                StepConstraintException::INVALID_LABEL
+            );
+        }
+
+        if (0 > $position) {
+            throw new StepConstraintException(
+                sprintf('Step “%s”: Invalid position.', $dto->label ?: (string)($idx + 1)),
+                StepConstraintException::INVALID_POSITION
+            );
+        }
+
+        $this->validateChoices(
+            $dto->productChoices,
+            $dto,
+            $configuratorDto
+        );
+    }
+
+    /**
+     * Validates product choices within a step configuration. Ensures that at least
+     * one choice exists, no more than one choice is marked as default, and each choice
+     * is validated individually.
+     *
+     * @param array $choices The list of product choices to validate.
+     * @param StepDto $stepDto The current step data being evaluated.
+     * @param ConfiguratorDto $configuratorDto The configurator data containing all steps and choices.
+     *
+     * @return void Throws exceptions if validation of choices or default constraints fails.
+     *
+     * @throws StepConstraintException If there are no product choices provided.
+     * @throws ProductChoiceConstraintException If more than one choice is marked as the default.
+     * @throws DisplayConditionConstraintException
+     */
+    private function validateChoices(
+        array           $choices,
+        StepDto         $stepDto,
+        ConfiguratorDto $configuratorDto
+    ): void
+    {
+        if (0 === count($choices)) {
+            throw new StepConstraintException(
+                'At least one product choice is required.',
+                StepConstraintException::INVALID_PRODUCT_CHOICES
+            );
+        }
+
+        $defaultCount = 0;
+
+        /** @var ProductChoiceDto $choice */
+        foreach ($choices as $cIdx => $choice) {
+            if (false === empty($choice->isDefault)) {
+                $defaultCount++;
+            }
+
+            $this->validateChoice(
+                $choice,
+                $cIdx,
+                $stepDto,
+                $configuratorDto
+            );
+        }
+
+        if (1 < $defaultCount) {
+            throw new ProductChoiceConstraintException(
+                sprintf('Step “%s”: There can only be one default choice.', $stepDto->label),
+                ProductChoiceConstraintException::INVALID_IS_DEFAULT
+            );
+        }
+    }
+
+    /**
+     * Validates a product choice within a step configuration. Ensures that the
+     * label is provided, quantity constraints are valid, and display conditions
+     * are correctly defined.
+     *
+     * @param ProductChoiceDto $dto The product choice data being validated.
+     * @param int $cIdx The index of the product choice being validated.
+     * @param StepDto $stepDto The current step data being evaluated.
+     * @param ConfiguratorDto $configuratorDto The configurator data containing all steps and choices.
+     *
+     * @return void Throws ProductChoiceConstraintException if validation fails.
+     *
+     * @throws ProductChoiceConstraintException
+     * @throws DisplayConditionConstraintException
+     */
+    private function validateChoice(
+        ProductChoiceDto $dto,
+        int              $cIdx,
+        StepDto          $stepDto,
+        ConfiguratorDto  $configuratorDto
+    ): void
+    {
+        if (true === empty(trim($dto->label ?? ''))) {
+            throw new ProductChoiceConstraintException(
+                sprintf('Step “%s”: The label for choice #%d is required.', $stepDto->label, $cIdx + 1),
+                ProductChoiceConstraintException::INVALID_LABEL
+            );
+        }
+
+        $allowQty = !empty($dto->allowQuantity);
+        $forcedQty = $dto->forcedQuantity;
+
+        if ($allowQty === false) {
+            if (!is_int($forcedQty) || $forcedQty < 1) {
+                throw new ProductChoiceConstraintException(
+                    sprintf('Step “%s”: The choice “%s” must have a valid imposed quantity (integer >= 1) when quantity selection is disabled.', $stepDto->label, $dto->label ?: ('#' . ($cIdx + 1))),
+                    ProductChoiceConstraintException::INVALID_FORCED_QUANTITY
+                );
+            }
+        }
+
+        $this->validateDisplayConditions(
+            $dto->displayConditions,
+            $stepDto,
+            $configuratorDto
+        );
+    }
+
+    /**
+     * Validates multiple display conditions for a given step configuration. Each condition is individually
+     * validated to ensure its reference step and choice exist and meet the required constraints.
+     *
+     * @param array $conditions An array of display conditions to be validated.
+     * @param StepDto $stepDto The current step data being evaluated.
+     * @param ConfiguratorDto $configuratorDto The configurator data containing all steps and choices.
+     *
+     * @return void Throws DisplayConditionConstraintException if any condition validation fails.
+     *
+     * @throws DisplayConditionConstraintException
+     */
+    private function validateDisplayConditions(
+        array           $conditions,
+        StepDto         $stepDto,
+        ConfiguratorDto $configuratorDto
+    ): void
+    {
+        if (true === empty($conditions)) {
+            return;
+        }
+
+        foreach ($conditions as $dcIdx => $condition) {
+            $this->validateDisplayCondition(
+                $dcIdx,
+                $stepDto,
+                $configuratorDto
+            );
+        }
+    }
+
+    /**
+     * Validates a display condition within a step configuration. Ensures that the
+     * reference step and choice exist and that the reference step precedes the current step.
+     *
+     * @param int $dcIdx The index of the display condition being validated.
+     * @param StepDto $stepDto The current step data being evaluated.
+     * @param ConfiguratorDto $configuratorDto The configurator data containing all steps and choices.
+     *
+     * @return void Throws DisplayConditionConstraintException if validation fails.
+     *
+     * @throws DisplayConditionConstraintException
+     */
+    private function validateDisplayCondition(
+        int             $dcIdx,
+        StepDto         $stepDto,
+        ConfiguratorDto $configuratorDto
+    ): void
+    {
+        $refStepId = $cond['step'] ?? null;
+        $refChoiceId = $cond['choice'] ?? null;
+
+        if (true === empty($refStepId)) {
+            throw new DisplayConditionConstraintException(
+                sprintf('Step “%s”: Condition #%d refers to a non-existent step.', $stepDto->label, $dcIdx + 1),
+                DisplayConditionConstraintException::INVALID_STEP
+            );
+        }
+
+        $refStep = null;
+
+        foreach ($configuratorDto->steps as $s) {
+            if ((string)$s->id !== (string)$refStepId) {
+                continue;
+            }
+
+            $refStep = $s;
+
+            break;
+        }
+
+        if (null === $refStep) {
+            throw new DisplayConditionConstraintException(
+                sprintf('Step “%s”: Condition #%d refers to a non-existent step.', $stepDto->label, $dcIdx + 1),
+                DisplayConditionConstraintException::INVALID_STEP
+            );
+        }
+
+        if ((int)$refStep->position >= (int)$stepDto->position) {
+            throw new DisplayConditionConstraintException(
+                sprintf('Step “%s”: Condition #%d must reference a previous step.', $stepDto->label, $dcIdx + 1),
+                DisplayConditionConstraintException::INVALID_STEP
+            );
+        }
+
+        $refChoice = null;
+        $refChoices = is_array($refStep->productChoices) ? $refStep->productChoices : [];
+
+        foreach ($refChoices as $rc) {
+            if ((string)($rc->id) !== (string)$refChoiceId) {
+                continue;
+            }
+
+            $refChoice = $rc;
+
+            break;
+        }
+
+        if (null === $refChoice) {
+            throw new DisplayConditionConstraintException(
+                sprintf('Step “%s”: Condition #%d references a choice that does not exist in the target step.', $stepDto->label, $dcIdx + 1),
+                DisplayConditionConstraintException::INVALID_CHOICE
+            );
+        }
+    }
+}
