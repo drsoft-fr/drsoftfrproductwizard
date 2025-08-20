@@ -213,6 +213,7 @@ final class ConfiguratorController extends FrameworkBundleAdminController
                     ],
                     'Modules.Drsoftfrproductwizard.Success' => [
                         'Configurator successfully saved' => $this->trans('Configurator successfully saved', 'Modules.Drsoftfrproductwizard.Success'),
+                        'Success' => $this->trans('Success', 'Modules.Drsoftfrproductwizard.Success'),
                     ],
                 ],
             ],

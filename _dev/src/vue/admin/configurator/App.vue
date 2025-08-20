@@ -1,6 +1,5 @@
 <script setup>
 import {
-  reactive,
   onMounted,
   computed,
   inject,
@@ -10,8 +9,8 @@ import {
 } from 'vue'
 import { useConfiguratorStore } from '@/js/admin/configurator/form/stores/configurator'
 import Configurator from '@/vue/admin/configurator/components/configurator/Configurator.vue'
-import Alert from '@/vue/admin/configurator/components/core/Alert.vue'
 import Loader from '@/vue/admin/configurator/components/core/Loader.vue'
+import { useToast } from 'primevue/usetoast'
 
 const props = defineProps({
   configuratorId: { type: Number, default: null },
@@ -22,43 +21,14 @@ const $t = inject('$t')
 
 const store = useConfiguratorStore()
 
-const toastLifetime = ref(5000)
-const timer = ref(null)
+const lifetime = ref(5000)
 
-const alert = reactive({
-  closable: true,
-  visible: false,
-  severity: 'info',
-  message: '',
-  life: 5000,
-})
+const toast = useToast()
 
 const isNewConfigurator = computed(() => !props.configuratorId)
 const pageTitle = computed(() =>
   isNewConfigurator.value ? $t('Create a scenario') : $t('Edit the scenario'),
 )
-
-const showAlert = (severity, message, closable = true, life = 5000) => {
-  alert.visible = true
-  alert.severity = severity
-  alert.message = message
-
-  if (closable) {
-    alert.closable = closable
-  }
-
-  if (life) {
-    alert.life = life
-  }
-
-  timer.value = setTimeout(() => (alert.visible = false), life || 5000)
-}
-
-const closeAlert = () => {
-  alert.visible = false
-
-  clearTimeout(timer.value)
-}
 
 const checkValidity = () => {
   const validity = store.recomputeValidity ? store.recomputeValidity() : true
@@ -69,7 +39,7 @@ const checkValidity = () => {
         ? store.formErrors.join('\n')
         : $t('Error while saving the configurator')
 
-    showAlert('error', msg)
+    toast.add({ severity: 'error', detail: msg, summary: $t('Error') })
   }
 
   return validity
@@ -105,7 +75,11 @@ const fetchConfigurator = async () => {
     const data = await response.json()
 
     if (false === data.success) {
-      showAlert('danger', data.message || $t('Error loading the configurator'))
+      toast.add({
+        severity: 'error',
+        detail: data.message || $t('Error loading the configurator'),
+        summary: $t('Error'),
+      })
       store.setLoading(false)
 
       return
@@ -114,7 +88,11 @@ const fetchConfigurator = async () => {
     store.initializeStore(data.configurator)
   } catch (error) {
     console.error($t('Error fetching configurator:'), error)
-    showAlert('danger', $t('An error occurred while loading the configurator.'))
+    toast.add({
+      severity: 'error',
+      detail: $t('An error occurred while loading the configurator.'),
+      summary: $t('Error'),
+    })
   } finally {
     store.setLoading(false)
   }
@@ -146,16 +124,22 @@ const handleSubmit = async () => {
     const data = await response.json()
 
     if (!data.success) {
-      showAlert(
-        'error',
-        data.message || $t('Error while saving the configurator'),
-      )
+      toast.add({
+        severity: 'error',
+        detail: data.message || $t('Error while saving the configurator'),
+        summary: $t('Error'),
+      })
       store.setLoading(false)
 
       return
     }
 
-    showAlert('success', $t('Configurator successfully saved'))
+    toast.add({
+      severity: 'success',
+      detail: $t('Configurator successfully saved'),
+      summary: $t('Success'),
+      life: lifetime.value,
+    })
 
     // If it was a new configurator, redirect to edit page
     if (
@@ -176,7 +160,11 @@ const handleSubmit = async () => {
     store.setLoading(false)
   } catch (error) {
     console.error($t('Error saving configurator:'), error)
-    showAlert('danger', $t('An error occurred while saving the configurator.'))
+    toast.add({
+      severity: 'error',
+      detail: $t('An error occurred while saving the configurator.'),
+      summary: $t('Error'),
+    })
     store.setLoading(false)
   }
 }
@@ -190,7 +178,7 @@ onMounted(() => {
 })
 
 provide('toast', {
-  lifetime: readonly(toastLifetime),
+  lifetime: readonly(lifetime),
 })
 
 provide('checkValidity', readonly(checkValidity))
@@ -198,14 +186,6 @@ provide('checkValidity', readonly(checkValidity))
 
 <template>
   <div class="position-relative">
-    <Alert
-      :closable="alert.closable"
-      :visible="alert.visible"
-      :severity="alert.severity"
-      :message="alert.message"
-      :life="alert.life"
-      @close="closeAlert"
-    />
     <Splitter>
       <SplitterPanel :size="store.devMode ? 80 : 100">
         <Panel :header="pageTitle">
