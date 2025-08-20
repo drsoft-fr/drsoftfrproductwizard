@@ -14,6 +14,7 @@ final class ProductChoiceDto
         public bool    $allowQuantity = true,
         public ?int    $forcedQuantity = null,
         public bool    $active = true,
+        /** @var DisplayConditionDto[] */
         public array   $displayConditions = []
     )
     {
@@ -21,6 +22,12 @@ final class ProductChoiceDto
 
     public static function fromEntity(ProductChoice $productChoice): self
     {
+        $arr = [];
+
+        foreach ($productChoice->getDisplayConditions() as $displayCondition) {
+            $arr[] = DisplayConditionDto::fromArray($displayCondition);
+        }
+
         return new self(
             $productChoice->getId(),
             $productChoice->getLabel(),
@@ -29,7 +36,7 @@ final class ProductChoiceDto
             $productChoice->isAllowQuantity(),
             $productChoice->getForcedQuantity(),
             $productChoice->isActive(),
-            $productChoice->getDisplayConditions()
+            $arr
         );
     }
 }

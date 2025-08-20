@@ -4,6 +4,7 @@ namespace DrSoftFr\Module\ProductWizard\Service;
 
 use Doctrine\ORM\EntityManagerInterface;
 use DrSoftFr\Module\ProductWizard\Dto\ConfiguratorDto;
+use DrSoftFr\Module\ProductWizard\Dto\DisplayConditionDto;
 use DrSoftFr\Module\ProductWizard\Entity\Configurator;
 use DrSoftFr\Module\ProductWizard\Entity\Step;
 use DrSoftFr\Module\ProductWizard\Entity\ProductChoice;
@@ -111,7 +112,8 @@ final class ConfiguratorFactory
             $choice->setAllowQuantity($choiceDto->allowQuantity);
             $choice->setForcedQuantity($choiceDto->forcedQuantity);
             $choice->setActive($choiceDto->active);
-            $choice->setDisplayConditions($choiceDto->displayConditions);
+
+            $this->mapDisplayConditions($choice, $choiceDto->displayConditions);
 
             if (true === $isNew) {
                 $choicesCollection->add($choice);
@@ -127,5 +129,24 @@ final class ConfiguratorFactory
 
             $choicesCollection->removeElement($choice);
         }
+    }
+
+    /**
+     * @param ProductChoice $choice
+     * @param DisplayConditionDto[] $displayConditionsDto
+     *
+     * @return void
+     */
+    private function mapDisplayConditions(ProductChoice $choice, array $displayConditionsDto): void
+    {
+        $choice->setDisplayConditions(
+            array_map(
+                fn(array $conditionDto) => [
+                    'step' => $conditionDto->step,
+                    'choice' => $conditionDto->choice,
+                ],
+                $displayConditionsDto
+            )
+        );
     }
 }

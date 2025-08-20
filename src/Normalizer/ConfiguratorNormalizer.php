@@ -3,6 +3,7 @@
 namespace DrSoftFr\Module\ProductWizard\Normalizer;
 
 use DrSoftFr\Module\ProductWizard\Dto\ConfiguratorDto;
+use DrSoftFr\Module\ProductWizard\Dto\DisplayConditionDto;
 use DrSoftFr\Module\ProductWizard\Dto\StepDto;
 use DrSoftFr\Module\ProductWizard\Dto\ProductChoiceDto;
 
@@ -31,7 +32,14 @@ final class ConfiguratorNormalizer
                 $choiceDto->allowQuantity = (bool)($choiceData['allow_quantity'] ?? true);
                 $choiceDto->forcedQuantity = false === empty($choiceData['forced_quantity']) ? (int)$choiceData['forced_quantity'] : null;
                 $choiceDto->active = (bool)($choiceData['active'] ?? true);
-                $choiceDto->displayConditions = $choiceData['display_conditions'] ?? [];
+
+                foreach ($choiceData['display_conditions'] ?? [] as $dcData) {
+                    $dcDto = new DisplayConditionDto();
+                    $dcDto->step = $dcData['step'] ?? null;
+                    $dcDto->choice = $dcData['choice'] ?? null;
+
+                    $choiceDto->displayConditions[] = $dcDto;
+                }
 
                 $stepDto->productChoices[] = $choiceDto;
             }
@@ -61,7 +69,10 @@ final class ConfiguratorNormalizer
                     'allow_quantity' => $c->allowQuantity,
                     'forced_quantity' => $c->forcedQuantity,
                     'active' => $c->active,
-                    'display_conditions' => $c->displayConditions,
+                    'display_conditions' => array_map(fn(DisplayConditionDto $dc) => [
+                        'step' => $dc->step,
+                        'choice' => $dc->choice,
+                    ], $c->displayConditions)
                 ], $s->productChoices),
             ], $dto->steps),
         ];
