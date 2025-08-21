@@ -117,6 +117,8 @@ final class ConfiguratorFactory
             $choice->setIsDefault($choiceDto->isDefault);
             $choice->setAllowQuantity($choiceDto->allowQuantity);
             $choice->setForcedQuantity($choiceDto->forcedQuantity);
+            $choice->setMinQuantity($choiceDto->minQuantity);
+            $choice->setMaxQuantity($choiceDto->maxQuantity);
             $choice->setActive($choiceDto->active);
             $choice->setReduction($choiceDto->reduction);
             $choice->setReductionTax($choiceDto->reductionTax);
