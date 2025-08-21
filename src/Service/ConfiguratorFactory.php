@@ -13,6 +13,7 @@ use DrSoftFr\Module\ProductWizard\Entity\ProductChoice;
 use DrSoftFr\Module\ProductWizard\Exception\Configurator\ConfiguratorNotFoundException;
 use DrSoftFr\Module\ProductWizard\Repository\ConfiguratorRepository;
 use Doctrine\Common\Collections\ArrayCollection;
+use DrSoftFr\Module\ProductWizard\ValueObject\ProductChoice\QuantityRule;
 
 final class ConfiguratorFactory
 {
@@ -129,16 +130,14 @@ final class ConfiguratorFactory
             $choice->setLabel($choiceDto->label);
             $choice->setProductId($choiceDto->productId);
             $choice->setIsDefault($choiceDto->isDefault);
-            $choice->setAllowQuantity($choiceDto->allowQuantity);
-            $choice->setForcedQuantity($choiceDto->forcedQuantity);
-            $choice->setMinQuantity($choiceDto->minQuantity);
-            $choice->setMaxQuantity($choiceDto->maxQuantity);
             $choice->setActive($choiceDto->active);
             $choice->setReduction($choiceDto->reduction);
             $choice->setReductionTax($choiceDto->reductionTax);
             $choice->setReductionType($choiceDto->reductionType);
 
             $this->mapDisplayConditions($choice, $choiceDto->displayConditions);
+
+            $choice->setQuantityRule(QuantityRule::fromArray($choiceDto->quantityRule));
 
             if (true === $isNew) {
                 $choicesCollection->add($choice);
