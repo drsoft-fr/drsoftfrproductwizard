@@ -216,6 +216,10 @@ final class ConfiguratorController extends FrameworkBundleAdminController
                         'Floor' => $this->trans('Floor', 'Modules.Drsoftfrproductwizard.Admin'),
                         'Ceil' => $this->trans('Ceil', 'Modules.Drsoftfrproductwizard.Admin'),
                         'Round' => $this->trans('Round', 'Modules.Drsoftfrproductwizard.Admin'),
+                        'Sources' => $this->trans('Sources', 'Modules.Drsoftfrproductwizard.Admin'),
+                        'Add a source' => $this->trans('Add a source', 'Modules.Drsoftfrproductwizard.Admin'),
+                        'No specific source.' => $this->trans('No specific source.', 'Modules.Drsoftfrproductwizard.Admin'),
+                        'Choice' => $this->trans('Choice', 'Modules.Drsoftfrproductwizard.Admin'),
                     ],
                     'Modules.Drsoftfrproductwizard.Error' => [
                         'Error loading the configurator' => $this->trans('Error loading the configurator', 'Modules.Drsoftfrproductwizard.Error'),

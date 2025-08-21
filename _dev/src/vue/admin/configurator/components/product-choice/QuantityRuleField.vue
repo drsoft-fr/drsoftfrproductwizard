@@ -37,6 +37,51 @@ const rule = computed({
     store.updateQuantityRule(props.stepId, props.productChoiceId, v)
   },
 })
+
+const previousSteps = computed(() => {
+  const currentStep = store.getStep(props.stepId)
+  const pos = Number(currentStep?.position ?? 0)
+
+  // Use existing getter to filter previous steps if available; fallback manual filter
+  return Array.isArray(store.steps)
+    ? store.steps.filter((s) => Number(s.position) < pos)
+    : []
+})
+
+const stepOptions = computed(() =>
+  previousSteps.value.map((s) => ({
+    label: `${s.label} (#${s.id})`,
+    value: s.id,
+  })),
+)
+
+const getChoicesForStep = (stepId) => {
+  const step = store.steps.find((s) => String(s.id) === String(stepId))
+  const choices = Array.isArray(step?.product_choices)
+    ? step.product_choices
+    : []
+
+  return choices
+    .filter((c) => c.active)
+    .map((c) => ({ label: `${c.label} (#${c.id})`, value: c.id }))
+}
+
+const addSource = () => {
+  const r = { ...rule.value }
+
+  r.sources = r.sources ? [...r.sources] : []
+
+  r.sources.push({ step: null, choice: null, coeff: 1 })
+
+  rule.value = r
+}
+
+const removeSource = (idx) => {
+  const r = { ...rule.value }
+
+  r.sources = (r.sources || []).filter((_, i) => i !== idx)
+  rule.value = r
+}
 </script>
 
 <template>
@@ -87,8 +132,8 @@ const rule = computed({
     <div class="row mt-3">
       <div class="col-md-4 d-flex flex-column gap-2">
         <label :for="`qr-offset-${productChoiceId}`">{{
-            $t('Quantity or Offset')
-          }}</label>
+          $t('Quantity or Offset')
+        }}</label>
         <InputNumber
           :inputId="`qr-offset-${productChoiceId}`"
           v-model.number="rule.offset"
@@ -111,6 +156,73 @@ const rule = computed({
           v-model.number="rule.max"
           :min="0"
         />
+      </div>
+    </div>
+
+    <div v-if="rule.mode === 'expression'" class="mt-3">
+      <div class="d-flex justify-content-between align-items-center mb-2">
+        <h6 class="mb-0">{{ $t('Sources') }}</h6>
+        <Button severity="info" text @click="addSource" class="align-bottom">
+          <i class="material-icons align-middle">add</i>
+          {{ $t('Add a source') }}
+        </Button>
+      </div>
+
+      <div v-if="!rule.sources || rule.sources.length === 0" class="text-muted">
+        {{ $t('No specific source.') }}
+      </div>
+
+      <div
+        v-for="(src, idx) in rule.sources"
+        :key="idx"
+        class="row g-2 align-items-end mb-2"
+      >
+        <div class="col-md-4 d-flex flex-column gap-2">
+          <label :for="`qr-src-step-${productChoiceId}-${idx}`">{{
+            $t('Step')
+          }}</label>
+          <Dropdown
+            :inputId="`qr-src-step-${productChoiceId}-${idx}`"
+            v-model="src.step"
+            :options="stepOptions"
+            optionLabel="label"
+            optionValue="value"
+          />
+        </div>
+        <div class="col-md-4 d-flex flex-column gap-2">
+          <label :for="`qr-src-choice-${productChoiceId}-${idx}`">{{
+            $t('Choice')
+          }}</label>
+          <Dropdown
+            :inputId="`qr-src-choice-${productChoiceId}-${idx}`"
+            v-model="src.choice"
+            :options="getChoicesForStep(src.step)"
+            optionLabel="label"
+            optionValue="value"
+          />
+        </div>
+        <div class="col-md-3 d-flex flex-column gap-2">
+          <label :for="`qr-src-coeff-${productChoiceId}-${idx}`">{{
+            $t('Coeff.')
+          }}</label>
+          <InputNumber
+            :inputId="`qr-src-coeff-${productChoiceId}-${idx}`"
+            v-model.number="src.coeff"
+            :min="-999999"
+          />
+        </div>
+
+        <div class="col-md-1 d-flex align-items-center">
+          <Button
+            type="button"
+            severity="danger"
+            @click="removeSource(idx)"
+            text
+            rounded
+          >
+            <i class="material-icons">delete</i>
+          </Button>
+        </div>
       </div>
     </div>
   </div>
