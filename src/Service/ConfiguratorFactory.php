@@ -5,6 +5,8 @@ namespace DrSoftFr\Module\ProductWizard\Service;
 use Doctrine\ORM\EntityManagerInterface;
 use DrSoftFr\Module\ProductWizard\Dto\ConfiguratorDto;
 use DrSoftFr\Module\ProductWizard\Dto\DisplayConditionDto;
+use DrSoftFr\Module\ProductWizard\Dto\ProductChoiceDto;
+use DrSoftFr\Module\ProductWizard\Dto\StepDto;
 use DrSoftFr\Module\ProductWizard\Entity\Configurator;
 use DrSoftFr\Module\ProductWizard\Entity\Step;
 use DrSoftFr\Module\ProductWizard\Entity\ProductChoice;
@@ -50,6 +52,12 @@ final class ConfiguratorFactory
         return $configurator;
     }
 
+    /**
+     * @param Configurator $configurator
+     * @param StepDto[] $stepsDto
+     *
+     * @return void
+     */
     private function mapSteps(Configurator $configurator, array $stepsDto): void
     {
         $stepsCollection = $configurator->getSteps();
@@ -93,6 +101,12 @@ final class ConfiguratorFactory
         }
     }
 
+    /**
+     * @param Step $step
+     * @param ProductChoiceDto[] $choicesDto
+     *
+     * @return void
+     */
     private function mapProductChoices(Step $step, array $choicesDto): void
     {
         $choicesCollection = $step->getProductChoices();
