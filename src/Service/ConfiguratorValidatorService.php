@@ -9,6 +9,7 @@ use DrSoftFr\Module\ProductWizard\Exception\Configurator\ConfiguratorConstraintE
 use DrSoftFr\Module\ProductWizard\Exception\DisplayCondition\DisplayConditionConstraintException;
 use DrSoftFr\Module\ProductWizard\Exception\ProductChoice\ProductChoiceConstraintException;
 use DrSoftFr\Module\ProductWizard\Exception\Step\StepConstraintException;
+use DrSoftFr\Module\ProductWizard\ValueObject\ProductChoice\QuantityRule;
 use Exception;
 
 final class ConfiguratorValidatorService
@@ -248,50 +249,239 @@ final class ConfiguratorValidatorService
             );
         }
 
-        $allowQty = !empty($dto->allowQuantity);
-        $forcedQty = $dto->forcedQuantity;
-
-        if ($allowQty === false) {
-            if (!is_int($forcedQty) || $forcedQty < 1) {
-                throw new ProductChoiceConstraintException(
-                    sprintf('Step “%s”: The choice “%s” must have a valid imposed quantity (integer >= 1) when quantity selection is disabled.', $stepDto->label, $dto->label ?: ('#' . ($cIdx + 1))),
-                    ProductChoiceConstraintException::INVALID_FORCED_QUANTITY
-                );
-            }
-        } else {
-            // Quantity selection allowed => validate optional min/max
-            $minQ = $dto->minQuantity;
-            $maxQ = $dto->maxQuantity;
-
-            if (null !== $minQ && (!is_int($minQ) || $minQ < 1)) {
-                throw new ProductChoiceConstraintException(
-                    sprintf('Step “%s”: The choice “%s” has an invalid minimal quantity (integer >= 1 required).', $stepDto->label, $dto->label ?: ('#' . ($cIdx + 1))),
-                    ProductChoiceConstraintException::INVALID_FORCED_QUANTITY
-                );
-            }
-
-            if (null !== $maxQ && (!is_int($maxQ) || $maxQ < 1)) {
-                throw new ProductChoiceConstraintException(
-                    sprintf('Step “%s”: The choice “%s” has an invalid maximal quantity (integer >= 1 required).', $stepDto->label, $dto->label ?: ('#' . ($cIdx + 1))),
-                    ProductChoiceConstraintException::INVALID_FORCED_QUANTITY
-                );
-            }
-
-            if (null !== $minQ && null !== $maxQ && $minQ > $maxQ) {
-                throw new ProductChoiceConstraintException(
-                    sprintf('Step “%s”: The choice “%s” minimal quantity cannot be greater than maximal quantity.', $stepDto->label, $dto->label ?: ('#' . ($cIdx + 1))),
-                    ProductChoiceConstraintException::INVALID_FORCED_QUANTITY
-                );
-            }
-        }
-
         $this->validateDisplayConditions(
             $dto->displayConditions,
             $stepDto,
             $configuratorDto
         );
-
+        $this->validateQuantityRule($dto, $cIdx, $stepDto, $configuratorDto);
         $this->validateReduction($dto->reduction, $dto->reductionTax, $dto->reductionType, sprintf('Step "%s" choice "%s"', $stepDto->label, $dto->label), new ProductChoiceConstraintException);
+    }
+
+    /**
+     * Validates the quantity rule of a product choice and ensures all related constraints are met.
+     *
+     * @param ProductChoiceDto $dto The product choice data transfer object containing the quantity rule.
+     * @param int $cIdx The index of the product choice within the current step.
+     * @param StepDto $stepDto The step data transfer object containing the product choice.
+     * @param ConfiguratorDto $configuratorDto The configurator data transfer object providing the context for validation.
+     *
+     * @return void
+     *
+     * @throws ProductChoiceConstraintException If the quantity rule is missing or invalid.
+     */
+    private function validateQuantityRule(
+        ProductChoiceDto $dto,
+        int              $cIdx,
+        StepDto          $stepDto,
+        ConfiguratorDto  $configuratorDto
+    ): void
+    {
+        if (true === empty($dto->quantityRule)) {
+            throw new ProductChoiceConstraintException(
+                sprintf('Step "%s": Choice "%s" quantity rule is required.', $stepDto->label, $dto->label ?: ('#' . ($cIdx + 1))),
+                ProductChoiceConstraintException::INVALID_QUANTITY_RULE
+            );
+        }
+
+        $qr = $dto->quantityRule;
+
+        $this->validateQuantityRuleOffset($qr, $dto, $cIdx, $stepDto);
+        $this->validateQuantityRuleMinAndMax($qr, $dto, $cIdx, $stepDto);
+        $this->validateQuantityRuleSources($qr, $dto, $cIdx, $stepDto, $configuratorDto);
+    }
+
+    /**
+     * Validates the minimum and maximum quantity rules for a product choice in a specific step.
+     *
+     * @param array $qr The quantity rule array containing 'min', 'max', and 'locked' keys.
+     * @param ProductChoiceDto $dto The data transfer object representing the product choice.
+     * @param int $cIdx The index of the current choice in the step.
+     * @param StepDto $stepDto The data transfer object representing the step.
+     *
+     * @return void
+     *
+     * @throws ProductChoiceConstraintException If the minimum quantity is invalid.
+     * @throws ProductChoiceConstraintException If the maximum quantity is invalid.
+     * @throws ProductChoiceConstraintException If the minimum quantity is greater than the maximum quantity.
+     */
+    private function validateQuantityRuleMinAndMax(
+        array            $qr,
+        ProductChoiceDto $dto,
+        int              $cIdx,
+        StepDto          $stepDto
+    ): void
+    {
+        if (true === $qr['locked']) {
+            return;
+        }
+
+        // Quantity selection allowed => validate optional min/max
+        $minQ = $qr['min'];
+        $maxQ = $qr['max'];
+
+        if (null !== $minQ && (!is_int($minQ) || $minQ < 1)) {
+            throw new ProductChoiceConstraintException(
+                sprintf('Step “%s”: The choice “%s” has an invalid minimal quantity (integer >= 1 required).', $stepDto->label, $dto->label ?: ('#' . ($cIdx + 1))),
+                ProductChoiceConstraintException::INVALID_QUANTITY_RULE_MIN
+            );
+        }
+
+        if (null !== $maxQ && (!is_int($maxQ) || $maxQ < 1)) {
+            throw new ProductChoiceConstraintException(
+                sprintf('Step “%s”: The choice “%s” has an invalid maximal quantity (integer >= 1 required).', $stepDto->label, $dto->label ?: ('#' . ($cIdx + 1))),
+                ProductChoiceConstraintException::INVALID_QUANTITY_RULE_MAX
+            );
+        }
+
+        if (null !== $minQ && null !== $maxQ && $minQ > $maxQ) {
+            throw new ProductChoiceConstraintException(
+                sprintf('Step “%s”: The choice “%s” minimal quantity cannot be greater than maximal quantity.', $stepDto->label, $dto->label ?: ('#' . ($cIdx + 1))),
+                ProductChoiceConstraintException::INVALID_QUANTITY_RULE_MIN_MAX_LOGIC
+            );
+        }
+    }
+
+    /**
+     * Validates the quantity rule offset of a product choice and ensures it meets the required constraints.
+     *
+     * @param array $qr The quantity rule data containing attributes such as mode, locked status, and offset.
+     * @param ProductChoiceDto $dto The product choice data transfer object containing context for validation.
+     * @param int $cIdx The index of the product choice within the current context.
+     * @param StepDto $stepDto The step data transfer object providing information about the current step.
+     *
+     * @return void
+     *
+     * @throws ProductChoiceConstraintException If the quantity rule offset is invalid.
+     */
+    private function validateQuantityRuleOffset(
+        array            $qr,
+        ProductChoiceDto $dto,
+        int              $cIdx,
+        StepDto          $stepDto
+    ): void
+    {
+        if (QuantityRule::MODE_FIXED !== $qr['mode'] && false === $qr['locked']) {
+            return;
+        }
+
+        if (!is_int($qr['offset']) || $qr['offset'] < 1) {
+            throw new ProductChoiceConstraintException(
+                sprintf('Step “%s”: The choice “%s” must have a valid imposed quantity (offset) (integer >= 1) when quantity selection is disabled.', $stepDto->label, $dto->label ?: ('#' . ($cIdx + 1))),
+                ProductChoiceConstraintException::INVALID_QUANTITY_RULE_OFFSET
+            );
+        }
+    }
+
+    /**
+     * Validates the quantity rule sources for a given product choice, ensuring their consistency and correctness.
+     *
+     * @param array $qr An array containing the quantity rule data, including the sources to validate.
+     * @param ProductChoiceDto $dto The product choice data transfer object being evaluated.
+     * @param int $cIdx The index of the current product choice in the step.
+     * @param StepDto $stepDto The step data transfer object containing the current step context.
+     * @param ConfiguratorDto $configuratorDto The configurator data transfer object containing the overall configuration.
+     *
+     * @return void
+     *
+     * @throws ProductChoiceConstraintException If any source has missing or invalid references, references a non-existent or invalid step/choice, or contains duplicate sources.
+     */
+    private function validateQuantityRuleSources(
+        array            $qr,
+        ProductChoiceDto $dto,
+        int              $cIdx,
+        StepDto          $stepDto,
+        ConfiguratorDto  $configuratorDto
+    ): void
+    {
+        if ($qr['mode'] === 'fixed' && false === empty($qr['sources'])) {
+            // Fixed: no sources allowed
+            throw new ProductChoiceConstraintException(
+                sprintf('Step "%s": Choice "%s" quantity rule in FIXED mode must not define any sources.', $stepDto->label, $dto->label ?: ('#' . ($cIdx + 1))),
+                ProductChoiceConstraintException::INVALID_QUANTITY_RULE_SOURCES
+            );
+        } elseif ($qr['mode'] === 'expression' && true === empty($qr['sources'])) {
+            // Expression: at least one source
+            throw new ProductChoiceConstraintException(
+                sprintf('Step "%s": Choice "%s" quantity rule in EXPRESSION mode must define at least one source.', $stepDto->label, $dto->label ?: ('#' . ($cIdx + 1))),
+                ProductChoiceConstraintException::INVALID_QUANTITY_RULE_SOURCES
+            );
+        }
+
+        $seen = [];
+
+        foreach ($qr['sources'] as $idxSrc => $src) {
+            $refStepId = $src['step'] ?? null;
+            $refChoiceId = $src['choice'] ?? null;
+
+            if (empty($refStepId) || empty($refChoiceId)) {
+                throw new ProductChoiceConstraintException(
+                    sprintf('Step "%s": Choice "%s" quantity rule source #%d is invalid.', $stepDto->label, $dto->label ?: ('#' . ($cIdx + 1)), $idxSrc + 1),
+                    ProductChoiceConstraintException::INVALID_QUANTITY_RULE_SOURCES
+                );
+            }
+
+            // Locate referenced step
+            $refStep = null;
+
+            foreach ($configuratorDto->steps as $s) {
+                if ((string)$s->id !== (string)$refStepId) {
+                    continue;
+                }
+
+                $refStep = $s;
+
+                break;
+            }
+
+            if ($refStep === null) {
+                throw new ProductChoiceConstraintException(
+                    sprintf('Step "%s": Quantity rule source #%d references a non-existent step.', $stepDto->label, $idxSrc + 1),
+                    ProductChoiceConstraintException::INVALID_QUANTITY_RULE_SOURCES
+                );
+            }
+
+            // Must be previous step strictly
+            if ((int)$refStep->position >= (int)$stepDto->position) {
+                throw new ProductChoiceConstraintException(
+                    sprintf('Step "%s": Quantity rule source #%d must reference a previous step.', $stepDto->label, $idxSrc + 1),
+                    ProductChoiceConstraintException::INVALID_QUANTITY_RULE_SOURCES
+                );
+            }
+
+            // Locate referenced choice
+            $refChoice = null;
+            $choices = is_array($refStep->productChoices) ? $refStep->productChoices : [];
+
+            foreach ($choices as $rc) {
+                if ((string)$rc->id !== (string)$refChoiceId) {
+                    continue;
+                }
+
+                $refChoice = $rc;
+
+                break;
+            }
+
+            if ($refChoice === null) {
+                throw new ProductChoiceConstraintException(
+                    sprintf('Step "%s": Quantity rule source #%d references a choice that does not exist in the target step.', $stepDto->label, $idxSrc + 1),
+                    ProductChoiceConstraintException::INVALID_QUANTITY_RULE_SOURCES
+                );
+            }
+
+            // Prevent duplicate (step, choice)
+            $key = $refStepId . '_' . $refChoiceId;
+
+            if (true === isset($seen[$key])) {
+                throw new ProductChoiceConstraintException(
+                    sprintf('Step "%s": Quantity rule has duplicate source (step,choice).', $stepDto->label),
+                    ProductChoiceConstraintException::INVALID_QUANTITY_RULE_SOURCES
+                );
+            }
+
+            $seen[$key] = true;
+        }
     }
 
     /**
