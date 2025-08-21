@@ -320,7 +320,7 @@ class ProductChoice
 
     public function getQuantityRule(): QuantityRule
     {
-        return QuantityRule::fromArray($this->quantityRule);
+        return QuantityRule::fromArray($this->quantityRule ?: []);
     }
 
     public function setQuantityRule(QuantityRule $rule): void
