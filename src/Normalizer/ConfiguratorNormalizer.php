@@ -6,6 +6,7 @@ use DrSoftFr\Module\ProductWizard\Dto\ConfiguratorDto;
 use DrSoftFr\Module\ProductWizard\Dto\DisplayConditionDto;
 use DrSoftFr\Module\ProductWizard\Dto\StepDto;
 use DrSoftFr\Module\ProductWizard\Dto\ProductChoiceDto;
+use DrSoftFr\Module\ProductWizard\ValueObject\ProductChoice\QuantityRule;
 
 final class ConfiguratorNormalizer
 {
@@ -35,14 +36,16 @@ final class ConfiguratorNormalizer
                 $choiceDto->label = $choiceData['label'] ?? '';
                 $choiceDto->productId = false === empty($choiceData['product_id']) ? (int)$choiceData['product_id'] : null;
                 $choiceDto->isDefault = (bool)($choiceData['is_default'] ?? false);
-                $choiceDto->allowQuantity = (bool)($choiceData['allow_quantity'] ?? true);
-                $choiceDto->forcedQuantity = false === empty($choiceData['forced_quantity']) ? (int)$choiceData['forced_quantity'] : null;
-                $choiceDto->minQuantity = false === empty($choiceData['min_quantity']) ? (int)$choiceData['min_quantity'] : null;
-                $choiceDto->maxQuantity = false === empty($choiceData['max_quantity']) ? (int)$choiceData['max_quantity'] : null;
                 $choiceDto->active = (bool)($choiceData['active'] ?? true);
                 $choiceDto->reduction = (float)($choiceData['reduction'] ?? 0);
                 $choiceDto->reductionTax = (bool)($choiceData['reduction_tax'] ?? true);
                 $choiceDto->reductionType = (string)($choiceData['reduction_type'] ?? 'amount');
+                $choiceDto->quantityRule = QuantityRule::fromArray(
+                    isset($choiceData['quantity_rule']) && is_array($choiceData['quantity_rule'])
+                        ? $choiceData['quantity_rule']
+                        : []
+                )
+                    ->getValue();
 
                 foreach ($choiceData['display_conditions'] ?? [] as $dcData) {
                     $dcDto = new DisplayConditionDto();
@@ -83,14 +86,11 @@ final class ConfiguratorNormalizer
                     'label' => $c->label,
                     'product_id' => $c->productId,
                     'is_default' => $c->isDefault,
-                    'allow_quantity' => $c->allowQuantity,
-                    'forced_quantity' => $c->forcedQuantity,
-                    'min_quantity' => $c->minQuantity,
-                    'max_quantity' => $c->maxQuantity,
                     'active' => $c->active,
                     'reduction' => $c->reduction,
                     'reduction_tax' => $c->reductionTax,
                     'reduction_type' => $c->reductionType,
+                    'quantity_rule' => $c->quantityRule,
                     'display_conditions' => array_map(fn(DisplayConditionDto $dc) => [
                         'step' => $dc->step,
                         'choice' => $dc->choice,
