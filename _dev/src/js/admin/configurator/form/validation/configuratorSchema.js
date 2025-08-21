@@ -24,6 +24,12 @@ const ProductChoiceSchema = z
     forced_quantity: z
       .union([z.number().int().min(1), z.null(), z.undefined()])
       .optional(),
+    min_quantity: z
+      .union([z.number().int().min(1), z.null(), z.undefined()])
+      .optional(),
+    max_quantity: z
+      .union([z.number().int().min(1), z.null(), z.undefined()])
+      .optional(),
     reduction: z.number().nonnegative().optional().default(0),
     reduction_tax: z.boolean().optional().default(true),
     reduction_type: z.union([z.literal('amount'), z.literal('percentage')]).optional().default('amount'),
@@ -98,8 +104,9 @@ export const ConfiguratorSchema = z
         })
       }
 
-      // Quantity logic when allow_quantity is false => forced_quantity must be integer >= 1
+      // Quantity logic
       step.product_choices.forEach((choice, cIdx) => {
+        // Case 1: quantity selection disabled => forced_quantity is required (int >= 1)
         if (choice.allow_quantity === false) {
           const fq = choice.forced_quantity
           const isValid = Number.isInteger(fq) && Number(fq) >= 1
@@ -111,8 +118,46 @@ export const ConfiguratorSchema = z
               path: ['steps', idx, 'product_choices', cIdx, 'forced_quantity'],
             })
           }
+        } else {
+          // Case 2: quantity selection allowed => optional min/max constraints
+          const minQ = choice.min_quantity
+          const maxQ = choice.max_quantity
+
+          const hasMin = minQ !== null && minQ !== undefined
+          const hasMax = maxQ !== null && maxQ !== undefined
+
+          if (hasMin) {
+            const validMin = Number.isInteger(minQ) && Number(minQ) >= 1
+            if (!validMin) {
+              ctx.addIssue({
+                code: z.ZodIssueCode.custom,
+                message: `Step "${step.label}" choice "${choice.label}": Minimal quantity must be an integer >= 1.`,
+                path: ['steps', idx, 'product_choices', cIdx, 'min_quantity'],
+              })
+            }
+          }
+
+          if (hasMax) {
+            const validMax = Number.isInteger(maxQ) && Number(maxQ) >= 1
+            if (!validMax) {
+              ctx.addIssue({
+                code: z.ZodIssueCode.custom,
+                message: `Step "${step.label}" choice "${choice.label}": Maximal quantity must be an integer >= 1.`,
+                path: ['steps', idx, 'product_choices', cIdx, 'max_quantity'],
+              })
+            }
+          }
+
+          if (hasMin && hasMax && Number(minQ) > Number(maxQ)) {
+            ctx.addIssue({
+              code: z.ZodIssueCode.custom,
+              message: `Step "${step.label}" choice "${choice.label}": Minimal quantity cannot be greater than maximal quantity.`,
+              path: ['steps', idx, 'product_choices', cIdx, 'min_quantity'],
+            })
+          }
         }
 
+        // Reduction % range at choice level
         if (choice.reduction_type === 'percentage' && (choice.reduction < 0 || choice.reduction > 100)) {
           ctx.addIssue({
             code: z.ZodIssueCode.custom,

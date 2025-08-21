@@ -261,6 +261,8 @@ export const useConfiguratorStore = defineStore('configurator', {
         product_id: null,
         allow_quantity: true,
         forced_quantity: null,
+        min_quantity: null,
+        max_quantity: null,
         reduction: 0,
         reduction_tax: true,
         reduction_type: 'amount',
