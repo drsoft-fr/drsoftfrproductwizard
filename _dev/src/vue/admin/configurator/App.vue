@@ -24,6 +24,8 @@ const pageTitle = computed(() =>
 )
 
 const checkValidity = () => {
+  toast.removeAllGroups()
+
   const validity = store.recomputeValidity ? store.recomputeValidity() : true
 
   if (!validity) {
