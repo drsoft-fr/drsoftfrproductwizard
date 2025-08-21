@@ -6,6 +6,7 @@ use DateTime;
 use DateTimeInterface;
 use Doctrine\ORM\Mapping as ORM;
 use DrSoftFr\Module\ProductWizard\Config as Configuration;
+use DrSoftFr\Module\ProductWizard\ValueObject\ProductChoice\QuantityRule;
 use DrSoftFr\PrestaShopModuleHelper\Traits\ClassHydrateTrait;
 
 /**
@@ -55,34 +56,6 @@ class ProductChoice
     private $isDefault = false;
 
     /**
-     * @var bool $allowQuantity
-     *
-     * @ORM\Column(name="allow_quantity", type="boolean", nullable=false, options={"default":1, "unsigned"=true})
-     */
-    private $allowQuantity = true;
-
-    /**
-     * @var ?int $forcedQuantity
-     *
-     * @ORM\Column(name="forced_quantity", type="integer", nullable=true, options={"default":null, "unsigned"=true})
-     */
-    private $forcedQuantity;
-
-    /**
-     * @var ?int $minQuantity
-     *
-     * @ORM\Column(name="min_quantity", type="integer", nullable=true, options={"default":null, "unsigned"=true})
-     */
-    private $minQuantity;
-
-    /**
-     * @var ?int $maxQuantity
-     *
-     * @ORM\Column(name="max_quantity", type="integer", nullable=true, options={"default":null, "unsigned"=true})
-     */
-    private $maxQuantity;
-
-    /**
      * @var float $reduction
      *
      * @ORM\Column(name="reduction", type="float", nullable=false, options={"default":0})
@@ -115,6 +88,11 @@ class ProductChoice
      * @ORM\Column(name="display_conditions", type="json", nullable=true)
      */
     private $displayConditions = [];
+
+    /**
+     * @ORM\Column(name="quantity_rule", type="json", nullable=true)
+     */
+    private ?array $quantityRule = null;
 
     /**
      * @var ?DateTimeInterface $dateAdd creation date
@@ -150,14 +128,11 @@ class ProductChoice
             'label' => $this->getLabel(),
             'product_id' => $this->getProductId(),
             'is_default' => $this->isDefault(),
-            'allow_quantity' => $this->isAllowQuantity(),
-            'forced_quantity' => $this->getForcedQuantity(),
-            'min_quantity' => $this->getMinQuantity(),
-            'max_quantity' => $this->getMaxQuantity(),
             'reduction' => $this->getReduction(),
             'reduction_tax' => $this->isReductionTax(),
             'reduction_type' => $this->getReductionType(),
             'display_conditions' => $this->getDisplayConditions(),
+            'quantity_rule' => $this->getQuantityRule()->getValue(),
         ];
     }
 
@@ -228,50 +203,6 @@ class ProductChoice
     public function setIsDefault(bool $isDefault): ProductChoice
     {
         $this->isDefault = $isDefault;
-        return $this;
-    }
-
-    public function isAllowQuantity(): bool
-    {
-        return $this->allowQuantity;
-    }
-
-    public function setAllowQuantity(bool $allowQuantity): ProductChoice
-    {
-        $this->allowQuantity = $allowQuantity;
-        return $this;
-    }
-
-    public function getForcedQuantity(): ?int
-    {
-        return $this->forcedQuantity;
-    }
-
-    public function setForcedQuantity(?int $forcedQuantity): ProductChoice
-    {
-        $this->forcedQuantity = $forcedQuantity;
-        return $this;
-    }
-
-    public function getMinQuantity(): ?int
-    {
-        return $this->minQuantity;
-    }
-
-    public function setMinQuantity(?int $minQuantity): ProductChoice
-    {
-        $this->minQuantity = $minQuantity;
-        return $this;
-    }
-
-    public function getMaxQuantity(): ?int
-    {
-        return $this->maxQuantity;
-    }
-
-    public function setMaxQuantity(?int $maxQuantity): ProductChoice
-    {
-        $this->maxQuantity = $maxQuantity;
         return $this;
     }
 
@@ -385,5 +316,15 @@ class ProductChoice
     {
         $this->dateUpd = $dateUpd;
         return $this;
+    }
+
+    public function getQuantityRule(): QuantityRule
+    {
+        return QuantityRule::fromArray($this->quantityRule);
+    }
+
+    public function setQuantityRule(QuantityRule $rule): void
+    {
+        $this->quantityRule = $rule->getValue();
     }
 }

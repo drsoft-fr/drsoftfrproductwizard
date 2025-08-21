@@ -11,16 +11,13 @@ final class ProductChoiceDto
         public string  $label = '',
         public ?int    $productId = null,
         public bool    $isDefault = false,
-        public bool    $allowQuantity = true,
-        public ?int    $forcedQuantity = null,
-        public ?int    $minQuantity = null,
-        public ?int    $maxQuantity = null,
         public bool    $active = true,
         public float   $reduction = 0.0,
         public bool    $reductionTax = true,
         public string  $reductionType = 'amount',
         /** @var DisplayConditionDto[] */
-        public array   $displayConditions = []
+        public array   $displayConditions = [],
+        public array   $quantityRule,
     )
     {
     }
@@ -38,15 +35,12 @@ final class ProductChoiceDto
             $productChoice->getLabel(),
             $productChoice->getProductId(),
             $productChoice->isDefault(),
-            $productChoice->isAllowQuantity(),
-            $productChoice->getForcedQuantity(),
-            $productChoice->getMinQuantity(),
-            $productChoice->getMaxQuantity(),
             $productChoice->isActive(),
             $productChoice->getReduction(),
             $productChoice->isReductionTax(),
             $productChoice->getReductionType(),
-            $arr
+            $arr,
+            $productChoice->getQuantityRule()->getValue()
         );
     }
 }
