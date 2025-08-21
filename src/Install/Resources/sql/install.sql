@@ -43,6 +43,8 @@ CREATE TABLE IF NOT EXISTS `_DB_PREFIX_drsoft_fr_product_wizard_product_choice`
     `is_default`         TINYINT(1) UNSIGNED           NOT NULL DEFAULT 0,
     `allow_quantity`     TINYINT(1) UNSIGNED           NOT NULL DEFAULT 1,
     `forced_quantity`    INT UNSIGNED                           DEFAULT NULL,
+    `min_quantity`       INT UNSIGNED                           DEFAULT NULL,
+    `max_quantity`       INT UNSIGNED                           DEFAULT NULL,
     `display_conditions` JSON                                   DEFAULT NULL,
     `reduction`          DECIMAL(20, 6)                NOT NULL DEFAULT 0,
     `reduction_tax`      TINYINT(1)                    NOT NULL DEFAULT 1,

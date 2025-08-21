@@ -69,6 +69,20 @@ class ProductChoice
     private $forcedQuantity;
 
     /**
+     * @var ?int $minQuantity
+     *
+     * @ORM\Column(name="min_quantity", type="integer", nullable=true, options={"default":null, "unsigned"=true})
+     */
+    private $minQuantity;
+
+    /**
+     * @var ?int $maxQuantity
+     *
+     * @ORM\Column(name="max_quantity", type="integer", nullable=true, options={"default":null, "unsigned"=true})
+     */
+    private $maxQuantity;
+
+    /**
      * @var float $reduction
      *
      * @ORM\Column(name="reduction", type="float", nullable=false, options={"default":0})
@@ -138,6 +152,8 @@ class ProductChoice
             'is_default' => $this->isDefault(),
             'allow_quantity' => $this->isAllowQuantity(),
             'forced_quantity' => $this->getForcedQuantity(),
+            'min_quantity' => $this->getMinQuantity(),
+            'max_quantity' => $this->getMaxQuantity(),
             'reduction' => $this->getReduction(),
             'reduction_tax' => $this->isReductionTax(),
             'reduction_type' => $this->getReductionType(),
@@ -234,6 +250,28 @@ class ProductChoice
     public function setForcedQuantity(?int $forcedQuantity): ProductChoice
     {
         $this->forcedQuantity = $forcedQuantity;
+        return $this;
+    }
+
+    public function getMinQuantity(): ?int
+    {
+        return $this->minQuantity;
+    }
+
+    public function setMinQuantity(?int $minQuantity): ProductChoice
+    {
+        $this->minQuantity = $minQuantity;
+        return $this;
+    }
+
+    public function getMaxQuantity(): ?int
+    {
+        return $this->maxQuantity;
+    }
+
+    public function setMaxQuantity(?int $maxQuantity): ProductChoice
+    {
+        $this->maxQuantity = $maxQuantity;
         return $this;
     }
 

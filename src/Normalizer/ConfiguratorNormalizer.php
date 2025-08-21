@@ -37,6 +37,8 @@ final class ConfiguratorNormalizer
                 $choiceDto->isDefault = (bool)($choiceData['is_default'] ?? false);
                 $choiceDto->allowQuantity = (bool)($choiceData['allow_quantity'] ?? true);
                 $choiceDto->forcedQuantity = false === empty($choiceData['forced_quantity']) ? (int)$choiceData['forced_quantity'] : null;
+                $choiceDto->minQuantity = false === empty($choiceData['min_quantity']) ? (int)$choiceData['min_quantity'] : null;
+                $choiceDto->maxQuantity = false === empty($choiceData['max_quantity']) ? (int)$choiceData['max_quantity'] : null;
                 $choiceDto->active = (bool)($choiceData['active'] ?? true);
                 $choiceDto->reduction = (float)($choiceData['reduction'] ?? 0);
                 $choiceDto->reductionTax = (bool)($choiceData['reduction_tax'] ?? true);
@@ -83,6 +85,8 @@ final class ConfiguratorNormalizer
                     'is_default' => $c->isDefault,
                     'allow_quantity' => $c->allowQuantity,
                     'forced_quantity' => $c->forcedQuantity,
+                    'min_quantity' => $c->minQuantity,
+                    'max_quantity' => $c->maxQuantity,
                     'active' => $c->active,
                     'reduction' => $c->reduction,
                     'reduction_tax' => $c->reductionTax,
