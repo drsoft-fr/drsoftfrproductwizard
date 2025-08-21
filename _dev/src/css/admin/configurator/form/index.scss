@@ -11,3 +11,65 @@
 .gap-2 {
   gap: 0.625rem;
 }
+
+.steps-list {
+  .step-item {
+    border-left-width: 5px;
+    border-left-style: solid;
+  }
+
+  .step-item:nth-child(1n + 1) {
+    border-left-color: var(--blue);
+  }
+
+  .step-item:nth-child(2n + 2) {
+    border-left-color: var(--purple);
+  }
+
+  .step-item:nth-child(3n + 3) {
+    border-left-color: var(--red);
+  }
+
+  .step-item:nth-child(4n + 4) {
+    border-left-color: var(--orange);
+  }
+
+  .step-item:nth-child(5n + 5) {
+    border-left-color: var(--yellow);
+  }
+
+  .step-item:nth-child(6n + 6) {
+    border-left-color: var(--green);
+  }
+}
+
+.product-choices-list {
+  .product-choice-item {
+    border-left-width: 5px;
+    border-left-style: solid;
+  }
+
+  .product-choice-item:nth-child(1n + 1) {
+    border-left-color: var(--orange);
+  }
+
+  .product-choice-item:nth-child(2n + 2) {
+    border-left-color: var(--yellow);
+  }
+
+  .product-choice-item:nth-child(3n + 3) {
+    border-left-color: var(--green);
+  }
+
+  .product-choice-item:nth-child(4n + 4) {
+    border-left-color: var(--blue);
+  }
+
+  .product-choice-item:nth-child(5n + 5) {
+    border-left-color: var(--purple);
+  }
+
+  .product-choice-item:nth-child(6n + 6) {
+    border-left-color: var(--red);
+  }
+}
