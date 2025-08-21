@@ -17,7 +17,7 @@ final class ProductChoiceDto
         public string  $reductionType = 'amount',
         /** @var DisplayConditionDto[] */
         public array   $displayConditions = [],
-        public array   $quantityRule,
+        public array   $quantityRule = [],
     )
     {
     }
