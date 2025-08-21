@@ -259,14 +259,19 @@ export const useConfiguratorStore = defineStore('configurator', {
         active: true,
         is_default: false,
         product_id: null,
-        allow_quantity: true,
-        forced_quantity: null,
-        min_quantity: null,
-        max_quantity: null,
         reduction: 0,
         reduction_tax: true,
         reduction_type: 'amount',
         display_conditions: [],
+        quantity_rule: {
+          mode: 'none',
+          locked: false,
+          sources: [],
+          offset: 0,
+          min: null,
+          max: null,
+          round: 'none',
+        },
         is_virtual: true,
       })
 
@@ -322,6 +327,17 @@ export const useConfiguratorStore = defineStore('configurator', {
           condition.step !== conditionStepId ||
           condition.choice !== conditionChoiceId,
       )
+    },
+
+    // Update quantity rule of a product choice
+    updateQuantityRule(stepId, choiceId, quantityRule) {
+      const choice = this.getProductChoice(stepId, choiceId)
+
+      if (!choice) {
+        return
+      }
+
+      choice.quantity_rule = quantityRule
     },
 
     // Set loading state
