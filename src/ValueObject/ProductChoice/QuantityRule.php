@@ -25,17 +25,17 @@ final class QuantityRule
         self::ROUND_ROUND,
     ];
     private const DEFAULT_COEFF = 1.0;
-    private const DEFAULT_OFFSET = 0.0;
+    private const DEFAULT_OFFSET = 0;
 
     private function __construct(
-        private string         $mode = self::MODE_NONE,
-        private readonly bool  $locked = false,
+        private string        $mode = self::MODE_NONE,
+        private readonly bool $locked = false,
         /** @var array<int, array{step:int, choice:int, coeff:float}> */
-        private array          $sources = [],
-        private readonly float $offset = 0.0,
-        private ?int           $min = null,
-        private ?int           $max = null,
-        private string         $round = self::ROUND_NONE
+        private array         $sources = [],
+        private readonly int  $offset = 0,
+        private ?int          $min = null,
+        private ?int          $max = null,
+        private string        $round = self::ROUND_NONE
     )
     {
         $this->mode = $this->sanitizeMode($mode);
@@ -51,7 +51,7 @@ final class QuantityRule
             $data['mode'] ?? self::MODE_NONE,
             (bool)($data['locked'] ?? false),
             $data['sources'] ?? [],
-            (float)($data['offset'] ?? self::DEFAULT_OFFSET),
+            (int)($data['offset'] ?? self::DEFAULT_OFFSET),
             $data['min'] ?? null,
             $data['max'] ?? null,
             $data['round'] ?? self::ROUND_NONE
