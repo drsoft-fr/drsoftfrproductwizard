@@ -319,6 +319,7 @@ final class ConfiguratorValidatorService
         foreach ($conditions as $dcIdx => $condition) {
             $this->validateDisplayCondition(
                 $dcIdx,
+                $condition,
                 $stepDto,
                 $configuratorDto
             );
@@ -339,12 +340,13 @@ final class ConfiguratorValidatorService
      */
     private function validateDisplayCondition(
         int             $dcIdx,
+        array           $condition,
         StepDto         $stepDto,
         ConfiguratorDto $configuratorDto
     ): void
     {
-        $refStepId = $cond['step'] ?? null;
-        $refChoiceId = $cond['choice'] ?? null;
+        $refStepId = $condition['step'] ?? null;
+        $refChoiceId = $condition['choice'] ?? null;
 
         if (true === empty($refStepId)) {
             throw new DisplayConditionConstraintException(
