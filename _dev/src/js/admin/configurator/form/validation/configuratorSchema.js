@@ -1,4 +1,5 @@
 import { z } from 'zod'
+import { QuantityRuleSchema } from '@/js/admin/configurator/form/validation/quantityRuleSchema.js'
 
 // Zod schema for a Condition
 const ConditionSchema = z
@@ -20,20 +21,11 @@ const ProductChoiceSchema = z
       .union([z.number().int().nullable(), z.null()])
       .nullable()
       .optional(),
-    allow_quantity: z.boolean().optional().default(true),
-    forced_quantity: z
-      .union([z.number().int().min(1), z.null(), z.undefined()])
-      .optional(),
-    min_quantity: z
-      .union([z.number().int().min(1), z.null(), z.undefined()])
-      .optional(),
-    max_quantity: z
-      .union([z.number().int().min(1), z.null(), z.undefined()])
-      .optional(),
     reduction: z.number().nonnegative().optional().default(0),
     reduction_tax: z.boolean().optional().default(true),
     reduction_type: z.union([z.literal('amount'), z.literal('percentage')]).optional().default('amount'),
     display_conditions: z.array(ConditionSchema).optional().default([]),
+    quantity_rule: z.union([QuantityRuleSchema]),
     is_virtual: z.boolean().optional(),
   })
   .strict()

@@ -5,6 +5,7 @@ import { useConfirm } from 'primevue/useconfirm'
 import { useToast } from 'primevue/usetoast'
 import ConditionList from '@/vue/admin/configurator/components/condition/ConditionList.vue'
 import ProductSearch from '@/vue/admin/configurator/components/product-choice/ProductSearch.vue'
+import QuantityRuleField from '@/vue/admin/configurator/components/product-choice/QuantityRuleField.vue'
 
 const props = defineProps({
   stepId: { type: [String, Number], required: true },
@@ -195,62 +196,7 @@ const handleConditionChange = (event) => {
 
     <Divider />
 
-    <div class="row mt-3">
-      <div class="col-md-6 mb-3 mb-md-0 d-flex align-items-center">
-        <ToggleSwitch
-          :inputId="`pc-allow-quantity-${productChoiceId}`"
-          v-model="productChoice.allow_quantity"
-          class="mr-3"
-        />
-        <label :for="`pc-allow-quantity-${productChoiceId}`" class="m-0">{{
-          $t('Allow selection of quantity')
-        }}</label>
-      </div>
-
-      <div class="col-md-6">
-        <div class="d-flex flex-column gap-2">
-          <label :for="`pc-forced-qty-${productChoiceId}`">{{
-            $t('Forced quantity')
-          }}</label>
-          <InputNumber
-            v-model.number="productChoice.forced_quantity"
-            :min="1"
-            required
-            fluid
-            :inputId="`pc-forced-qty-${productChoiceId}`"
-          />
-        </div>
-
-        <Divider v-if="productChoice.allow_quantity === true" />
-
-        <!-- When quantity selection is allowed, show min/max optional fields -->
-        <div
-          v-if="productChoice.allow_quantity === true"
-          class="d-flex flex-column gap-2"
-        >
-          <div class="d-flex flex-column gap-2">
-            <label :for="`pc-min-qty-${productChoiceId}`">{{
-              $t('Minimal quantity')
-            }}</label>
-            <InputNumber
-              v-model.number="productChoice.min_quantity"
-              :min="1"
-              :inputId="`pc-min-qty-${productChoiceId}`"
-            />
-          </div>
-          <div class="d-flex flex-column gap-2">
-            <label :for="`pc-max-qty-${productChoiceId}`">{{
-              $t('Maximal quantity')
-            }}</label>
-            <InputNumber
-              v-model.number="productChoice.max_quantity"
-              :min="1"
-              :inputId="`pc-max-qty-${productChoiceId}`"
-            />
-          </div>
-        </div>
-      </div>
-    </div>
+    <QuantityRuleField :step-id="stepId" :product-choice-id="productChoiceId" />
 
     <Divider />
 
