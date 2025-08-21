@@ -361,6 +361,23 @@ final class ConfiguratorValidatorService
         StepDto          $stepDto
     ): void
     {
+        $minQ = $qr['min'];
+        $maxQ = $qr['max'];
+
+        if (null !== $minQ && $minQ > $qr['offset']) {
+            throw new ProductChoiceConstraintException(
+                sprintf('Step “%s”: The choice “%s” must have a valid imposed quantity (offset) (integer >= min).', $stepDto->label, $dto->label ?: ('#' . ($cIdx + 1))),
+                ProductChoiceConstraintException::INVALID_QUANTITY_RULE_OFFSET
+            );
+        }
+
+        if (null !== $maxQ && $maxQ < $qr['offset']) {
+            throw new ProductChoiceConstraintException(
+                sprintf('Step “%s”: The choice “%s” must have a valid imposed quantity (offset) (integer <= max).', $stepDto->label, $dto->label ?: ('#' . ($cIdx + 1))),
+                ProductChoiceConstraintException::INVALID_QUANTITY_RULE_OFFSET
+            );
+        }
+
         if (QuantityRule::MODE_FIXED !== $qr['mode'] && false === $qr['locked']) {
             return;
         }
