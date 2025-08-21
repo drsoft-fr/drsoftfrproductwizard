@@ -258,6 +258,31 @@ final class ConfiguratorValidatorService
                     ProductChoiceConstraintException::INVALID_FORCED_QUANTITY
                 );
             }
+        } else {
+            // Quantity selection allowed => validate optional min/max
+            $minQ = $dto->minQuantity;
+            $maxQ = $dto->maxQuantity;
+
+            if (null !== $minQ && (!is_int($minQ) || $minQ < 1)) {
+                throw new ProductChoiceConstraintException(
+                    sprintf('Step “%s”: The choice “%s” has an invalid minimal quantity (integer >= 1 required).', $stepDto->label, $dto->label ?: ('#' . ($cIdx + 1))),
+                    ProductChoiceConstraintException::INVALID_FORCED_QUANTITY
+                );
+            }
+
+            if (null !== $maxQ && (!is_int($maxQ) || $maxQ < 1)) {
+                throw new ProductChoiceConstraintException(
+                    sprintf('Step “%s”: The choice “%s” has an invalid maximal quantity (integer >= 1 required).', $stepDto->label, $dto->label ?: ('#' . ($cIdx + 1))),
+                    ProductChoiceConstraintException::INVALID_FORCED_QUANTITY
+                );
+            }
+
+            if (null !== $minQ && null !== $maxQ && $minQ > $maxQ) {
+                throw new ProductChoiceConstraintException(
+                    sprintf('Step “%s”: The choice “%s” minimal quantity cannot be greater than maximal quantity.', $stepDto->label, $dto->label ?: ('#' . ($cIdx + 1))),
+                    ProductChoiceConstraintException::INVALID_FORCED_QUANTITY
+                );
+            }
         }
 
         $this->validateDisplayConditions(
