@@ -43,8 +43,16 @@ const rule = computed({
   <div class="mt-3">
     <h6 class="mb-2">{{ $t('Quantity rule') }}</h6>
 
-    <div class="row g-3 align-items-end">
-      <div class="col-md-3 d-flex flex-column gap-2">
+    <div class="row">
+      <div class="col-md-4 d-flex flex-column gap-2">
+        <label :for="`qr-locked-${productChoiceId}`">{{ $t('Locked') }}</label>
+        <ToggleSwitch
+          :inputId="`qr-locked-${productChoiceId}`"
+          v-model="rule.locked"
+        />
+      </div>
+
+      <div class="col-md-4 d-flex flex-column gap-2">
         <label :for="`qr-mode-${productChoiceId}`">{{ $t('Mode') }}</label>
         <Dropdown
           :inputId="`qr-mode-${productChoiceId}`"
@@ -59,45 +67,7 @@ const rule = computed({
         />
       </div>
 
-      <div class="col-md-2 d-flex flex-column gap-2">
-        <label :for="`qr-locked-${productChoiceId}`">{{ $t('Locked') }}</label>
-        <ToggleSwitch
-          :inputId="`qr-locked-${productChoiceId}`"
-          v-model="rule.locked"
-        />
-      </div>
-
-      <div class="col-md-3 d-flex flex-column gap-2">
-        <label :for="`qr-offset-${productChoiceId}`">{{
-          $t('Quantity or Offset')
-        }}</label>
-        <InputNumber
-          :inputId="`qr-offset-${productChoiceId}`"
-          v-model.number="rule.offset"
-        />
-      </div>
-
-      <div class="col-md-2 d-flex flex-column gap-2">
-        <label :for="`qr-min-${productChoiceId}`">{{ $t('Min') }}</label>
-        <InputNumber
-          :inputId="`qr-min-${productChoiceId}`"
-          v-model.number="rule.min"
-          :min="0"
-        />
-      </div>
-
-      <div class="col-md-2 d-flex flex-column gap-2">
-        <label :for="`qr-max-${productChoiceId}`">{{ $t('Max') }}</label>
-        <InputNumber
-          :inputId="`qr-max-${productChoiceId}`"
-          v-model.number="rule.max"
-          :min="0"
-        />
-      </div>
-    </div>
-
-    <div class="row g-3 mt-3">
-      <div class="col-md-3 d-flex flex-column gap-2">
+      <div class="col-md-4 d-flex flex-column gap-2">
         <label :for="`qr-round-${productChoiceId}`">{{ $t('Rounded') }}</label>
         <Dropdown
           :inputId="`qr-round-${productChoiceId}`"
@@ -110,6 +80,36 @@ const rule = computed({
           ]"
           optionLabel="label"
           optionValue="value"
+        />
+      </div>
+    </div>
+
+    <div class="row mt-3">
+      <div class="col-md-4 d-flex flex-column gap-2">
+        <label :for="`qr-offset-${productChoiceId}`">{{
+            $t('Quantity or Offset')
+          }}</label>
+        <InputNumber
+          :inputId="`qr-offset-${productChoiceId}`"
+          v-model.number="rule.offset"
+        />
+      </div>
+
+      <div class="col-md-4 d-flex flex-column gap-2">
+        <label :for="`qr-min-${productChoiceId}`">{{ $t('Min') }}</label>
+        <InputNumber
+          :inputId="`qr-min-${productChoiceId}`"
+          v-model.number="rule.min"
+          :min="0"
+        />
+      </div>
+
+      <div class="col-md-4 d-flex flex-column gap-2">
+        <label :for="`qr-max-${productChoiceId}`">{{ $t('Max') }}</label>
+        <InputNumber
+          :inputId="`qr-max-${productChoiceId}`"
+          v-model.number="rule.max"
+          :min="0"
         />
       </div>
     </div>
