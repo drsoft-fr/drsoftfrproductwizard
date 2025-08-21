@@ -12,6 +12,7 @@ const store = useConfiguratorStore()
 
 const isValid = computed(() => store.isValid)
 const isLoading = computed(() => store.loading)
+const steps = computed(() => store.steps)
 
 const btnItems = [
   {
@@ -33,7 +34,7 @@ const handleSubmit = (event) => {
   emit('submit')
 }
 
-watch(store.steps, checkValidity, { deep: true })
+watch(steps, checkValidity, { deep: true })
 </script>
 
 <template>
