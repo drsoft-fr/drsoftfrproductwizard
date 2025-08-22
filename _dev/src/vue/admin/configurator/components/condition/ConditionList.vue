@@ -80,6 +80,10 @@ const handleDelete = (event) => {
     }}</Message>
 
     <template v-else>
+      <Message severity="info" class="my-2">
+        {{ $t('Remember to save so that you can select the newly added items.') }}
+      </Message>
+
       <Button severity="info" text @click="addCondition" class="align-bottom">
         <i class="material-icons align-middle">add</i>
         {{ $t('Add a condition') }}

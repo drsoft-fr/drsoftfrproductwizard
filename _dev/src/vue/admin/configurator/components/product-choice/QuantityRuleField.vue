@@ -168,14 +168,24 @@ const removeSource = (idx) => {
         </Button>
       </div>
 
-      <div v-if="!rule.sources || rule.sources.length === 0" class="text-muted">
+      <Message severity="info" class="mt-2">
+        {{
+          $t('Remember to save so that you can select the newly added items.')
+        }}
+      </Message>
+
+      <Message
+        v-if="!rule.sources || rule.sources.length === 0"
+        severity="info"
+        class="mt-2"
+      >
         {{ $t('No specific source.') }}
-      </div>
+      </Message>
 
       <div
         v-for="(src, idx) in rule.sources"
         :key="idx"
-        class="row g-2 align-items-end mb-2"
+        class="row g-2 align-items-end mt-2"
       >
         <div class="col-md-4 d-flex flex-column gap-2">
           <label :for="`qr-src-step-${productChoiceId}-${idx}`">{{
