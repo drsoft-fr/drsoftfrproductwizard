@@ -83,8 +83,6 @@ final class ConfiguratorController extends FrameworkBundleAdminController
      */
     public function newAction(): Response
     {
-        $configurator = new Configurator();
-
         $this->defineJsProps();
 
         return $this->render(self::TEMPLATE_FOLDER . 'form/index.html.twig', [
