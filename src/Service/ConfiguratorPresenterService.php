@@ -3,12 +3,14 @@
 namespace DrSoftFr\Module\ProductWizard\Service;
 
 use Context;
+use DrSoftFr\Module\ProductWizard\Dto\ConfiguratorDto;
+use DrSoftFr\Module\ProductWizard\Dto\ProductChoiceDto;
+use DrSoftFr\Module\ProductWizard\Dto\StepDto;
 use DrSoftFr\Module\ProductWizard\Entity\Configurator;
-use DrSoftFr\Module\ProductWizard\Entity\ProductChoice;
-use DrSoftFr\Module\ProductWizard\Entity\Step;
 use DrSoftFr\Module\ProductWizard\Exception\Configurator\ConfiguratorNotFoundException;
 use DrSoftFr\Module\ProductWizard\Repository\ConfiguratorRepository;
 use DrSoftFr\Module\ProductWizard\ValueObject\Configurator\ConfiguratorId;
+use DrSoftFr\Module\ProductWizard\ValueObject\ProductChoice\QuantityRule;
 use PrestaShop\PrestaShop\Adapter\Image\ImageRetriever;
 use PrestaShop\PrestaShop\Adapter\Presenter\Product\ProductLazyArray;
 use PrestaShop\PrestaShop\Adapter\Presenter\Product\ProductPresenter;
@@ -56,27 +58,26 @@ final class ConfiguratorPresenterService
             throw new ConfiguratorNotFoundException();
         }
 
-        $steps = $this->retrieveSteps($configurator);
+        $dto = ConfiguratorDto::fromEntity($configurator);
 
         return [
             'success' => true,
-            'slug' => $configurator->getId(),
+            'slug' => $dto->id,
             'configurator' => [
-                'id' => $configurator->getId(),
-                'name' => $configurator->getName(),
-                'description' => $configurator->getDescription(),
-                'steps' => $steps,
+                'id' => $dto->id,
+                'name' => $dto->name,
+                'description' => $dto->description,
+                'steps' => $this->retrieveSteps($dto),
             ],
         ];
     }
 
-    private function retrieveSteps(Configurator $configurator): array
+    private function retrieveSteps(ConfiguratorDto $configurator): array
     {
         $steps = [];
 
-        /** @var Step $step */
-        foreach ($configurator->getSteps() as $step) {
-            if (false === $step->isActive()) {
+        foreach ($configurator->steps as $step) {
+            if (false === $step->active) {
                 continue;
             }
 
@@ -91,20 +92,20 @@ final class ConfiguratorPresenterService
         return $steps;
     }
 
-    private function retrieveStep(Step $step): array
+    private function retrieveStep(StepDto $step): array
     {
         $choices = $this->retrieveChoices($step);
 
         return [
-            'id' => $step->getId(),
-            'label' => $step->getLabel(),
-            'description' => $step->getDescription(),
+            'id' => $step->id,
+            'label' => $step->label,
+            'description' => $step->description,
             'choices' => $choices,
-            'position' => $step->getPosition(),
+            'position' => $step->position,
         ];
     }
 
-    private function retrieveChoices(Step $step): array
+    private function retrieveChoices(StepDto $step): array
     {
         $choices = [];
 
@@ -122,13 +123,12 @@ final class ConfiguratorPresenterService
             $this->context->getTranslator()
         );
 
-        /** @var ProductChoice $choice */
-        foreach ($step->getProductChoices() as $choice) {
-            if (false === $choice->isActive()) {
+        foreach ($step->productChoices as $choice) {
+            if (false === $choice->active) {
                 continue;
             }
 
-            $choices[] = $this->retrieveChoice($choice, $presenter, $presentationSettings, $assembler);
+            $choices[] = $this->retrieveChoice($choice, $step, $presenter, $presentationSettings, $assembler);
         }
 
         usort($choices, function ($a, $b) {
@@ -139,13 +139,14 @@ final class ConfiguratorPresenterService
     }
 
     private function retrieveChoice(
-        ProductChoice               $choice,
+        ProductChoiceDto            $choice,
+        StepDto                     $step,
         ProductPresenter            $presenter,
         ProductPresentationSettings $presentationSettings,
         ProductAssembler            $assembler
     ): array
     {
-        $productId = (int)$choice->getProductId();
+        $productId = (int)$choice->productId;
         $productInfo = $this->retrieveProduct($productId, $presenter, $presentationSettings, $assembler);
         $combinations = $this->retrieveProductCombinations($productId);
         $variants = [];
@@ -154,22 +155,23 @@ final class ConfiguratorPresenterService
             $variants[] = $this->retrieveProduct($productId, $presenter, $presentationSettings, $assembler, $combination['id']);;
         }
 
+        $quantityRuleApplier = new QuantityRuleApplier();
+
         return [
-            'id' => $choice->getId(),
-            'label' => $choice->getLabel(),
-            'description' => $choice->getDescription(),
-            'productId' => $choice->getProductId(),
-            'isDefault' => $choice->isDefault(),
-            'allowQuantity' => $choice->isAllowQuantity(),
-            'forcedQuantity' => $choice->getForcedQuantity(),
-            'displayConditions' => $choice->getDisplayConditions(),
+            'id' => $choice->id,
+            'label' => $choice->label,
+            'description' => $choice->description,
+            'productId' => $choice->productId,
+            'isDefault' => $choice->isDefault,
+            'displayConditions' => $choice->displayConditions,
+            'quantityRule' => $choice->quantityRule,
             'product' => $productInfo,
             'variants' => $variants,
             'combinations' => $combinations,
-            'quantity' => null !== $choice->getForcedQuantity() ? $choice->getForcedQuantity() : 1,
-            'stepId' => $choice->getStep()->getId(),
-            'stepLabel' => $choice->getStep()->getLabel(),
-            'stepPosition' => $choice->getStep()->getPosition(),
+            'quantity' => $quantityRuleApplier->resolveQuantity(QuantityRule::fromArray($choice->quantityRule), [], $choice->quantityRule['offset']),
+            'stepId' => $step->id,
+            'stepLabel' => $step->label,
+            'stepPosition' => $step->position,
         ];
     }
 
