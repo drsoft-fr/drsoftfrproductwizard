@@ -43,6 +43,13 @@ class Step
     private $label = '';
 
     /**
+     * @var string|null $description
+     *
+     * @ORM\Column(name="description", type="text", nullable=true)
+     */
+    private ?string $description = null;
+
+    /**
      * @var Configurator $configurator
      *
      * @ORM\ManyToOne(targetEntity="DrSoftFr\Module\ProductWizard\Entity\Configurator", inversedBy="steps")
@@ -159,6 +166,7 @@ class Step
             'date_add' => $this->getDateAdd(),
             'date_upd' => $this->getDateUpd(),
             'label' => $this->getLabel(),
+            'description' => $this->getDescription(),
             'position' => $this->getPosition(),
             'reduction' => $this->getReduction(),
             'reduction_tax' => $this->isReductionTax(),
@@ -212,6 +220,17 @@ class Step
     public function setLabel(string $label): Step
     {
         $this->label = $label;
+        return $this;
+    }
+
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(?string $description): Step
+    {
+        $this->description = $description;
         return $this;
     }
 

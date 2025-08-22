@@ -43,6 +43,13 @@ class Configurator
     private $name = '';
 
     /**
+     * @var string|null $description
+     *
+     * @ORM\Column(name="description", type="text", nullable=true)
+     */
+    private ?string $description = null;
+
+    /**
      * @var float $reduction
      *
      * @ORM\Column(name="reduction", type="float", nullable=false, options={"default":0})
@@ -144,6 +151,7 @@ class Configurator
             'date_add' => $this->getDateAdd(),
             'date_upd' => $this->getDateUpd(),
             'name' => $this->getName(),
+            'description' => $this->getDescription(),
             'reduction' => $this->getReduction(),
             'reduction_tax' => $this->isReductionTax(),
             'reduction_type' => $this->getReductionType(),
@@ -196,6 +204,17 @@ class Configurator
     public function setName(string $name): Configurator
     {
         $this->name = $name;
+        return $this;
+    }
+
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(?string $description): Configurator
+    {
+        $this->description = $description;
         return $this;
     }
 

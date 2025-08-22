@@ -9,6 +9,7 @@ final class StepDto
     public function __construct(
         public ?string $id = null, // Peut être virtual-XXX
         public string  $label = '',
+        public ?string $description = null,
         public int     $position = 0,
         public bool    $active = true,
         public float   $reduction = 0.0,
@@ -31,6 +32,7 @@ final class StepDto
         return new self(
             $step->getId(),
             $step->getLabel(),
+            $step->getDescription(),
             $step->getPosition(),
             $step->isActive(),
             $step->getReduction(),

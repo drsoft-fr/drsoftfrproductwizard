@@ -2,6 +2,7 @@ CREATE TABLE IF NOT EXISTS `_DB_PREFIX_drsoft_fr_product_wizard_configurator`
 (
     `id_configurator` INT(10) UNSIGNED              NOT NULL AUTO_INCREMENT,
     `name`            VARCHAR(255)                  NOT NULL,
+    `description`     TEXT                                   DEFAULT NULL,
     `reduction`       DECIMAL(20, 6)                NOT NULL DEFAULT 0,
     `reduction_tax`   TINYINT(1)                    NOT NULL DEFAULT 1,
     `reduction_type`  ENUM ('amount', 'percentage') NOT NULL DEFAULT 'amount',
@@ -18,6 +19,7 @@ CREATE TABLE IF NOT EXISTS `_DB_PREFIX_drsoft_fr_product_wizard_step`
     `id_step`         INT(10) UNSIGNED              NOT NULL AUTO_INCREMENT,
     `id_configurator` INT(10) UNSIGNED              NOT NULL,
     `label`           VARCHAR(255)                  NOT NULL,
+    `description`     TEXT                                   DEFAULT NULL,
     `reduction`       DECIMAL(20, 6)                NOT NULL DEFAULT 0,
     `reduction_tax`   TINYINT(1)                    NOT NULL DEFAULT 1,
     `reduction_type`  ENUM ('amount', 'percentage') NOT NULL DEFAULT 'amount',
@@ -39,6 +41,7 @@ CREATE TABLE IF NOT EXISTS `_DB_PREFIX_drsoft_fr_product_wizard_product_choice`
     `id_product_choice`  INT(10) UNSIGNED              NOT NULL AUTO_INCREMENT,
     `id_step`            INT(10) UNSIGNED              NOT NULL,
     `label`              VARCHAR(255)                  NOT NULL,
+    `description`        TEXT                                   DEFAULT NULL,
     `id_product`         INT(10) UNSIGNED                       DEFAULT NULL,
     `is_default`         TINYINT(1) UNSIGNED           NOT NULL DEFAULT 0,
     `display_conditions` JSON                                   DEFAULT NULL,

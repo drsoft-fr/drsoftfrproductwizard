@@ -7,14 +7,15 @@ use DrSoftFr\Module\ProductWizard\Entity\Configurator;
 final class ConfiguratorDto
 {
     public function __construct(
-        public ?int   $id = null,
-        public string $name = '',
-        public bool   $active = true,
-        public float  $reduction = 0.0,
-        public bool   $reductionTax = true,
-        public string $reductionType = 'amount',
+        public ?int    $id = null,
+        public string  $name = '',
+        public ?string $description = null,
+        public bool    $active = true,
+        public float   $reduction = 0.0,
+        public bool    $reductionTax = true,
+        public string  $reductionType = 'amount',
         /** @var StepDto[] */
-        public array  $steps = []
+        public array   $steps = []
     )
     {
     }
@@ -30,6 +31,7 @@ final class ConfiguratorDto
         return new self(
             $configurator->getId(),
             $configurator->getName(),
+            $configurator->getDescription(),
             $configurator->isActive(),
             $configurator->getReduction(),
             $configurator->isReductionTax(),

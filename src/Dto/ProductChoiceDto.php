@@ -10,6 +10,7 @@ final class ProductChoiceDto
     public function __construct(
         public ?string $id = null, // Peut être virtual-XXX
         public string  $label = '',
+        public ?string $description = null,
         public ?int    $productId = null,
         public bool    $isDefault = false,
         public bool    $active = true,
@@ -37,6 +38,7 @@ final class ProductChoiceDto
         return new self(
             $productChoice->getId(),
             $productChoice->getLabel(),
+            $productChoice->getDescription(),
             $productChoice->getProductId(),
             $productChoice->isDefault(),
             $productChoice->isActive(),

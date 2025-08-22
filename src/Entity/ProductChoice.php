@@ -44,6 +44,13 @@ class ProductChoice
     private $label = '';
 
     /**
+     * @var string|null $description
+     *
+     * @ORM\Column(name="description", type="text", nullable=true)
+     */
+    private ?string $description = null;
+
+    /**
      * @var ?int $productId
      *
      * @ORM\Column(name="id_product", type="integer", length=10, nullable=true, options={"unsigned"=true})
@@ -136,6 +143,7 @@ class ProductChoice
             'date_add' => $this->getDateAdd(),
             'date_upd' => $this->getDateUpd(),
             'label' => $this->getLabel(),
+            'description' => $this->getDescription(),
             'product_id' => $this->getProductId(),
             'is_default' => $this->isDefault(),
             'reduction' => $this->getReduction(),
@@ -191,6 +199,17 @@ class ProductChoice
     public function setLabel(string $label): ProductChoice
     {
         $this->label = $label;
+        return $this;
+    }
+
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(?string $description): ProductChoice
+    {
+        $this->description = $description;
         return $this;
     }
 
