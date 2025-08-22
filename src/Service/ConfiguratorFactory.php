@@ -40,6 +40,7 @@ final class ConfiguratorFactory
 
         $configurator->setName($dto->name);
         $configurator->setActive($dto->active);
+        $configurator->setDescription($dto->description);
         $configurator->setReduction($dto->reduction);
         $configurator->setReductionTax($dto->reductionTax);
         $configurator->setReductionType($dto->reductionType);
@@ -79,6 +80,7 @@ final class ConfiguratorFactory
 
             $step->setConfigurator($configurator);
             $step->setLabel($stepDto->label);
+            $step->setDescription($stepDto->description);
             $step->setPosition($stepDto->position);
             $step->setActive($stepDto->active);
             $step->setReduction($stepDto->reduction);
@@ -128,6 +130,7 @@ final class ConfiguratorFactory
 
             $choice->setStep($step);
             $choice->setLabel($choiceDto->label);
+            $choice->setDescription($choiceDto->description);
             $choice->setProductId($choiceDto->productId);
             $choice->setIsDefault($choiceDto->isDefault);
             $choice->setActive($choiceDto->active);
