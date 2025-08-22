@@ -19,6 +19,7 @@ final class ConfiguratorNormalizer
         $dto = new ConfiguratorDto();
         $dto->id = $data['id'] ?? null;
         $dto->name = $data['name'] ?? '';
+        $dto->description = false === empty($data['description']) ? $this->sanitizeHtml($data['description']) : null;
         $dto->active = (bool)($data['active'] ?? true);
         $dto->reduction = (float)($data['reduction'] ?? 0);
         $dto->reductionTax = (bool)($data['reduction_tax'] ?? true);
@@ -28,6 +29,7 @@ final class ConfiguratorNormalizer
             $stepDto = new StepDto();
             $stepDto->id = $stepData['id'] ?? null;
             $stepDto->label = $stepData['label'] ?? '';
+            $stepDto->description = false === empty($stepData['description']) ? $this->sanitizeHtml($stepData['description']) : null;
             $stepDto->position = (int)($stepData['position'] ?? 0);
             $stepDto->active = (bool)($stepData['active'] ?? true);
             $stepDto->reduction = (float)($stepData['reduction'] ?? 0);
@@ -38,6 +40,7 @@ final class ConfiguratorNormalizer
                 $choiceDto = new ProductChoiceDto();
                 $choiceDto->id = $choiceData['id'] ?? null;
                 $choiceDto->label = $choiceData['label'] ?? '';
+                $choiceDto->description = false === empty($choiceData['description']) ? $this->sanitizeHtml($choiceData['description']) : null;
                 $choiceDto->productId = false === empty($choiceData['product_id']) ? (int)$choiceData['product_id'] : null;
                 $choiceDto->isDefault = (bool)($choiceData['is_default'] ?? false);
                 $choiceDto->active = (bool)($choiceData['active'] ?? true);
@@ -98,5 +101,23 @@ final class ConfiguratorNormalizer
                 ], $s->productChoices),
             ], $dto->steps),
         ];
+    }
+
+    /**
+     * Sanitizes the given HTML input by removing or neutralizing potentially harmful content.
+     *
+     * @param string|null $value The HTML input to sanitize. Can be null or an empty string.
+     *
+     * @return string|null The sanitized HTML string, or null if the input was null or an empty string.
+     */
+    private function sanitizeHtml(?string $value): ?string
+    {
+        if (true === empty($value)) {
+            return null;
+        }
+
+        $clean = \Tools::purifyHTML((string)$value, null, true);
+
+        return false === empty($clean) ? $clean : null;
     }
 }
