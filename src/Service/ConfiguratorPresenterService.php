@@ -64,6 +64,7 @@ final class ConfiguratorPresenterService
             'configurator' => [
                 'id' => $configurator->getId(),
                 'name' => $configurator->getName(),
+                'description' => $configurator->getDescription(),
                 'steps' => $steps,
             ],
         ];
@@ -97,6 +98,7 @@ final class ConfiguratorPresenterService
         return [
             'id' => $step->getId(),
             'label' => $step->getLabel(),
+            'description' => $step->getDescription(),
             'choices' => $choices,
             'position' => $step->getPosition(),
         ];
@@ -155,6 +157,7 @@ final class ConfiguratorPresenterService
         return [
             'id' => $choice->getId(),
             'label' => $choice->getLabel(),
+            'description' => $choice->getDescription(),
             'productId' => $choice->getProductId(),
             'isDefault' => $choice->isDefault(),
             'allowQuantity' => $choice->isAllowQuantity(),
