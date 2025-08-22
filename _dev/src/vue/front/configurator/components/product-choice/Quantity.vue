@@ -22,7 +22,7 @@ function decrement() {
 
 <template>
   <div class="product-quantity mt-3">
-    <template v-if="true === choice.allowQuantity">
+    <template v-if="false === choice.quantityRule.locked">
       <label for="quantity-input" class="form-label">{{
         $t('Quantity:')
       }}</label>
