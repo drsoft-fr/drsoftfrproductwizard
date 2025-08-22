@@ -1,5 +1,6 @@
 <script setup>
 import Action from '@/vue/front/configurator/components/product-choice/Action.vue'
+import Quantity from '@/vue/front/configurator/components/product-choice/Quantity.vue'
 
 const props = defineProps({
   choice: { type: Object, required: true },
@@ -19,6 +20,8 @@ const props = defineProps({
         v-html="choice.description"
         class="mt-3"
       ></div>
+
+      <Quantity :choice />
 
       <Action @click="$emit('select', choice)" />
     </div>
