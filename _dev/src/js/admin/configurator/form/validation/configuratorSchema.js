@@ -15,6 +15,7 @@ const ProductChoiceSchema = z
   .object({
     id: z.union([z.number().int(), z.string().min(1)]),
     label: z.string().trim().min(1, 'The wording of a choice is mandatory.'),
+    description: z.string().optional().nullable(),
     active: z.boolean(),
     is_default: z.boolean().optional().default(false),
     product_id: z
@@ -35,6 +36,7 @@ const StepSchema = z
   .object({
     id: z.union([z.number().int(), z.string().min(1)]),
     label: z.string().trim().min(1, 'The wording is mandatory.'),
+    description: z.string().optional().nullable(),
     position: z.number().int().nonnegative({ message: 'Invalid position.' }),
     active: z.boolean(),
     reduction: z.number().nonnegative().optional().default(0),
@@ -52,6 +54,7 @@ export const ConfiguratorSchema = z
   .object({
     id: z.union([z.number().int().nullable(), z.null()]).nullable(),
     name: z.string().trim().min(1, 'The name of the scenario is mandatory.'),
+    description: z.string().optional().nullable(),
     active: z.boolean(),
     reduction: z.number().nonnegative().optional().default(0),
     reduction_tax: z.boolean().optional().default(true),
