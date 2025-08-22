@@ -6,7 +6,6 @@ use DrSoftFr\Module\ProductWizard\Dto\ConfiguratorDto;
 use DrSoftFr\Module\ProductWizard\Dto\ProductChoiceDto;
 use DrSoftFr\Module\ProductWizard\Dto\StepDto;
 use DrSoftFr\Module\ProductWizard\Exception\Configurator\ConfiguratorConstraintException;
-use DrSoftFr\Module\ProductWizard\Exception\DisplayCondition\DisplayConditionConstraintException;
 use DrSoftFr\Module\ProductWizard\Exception\ProductChoice\ProductChoiceConstraintException;
 use DrSoftFr\Module\ProductWizard\Exception\Step\StepConstraintException;
 use DrSoftFr\Module\ProductWizard\ValueObject\ProductChoice\QuantityRule;
@@ -22,7 +21,6 @@ final class ConfiguratorValidatorService
      * @return void
      *
      * @throws ConfiguratorConstraintException If the configurator data does not meet the required constraints.
-     * @throws DisplayConditionConstraintException
      * @throws ProductChoiceConstraintException
      * @throws StepConstraintException
      */
@@ -41,7 +39,6 @@ final class ConfiguratorValidatorService
      * @return void
      *
      * @throws ConfiguratorConstraintException If the name is empty or invalid.
-     * @throws DisplayConditionConstraintException
      * @throws ProductChoiceConstraintException
      * @throws StepConstraintException
      * @throws Exception
@@ -74,7 +71,6 @@ final class ConfiguratorValidatorService
      * @return void
      *
      * @throws ConfiguratorConstraintException If the steps array is empty.
-     * @throws DisplayConditionConstraintException
      * @throws ProductChoiceConstraintException
      * @throws StepConstraintException If the steps' positions are not continuous starting from 0.
      */
@@ -132,7 +128,6 @@ final class ConfiguratorValidatorService
      *
      * @return void Throws StepConstraintException if validation fails.
      *
-     * @throws DisplayConditionConstraintException
      * @throws ProductChoiceConstraintException
      * @throws StepConstraintException
      * @throws Exception
@@ -180,7 +175,6 @@ final class ConfiguratorValidatorService
      *
      * @throws StepConstraintException If there are no product choices provided.
      * @throws ProductChoiceConstraintException If more than one choice is marked as the default.
-     * @throws DisplayConditionConstraintException
      */
     private function validateChoices(
         array           $choices,
@@ -232,7 +226,6 @@ final class ConfiguratorValidatorService
      * @return void Throws ProductChoiceConstraintException if validation fails.
      *
      * @throws ProductChoiceConstraintException
-     * @throws DisplayConditionConstraintException
      * @throws Exception
      */
     private function validateChoice(
@@ -509,9 +502,9 @@ final class ConfiguratorValidatorService
      * @param StepDto $stepDto The current step data being evaluated.
      * @param ConfiguratorDto $configuratorDto The configurator data containing all steps and choices.
      *
-     * @return void Throws DisplayConditionConstraintException if any condition validation fails.
+     * @return void Throws ProductChoiceConstraintException if any condition validation fails.
      *
-     * @throws DisplayConditionConstraintException
+     * @throws ProductChoiceConstraintException
      */
     private function validateDisplayConditions(
         array           $conditions,
@@ -538,12 +531,14 @@ final class ConfiguratorValidatorService
      * reference step and choice exist and that the reference step precedes the current step.
      *
      * @param int $dcIdx The index of the display condition being validated.
+     * @param array $condition The display condition configuration containing 'step' and 'choice' keys.
      * @param StepDto $stepDto The current step data being evaluated.
      * @param ConfiguratorDto $configuratorDto The configurator data containing all steps and choices.
      *
-     * @return void Throws DisplayConditionConstraintException if validation fails.
+     * @return void Throws ProductChoiceConstraintException if validation fails.
      *
-     * @throws DisplayConditionConstraintException
+     * @throws ProductChoiceConstraintException If the referenced step does not exist, if the step is not a previous step,
+     *      or if the referenced choice does not exist in the target step.
      */
     private function validateDisplayCondition(
         int             $dcIdx,
@@ -552,15 +547,8 @@ final class ConfiguratorValidatorService
         ConfiguratorDto $configuratorDto
     ): void
     {
-        $refStepId = $condition['step'] ?? null;
-        $refChoiceId = $condition['choice'] ?? null;
-
-        if (true === empty($refStepId)) {
-            throw new DisplayConditionConstraintException(
-                sprintf('Step “%s”: Condition #%d refers to a non-existent step.', $stepDto->label, $dcIdx + 1),
-                DisplayConditionConstraintException::INVALID_STEP
-            );
-        }
+        $refStepId = $condition['step'];
+        $refChoiceId = $condition['choice'];
 
         $refStep = null;
 
@@ -575,16 +563,16 @@ final class ConfiguratorValidatorService
         }
 
         if (null === $refStep) {
-            throw new DisplayConditionConstraintException(
+            throw new ProductChoiceConstraintException(
                 sprintf('Step “%s”: Condition #%d refers to a non-existent step.', $stepDto->label, $dcIdx + 1),
-                DisplayConditionConstraintException::INVALID_STEP
+                ProductChoiceConstraintException::INVALID_DISPLAY_CONDITION_STEP
             );
         }
 
         if ((int)$refStep->position >= (int)$stepDto->position) {
-            throw new DisplayConditionConstraintException(
+            throw new ProductChoiceConstraintException(
                 sprintf('Step “%s”: Condition #%d must reference a previous step.', $stepDto->label, $dcIdx + 1),
-                DisplayConditionConstraintException::INVALID_STEP
+                ProductChoiceConstraintException::INVALID_DISPLAY_CONDITION_STEP
             );
         }
 
@@ -602,9 +590,9 @@ final class ConfiguratorValidatorService
         }
 
         if (null === $refChoice) {
-            throw new DisplayConditionConstraintException(
+            throw new ProductChoiceConstraintException(
                 sprintf('Step “%s”: Condition #%d references a choice that does not exist in the target step.', $stepDto->label, $dcIdx + 1),
-                DisplayConditionConstraintException::INVALID_CHOICE
+                ProductChoiceConstraintException::INVALID_DISPLAY_CONDITION_CHOICE
             );
         }
     }

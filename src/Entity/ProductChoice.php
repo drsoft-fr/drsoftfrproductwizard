@@ -6,6 +6,8 @@ use DateTime;
 use DateTimeInterface;
 use Doctrine\ORM\Mapping as ORM;
 use DrSoftFr\Module\ProductWizard\Config as Configuration;
+use DrSoftFr\Module\ProductWizard\Exception\ProductChoice\ProductChoiceConstraintException;
+use DrSoftFr\Module\ProductWizard\ValueObject\ProductChoice\DisplayCondition;
 use DrSoftFr\Module\ProductWizard\ValueObject\ProductChoice\QuantityRule;
 use DrSoftFr\PrestaShopModuleHelper\Traits\ClassHydrateTrait;
 
@@ -87,7 +89,7 @@ class ProductChoice
     /**
      * @ORM\Column(name="display_conditions", type="json", nullable=true)
      */
-    private $displayConditions = [];
+    private array $displayConditions = [];
 
     /**
      * @ORM\Column(name="quantity_rule", type="json", nullable=true)
@@ -115,9 +117,17 @@ class ProductChoice
 
     /**
      * @return array
+     *
+     * @throws ProductChoiceConstraintException
      */
     public function toArray(): array
     {
+        $arr = [];
+
+        foreach ($this->getDisplayConditions() as $condition) {
+            $arr[] = $condition->getValue();
+        }
+
         return [
             'id' => $this->getId(),
             'id_product_choice' => $this->getId(),
@@ -131,7 +141,7 @@ class ProductChoice
             'reduction' => $this->getReduction(),
             'reduction_tax' => $this->isReductionTax(),
             'reduction_type' => $this->getReductionType(),
-            'display_conditions' => $this->getDisplayConditions(),
+            'display_conditions' => $arr,
             'quantity_rule' => $this->getQuantityRule()->getValue(),
         ];
     }
@@ -217,38 +227,43 @@ class ProductChoice
         return $this;
     }
 
+    /**
+     * @return DisplayCondition[]
+     *
+     * @throws ProductChoiceConstraintException
+     */
     public function getDisplayConditions(): array
     {
-        return $this->displayConditions;
+        $arr = [];
+
+        foreach ($this->displayConditions as $condition) {
+            $arr[] = DisplayCondition::fromArray($condition ?: []);
+        }
+
+        return $arr;
     }
 
+    /**
+     * @param DisplayCondition[] $displayConditions
+     *
+     * @return $this
+     */
     public function setDisplayConditions(array $displayConditions): ProductChoice
     {
         $conditionsMap = [];
         $uniqueConditions = [];
 
-        /** @var array $condition */
         foreach ($displayConditions as $condition) {
-            if (false === isset(
-                    $condition['step'],
-                    $condition['choice']
-                )) {
-                continue;
-            }
+            $value = $condition->getValue();
 
-            $arr = [
-                'choice' => (int)$condition['choice'],
-                'step' => (int)$condition['step'],
-            ];
-
-            $key = $arr['step'] . '_' . $arr['choice'];
+            $key = $value['step'] . '_' . $value['choice'];
 
             if (isset($conditionsMap[$key])) {
                 continue;
             }
 
             $conditionsMap[$key] = true;
-            $uniqueConditions[] = $arr;
+            $uniqueConditions[] = $value;
         }
 
         $this->displayConditions = $uniqueConditions;

@@ -18,4 +18,6 @@ class ProductChoiceConstraintException extends ProductChoiceException
     public const INVALID_QUANTITY_RULE_MIN = 9;
     public const INVALID_QUANTITY_RULE_MAX = 10;
     public const INVALID_QUANTITY_RULE_MIN_MAX_LOGIC = 11;
+    public const INVALID_DISPLAY_CONDITION_STEP = 12;
+    public const INVALID_DISPLAY_CONDITION_CHOICE = 13;
 }

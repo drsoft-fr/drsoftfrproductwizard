@@ -3,6 +3,7 @@
 namespace DrSoftFr\Module\ProductWizard\Dto;
 
 use DrSoftFr\Module\ProductWizard\Entity\ProductChoice;
+use DrSoftFr\Module\ProductWizard\Exception\ProductChoice\ProductChoiceConstraintException;
 
 final class ProductChoiceDto
 {
@@ -15,19 +16,22 @@ final class ProductChoiceDto
         public float   $reduction = 0.0,
         public bool    $reductionTax = true,
         public string  $reductionType = 'amount',
-        /** @var DisplayConditionDto[] */
+        /** @var array<int, array{step:int, choice:int}> */
         public array   $displayConditions = [],
         public array   $quantityRule = [],
     )
     {
     }
 
+    /**
+     * @throws ProductChoiceConstraintException
+     */
     public static function fromEntity(ProductChoice $productChoice): self
     {
         $arr = [];
 
         foreach ($productChoice->getDisplayConditions() as $displayCondition) {
-            $arr[] = DisplayConditionDto::fromArray($displayCondition);
+            $arr[] = $displayCondition->getValue();
         }
 
         return new self(

@@ -3,13 +3,17 @@
 namespace DrSoftFr\Module\ProductWizard\Normalizer;
 
 use DrSoftFr\Module\ProductWizard\Dto\ConfiguratorDto;
-use DrSoftFr\Module\ProductWizard\Dto\DisplayConditionDto;
 use DrSoftFr\Module\ProductWizard\Dto\StepDto;
 use DrSoftFr\Module\ProductWizard\Dto\ProductChoiceDto;
+use DrSoftFr\Module\ProductWizard\Exception\ProductChoice\ProductChoiceConstraintException;
+use DrSoftFr\Module\ProductWizard\ValueObject\ProductChoice\DisplayCondition;
 use DrSoftFr\Module\ProductWizard\ValueObject\ProductChoice\QuantityRule;
 
 final class ConfiguratorNormalizer
 {
+    /**
+     * @throws ProductChoiceConstraintException
+     */
     public function denormalize(array $data): ConfiguratorDto
     {
         $dto = new ConfiguratorDto();
@@ -48,11 +52,7 @@ final class ConfiguratorNormalizer
                     ->getValue();
 
                 foreach ($choiceData['display_conditions'] ?? [] as $dcData) {
-                    $dcDto = new DisplayConditionDto();
-                    $dcDto->step = $dcData['step'] ?? null;
-                    $dcDto->choice = $dcData['choice'] ?? null;
-
-                    $choiceDto->displayConditions[] = $dcDto;
+                    $choiceDto->displayConditions[] = DisplayCondition::fromArray($dcData)->getValue();
                 }
 
                 $stepDto->productChoices[] = $choiceDto;
@@ -91,10 +91,7 @@ final class ConfiguratorNormalizer
                     'reduction_tax' => $c->reductionTax,
                     'reduction_type' => $c->reductionType,
                     'quantity_rule' => $c->quantityRule,
-                    'display_conditions' => array_map(fn(DisplayConditionDto $dc) => [
-                        'step' => $dc->step,
-                        'choice' => $dc->choice,
-                    ], $c->displayConditions)
+                    'display_conditions' => $c->displayConditions,
                 ], $s->productChoices),
             ], $dto->steps),
         ];
