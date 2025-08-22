@@ -8,11 +8,19 @@ const props = defineProps({
 const $t = inject('$t')
 
 function increment() {
+  const max = props.choice.quantityRule.max ? props.choice.quantityRule.max : 1
+
+  if (max <= props.choice.quantity) {
+    return
+  }
+
   props.choice.quantity++
 }
 
 function decrement() {
-  if (1 >= props.choice.quantity) {
+  const min = props.choice.quantityRule.min ? props.choice.quantityRule.min : 1
+
+  if (min >= props.choice.quantity) {
     return
   }
 
@@ -40,7 +48,8 @@ function decrement() {
           id="quantity-input"
           class="form-control"
           v-model.number="choice.quantity"
-          min="1"
+          :min="choice.quantityRule.min ? choice.quantityRule.min : 1"
+          :max="choice.quantityRule.max ? choice.quantityRule.max : null"
         />
         <button
           type="button"
