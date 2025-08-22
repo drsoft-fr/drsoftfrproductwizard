@@ -69,6 +69,7 @@ final class ConfiguratorNormalizer
         return [
             'id' => $dto->id,
             'name' => $dto->name,
+            'description' => $dto->description,
             'active' => $dto->active,
             'reduction' => $dto->reduction,
             'reduction_tax' => $dto->reductionTax,
@@ -76,6 +77,7 @@ final class ConfiguratorNormalizer
             'steps' => array_map(fn(StepDto $s) => [
                 'id' => $s->id,
                 'label' => $s->label,
+                'description' => $s->description,
                 'position' => $s->position,
                 'active' => $s->active,
                 'reduction' => $s->reduction,
@@ -84,6 +86,7 @@ final class ConfiguratorNormalizer
                 'product_choices' => array_map(fn(ProductChoiceDto $c) => [
                     'id' => $c->id,
                     'label' => $c->label,
+                    'description' => $c->description,
                     'product_id' => $c->productId,
                     'is_default' => $c->isDefault,
                     'active' => $c->active,
