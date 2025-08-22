@@ -112,7 +112,7 @@ final class ConfiguratorNormalizer
      */
     private function sanitizeHtml(?string $value): ?string
     {
-        if (true === empty($value)) {
+        if (true === empty($value) || '<p></p>' === $value) {
             return null;
         }
 
