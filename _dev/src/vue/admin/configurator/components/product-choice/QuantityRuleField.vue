@@ -11,7 +11,10 @@ const props = defineProps({
 const $t = inject('$t')
 const store = useConfiguratorStore()
 
-const { isVirtual } = useQuantityRule(props.stepId, props.productChoiceId)
+const { availableSteps, getAvailableChoices, isVirtual } = useQuantityRule(
+  props.stepId,
+  props.productChoiceId,
+)
 
 const rule = computed({
   get() {
@@ -41,30 +44,15 @@ const rule = computed({
   },
 })
 
-const previousSteps = computed(() => {
-  const currentStep = store.getStep(props.stepId)
-  const pos = Number(currentStep?.position ?? 0)
-
-  // Use existing getter to filter previous steps if available; fallback manual filter
-  return Array.isArray(store.steps)
-    ? store.steps.filter((s) => Number(s.position) < pos)
-    : []
-})
-
 const stepOptions = computed(() =>
-  previousSteps.value.map((s) => ({
+  availableSteps.value.map((s) => ({
     label: `${s.label} (#${s.id})`,
     value: s.id,
   })),
 )
 
 const getChoicesForStep = (stepId) => {
-  const step = store.steps.find((s) => String(s.id) === String(stepId))
-  const choices = Array.isArray(step?.product_choices)
-    ? step.product_choices
-    : []
-
-  return choices
+  return getAvailableChoices(stepId)
     .filter((c) => c.active)
     .map((c) => ({ label: `${c.label} (#${c.id})`, value: c.id }))
 }
