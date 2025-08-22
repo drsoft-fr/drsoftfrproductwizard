@@ -8,9 +8,11 @@ const props = defineProps({
 const $t = inject('$t')
 
 function increment() {
-  const max = props.choice.quantityRule.max ? props.choice.quantityRule.max : 1
+  const max = props.choice.quantityRule.max
+    ? props.choice.quantityRule.max
+    : null
 
-  if (max <= props.choice.quantity) {
+  if (null !== max && max <= props.choice.quantity) {
     return
   }
 
