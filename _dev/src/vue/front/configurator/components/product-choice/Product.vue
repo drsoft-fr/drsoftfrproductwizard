@@ -25,6 +25,13 @@ const props = defineProps({
       <p class="card-text product-price">
         {{ choice.product.price }}
       </p>
+
+      <div
+        v-if="choice.description"
+        v-html="choice.description"
+        class="mt-3"
+      ></div>
+
       <Quantity :choice />
       <Action @click="$emit('select', choice)" />
     </div>

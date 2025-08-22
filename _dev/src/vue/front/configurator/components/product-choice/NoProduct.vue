@@ -13,6 +13,13 @@ const props = defineProps({
     </div>
     <div class="card-body">
       <h4 class="card-text">{{ choice.label }}</h4>
+
+      <div
+        v-if="choice.description"
+        v-html="choice.description"
+        class="mt-3"
+      ></div>
+
       <Action @click="$emit('select', choice)" />
     </div>
   </div>

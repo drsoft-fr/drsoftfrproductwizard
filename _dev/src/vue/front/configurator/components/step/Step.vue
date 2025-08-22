@@ -75,6 +75,12 @@ provide('selectedChoice', selectedChoice)
     </div>
     <Transition name="height-fade" mode="out-in">
       <div class="step-content" v-show="active">
+        <div
+          v-if="step.description"
+          v-html="step.description"
+          class="my-3"
+        ></div>
+
         <ProductChoices
           v-if="0 < filteredChoices.length"
           :step
