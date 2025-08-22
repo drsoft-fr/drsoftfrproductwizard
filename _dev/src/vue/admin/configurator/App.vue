@@ -111,6 +111,7 @@ const handleSubmit = async () => {
           id: store.id,
           name: store.name,
           active: store.active,
+          description: store.description,
           steps: store.steps,
         },
       }),
