@@ -6,6 +6,7 @@ export const useConfiguratorStore = defineStore('configurator', {
     // Main configurator data
     id: null,
     name: '',
+    description: '',
     active: true,
     reduction: 0,
     reduction_tax: true,
@@ -107,6 +108,7 @@ export const useConfiguratorStore = defineStore('configurator', {
       this.id = data.id || null
       this.name = data.name || ''
       this.active = !!data.active
+      this.description = data.description || ''
       this.steps = data.steps || []
       this.reduction = data.reduction ?? 0
       this.reduction_tax = data.reduction_tax ?? true
@@ -135,6 +137,7 @@ export const useConfiguratorStore = defineStore('configurator', {
       const newStep = {
         id: newStepId,
         label: 'Nouvelle étape',
+        description: '',
         position,
         active: true,
         reduction: 0,
@@ -256,6 +259,7 @@ export const useConfiguratorStore = defineStore('configurator', {
       step.product_choices.push({
         id: newChoiceId,
         label: 'Nouveau choix',
+        description: '',
         active: true,
         is_default: false,
         product_id: null,
