@@ -6,6 +6,7 @@ import { useToast } from 'primevue/usetoast'
 import ConditionList from '@/vue/admin/configurator/components/condition/ConditionList.vue'
 import ProductSearch from '@/vue/admin/configurator/components/product-choice/ProductSearch.vue'
 import QuantityRuleField from '@/vue/admin/configurator/components/product-choice/QuantityRuleField.vue'
+import CoreEditor from '@/vue/admin/configurator/components/core/CoreEditor.vue'
 
 const props = defineProps({
   stepId: { type: [String, Number], required: true },
@@ -147,6 +148,12 @@ const handleConditionChange = (event) => {
         :id="`pc-label-${productChoiceId}`"
       />
     </div>
+
+    <!-- Description -->
+    <CoreEditor
+      :id="`pc-description-${productChoiceId}`"
+      v-model="productChoice.description"
+    />
 
     <!-- Product Search -->
     <div class="mt-3">

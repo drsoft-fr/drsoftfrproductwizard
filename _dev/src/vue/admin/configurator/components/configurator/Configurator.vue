@@ -2,6 +2,7 @@
 import { computed, inject, watch } from 'vue'
 import { useConfiguratorStore } from '@/js/admin/configurator/form/stores/configurator'
 import StepList from '@/vue/admin/configurator/components/step/StepList.vue'
+import CoreEditor from '@/vue/admin/configurator/components/core/CoreEditor.vue'
 
 const checkValidity = inject('checkValidity')
 const $t = inject('$t')
@@ -53,6 +54,10 @@ watch(steps, checkValidity, { deep: true })
             @change="checkValidity"
           />
         </div>
+
+        <!-- Description -->
+        <CoreEditor id="configurator-description" v-model="store.description" />
+
         <div class="d-flex align-items-center mt-3">
           <ToggleSwitch
             inputId="configurator-active"

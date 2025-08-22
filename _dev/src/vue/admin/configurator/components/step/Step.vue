@@ -4,6 +4,7 @@ import { useConfirm } from 'primevue/useconfirm'
 import { useToast } from 'primevue/usetoast'
 import { useConfiguratorStore } from '@/js/admin/configurator/form/stores/configurator'
 import ProductChoiceList from '@/vue/admin/configurator/components/product-choice/ProductChoiceList.vue'
+import CoreEditor from '@/vue/admin/configurator/components/core/CoreEditor.vue'
 
 const props = defineProps({
   stepId: { type: [String, Number], required: true },
@@ -124,6 +125,9 @@ const toggleMenu = (event) => {
       <label :for="`label-${stepId}`">{{ $t('Wording') }}</label>
       <InputText v-model="step.label" required :id="`label-${stepId}`" />
     </div>
+
+    <!-- Description -->
+    <CoreEditor :id="`description-${stepId}`" v-model="step.description" />
 
     <!-- Position -->
     <div class="mt-3 d-flex flex-column gap-2">
