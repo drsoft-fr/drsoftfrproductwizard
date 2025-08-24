@@ -24,7 +24,7 @@ export const QuantityRuleSchema = z
         if (v.offset !== 0) {
           ctx.addIssue({
             code: z.ZodIssueCode.custom,
-            message: 'In NONE mode, offset should be 0.',
+            message: `Step "${ctx.path[1]}" choice "${ctx.path[3]}": In NONE mode, offset should be 0.`,
             path: ['offset'],
           })
         }
@@ -32,7 +32,7 @@ export const QuantityRuleSchema = z
         if (v.min !== null || v.max !== null) {
           ctx.addIssue({
             code: z.ZodIssueCode.custom,
-            message: 'In NONE mode, min/max should not be defined.',
+            message: `Step "${ctx.path[1]}" choice "${ctx.path[3]}": In NONE mode, min/max should not be defined.`,
             path: ['min', 'max'],
           })
         }
@@ -40,15 +40,15 @@ export const QuantityRuleSchema = z
         if (v.sources.length > 0) {
           ctx.addIssue({
             code: z.ZodIssueCode.custom,
-            message: 'In NONE mode, no source should be defined.',
+            message: `Step "${ctx.path[1]}" choice "${ctx.path[3]}": In NONE mode, no source should be defined.`,
             path: ['sources'],
           })
         }
 
-        if (true === v.locked) {
+        if (false === v.locked) {
           ctx.addIssue({
             code: z.ZodIssueCode.custom,
-            message: 'In NONE mode, locked should not be defined.',
+            message: `Step "${ctx.path[1]}" choice "${ctx.path[3]}": In NONE mode, locked should be defined.`,
             path: ['locked'],
           })
         }
@@ -56,7 +56,7 @@ export const QuantityRuleSchema = z
         if (v.round !== 'none') {
           ctx.addIssue({
             code: z.ZodIssueCode.custom,
-            message: 'In NONE mode, round should not be defined.',
+            message: `Step "${ctx.path[1]}" choice "${ctx.path[3]}": In NONE mode, round should not be defined.`,
             path: ['round'],
           })
         }
@@ -66,26 +66,71 @@ export const QuantityRuleSchema = z
         if (v.sources.length > 0) {
           ctx.addIssue({
             code: z.ZodIssueCode.custom,
-            message: 'In FIXED mode, no source should be defined.',
+            message: `Step "${ctx.path[1]}" choice "${ctx.path[3]}": In FIXED mode, no source should be defined.`,
             path: ['sources'],
-          })
-        }
-
-        if (true === v.locked && (v.min !== null || v.max !== null)) {
-          ctx.addIssue({
-            code: z.ZodIssueCode.custom,
-            message:
-              'In FIXED mode, min/max should not be defined when locked.',
-            path: ['min', 'max'],
           })
         }
 
         if (v.round !== 'none') {
           ctx.addIssue({
             code: z.ZodIssueCode.custom,
-            message: 'In FIXED mode, round should not be defined.',
+            message: `Step "${ctx.path[1]}" choice "${ctx.path[3]}": In FIXED mode, round should not be defined.`,
             path: ['round'],
           })
+        }
+
+        if (true === v.locked) {
+          if (v.min !== null || v.max !== null) {
+            ctx.addIssue({
+              code: z.ZodIssueCode.custom,
+              message: `Step "${ctx.path[1]}" choice "${ctx.path[3]}": In FIXED mode, min/max should not be defined when locked.`,
+              path: ['min', 'max'],
+            })
+          }
+
+          if (v.offset < 1) {
+            ctx.addIssue({
+              code: z.ZodIssueCode.custom,
+              message: `Step "${ctx.path[1]}" choice "${ctx.path[3]}": In FIXED mode, offset should be at least 1 when locked.`,
+              path: ['offset'],
+            })
+          }
+        } else {
+          const minQ = v.min
+          const maxQ = v.max
+
+          const hasMin = minQ !== null
+          const hasMax = maxQ !== null
+
+          if (hasMin) {
+            const validMin = Number.isInteger(minQ) && Number(minQ) >= 1
+            if (!validMin) {
+              ctx.addIssue({
+                code: z.ZodIssueCode.custom,
+                message: `Step "${ctx.path[1]}" choice "${ctx.path[3]}": Minimal quantity must be an integer >= 1.`,
+                path: ['min'],
+              })
+            }
+          }
+
+          if (hasMax) {
+            const validMax = Number.isInteger(maxQ) && Number(maxQ) >= 1
+            if (!validMax) {
+              ctx.addIssue({
+                code: z.ZodIssueCode.custom,
+                message: `Step "${ctx.path[1]}" choice "${ctx.path[3]}": Maximal quantity must be an integer >= 1.`,
+                path: ['max'],
+              })
+            }
+          }
+
+          if (hasMin && hasMax && Number(minQ) > Number(maxQ)) {
+            ctx.addIssue({
+              code: z.ZodIssueCode.custom,
+              message: `Step "${ctx.path[1]}" choice "${ctx.path[3]}": Minimal quantity cannot be greater than maximal quantity.`,
+              path: ['min_'],
+            })
+          }
         }
 
         break
@@ -93,7 +138,7 @@ export const QuantityRuleSchema = z
         if (false === v.locked) {
           ctx.addIssue({
             code: z.ZodIssueCode.custom,
-            message: 'In EXPRESSION mode, locked should be defined.',
+            message: `Step "${ctx.path[1]}" choice "${ctx.path[3]}": In EXPRESSION mode, locked should be defined.`,
             path: ['locked'],
           })
         }
@@ -101,7 +146,7 @@ export const QuantityRuleSchema = z
         if (v.sources.length === 0) {
           ctx.addIssue({
             code: z.ZodIssueCode.custom,
-            message: 'In EXPRESSION mode, at least one source is required.',
+            message: `Step "${ctx.path[1]}" choice "${ctx.path[3]}": In EXPRESSION mode, at least one source is required.`,
             path: ['sources'],
           })
         }
@@ -109,7 +154,7 @@ export const QuantityRuleSchema = z
         if (v.min !== null || v.max !== null) {
           ctx.addIssue({
             code: z.ZodIssueCode.custom,
-            message: 'In EXPRESSION mode, min/max should not be defined.',
+            message: `Step "${ctx.path[1]}" choice "${ctx.path[3]}": In EXPRESSION mode, min/max should not be defined.`,
             path: ['min', 'max'],
           })
         }

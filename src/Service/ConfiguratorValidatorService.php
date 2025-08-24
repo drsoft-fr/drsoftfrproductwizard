@@ -348,9 +348,9 @@ final class ConfiguratorValidatorService
             );
         }
 
-        if (true === $qr['locked'] && QuantityRule::MODE_NONE === $qr['mode']) {
+        if (false === $qr['locked'] && QuantityRule::MODE_NONE === $qr['mode']) {
             throw new ProductChoiceConstraintException(
-                sprintf('Step “%s”: Choice “%s”, in NONE mode, locked should not be defined.', $stepDto->label, $dto->label ?: ('#' . ($cIdx + 1))),
+                sprintf('Step “%s”: Choice “%s”, in NONE mode, locked should be defined.', $stepDto->label, $dto->label ?: ('#' . ($cIdx + 1))),
                 ProductChoiceConstraintException::INVALID_QUANTITY_RULE_LOCKED
             );
         }

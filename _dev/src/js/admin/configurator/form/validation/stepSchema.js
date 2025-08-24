@@ -20,3 +20,32 @@ export const StepSchema = z
     is_virtual: z.boolean().optional(),
   })
   .strict()
+  .superRefine((step, ctx) => {
+    // > Validate default choice count
+    const defaultCount = step.product_choices.reduce(
+      (acc, c) => acc + (c.is_default ? 1 : 0),
+      0,
+    )
+
+    if (defaultCount > 1) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: `Step "${step.label}": There can only be one default choice..`,
+        path: ['product_choices', 'default_choice'],
+      })
+    }
+    // < Validate default choice count
+
+    // > Step-level reduction % range
+    if (
+      step.reduction_type === 'percentage' &&
+      (step.reduction < 0 || step.reduction > 100)
+    ) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: `Step "${step.label}": The percentage reduction must be between 0 and 100.`,
+        path: ['reduction'],
+      })
+    }
+    // < Step-level reduction % range
+  })

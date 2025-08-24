@@ -71,7 +71,7 @@ const removeSource = (idx) => {
 const handleChangeMode = (event) => {
   switch (event.value) {
     case 'none':
-      rule.value.locked = false
+      rule.value.locked = true
       rule.value.min = null
       rule.value.max = null
       rule.value.offset = 0

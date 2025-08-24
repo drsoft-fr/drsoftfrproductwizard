@@ -24,3 +24,17 @@ export const ProductChoiceSchema = z
     is_virtual: z.boolean().optional(),
   })
   .strict()
+  .superRefine((choice, ctx) => {
+    // > Reduction % range at choice level
+    if (
+      choice.reduction_type === 'percentage' &&
+      (choice.reduction < 0 || choice.reduction > 100)
+    ) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: `Step "${ctx.path[1]}" choice "${choice.label}": The percentage reduction must be between 0 and 100.`,
+        path: ['reduction'],
+      })
+    }
+    // < Reduction % range at choice level
+  })
