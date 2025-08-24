@@ -268,10 +268,10 @@ export const useConfiguratorStore = defineStore('configurator', {
         reduction_type: 'amount',
         display_conditions: [],
         quantity_rule: {
-          mode: 'none',
+          mode: 'fixed',
           locked: false,
           sources: [],
-          offset: 0,
+          offset: 1,
           min: null,
           max: null,
           round: 'none',
