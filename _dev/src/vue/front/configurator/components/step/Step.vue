@@ -25,14 +25,14 @@ const filteredChoices = computed(() => {
 
     return choice.displayConditions.some((condition) => {
       const selection = selections.value.find(
-        (s) => s.stepId === condition.step,
+        (s) => Number(s.stepId) === Number(condition.step),
       )
 
       if (!selection) {
         return false
       }
 
-      return selection.id === condition.choice
+      return Number(selection.id) === Number(condition.choice)
     })
   })
 })
