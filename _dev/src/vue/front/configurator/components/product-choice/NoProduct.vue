@@ -5,6 +5,8 @@ import Quantity from '@/vue/front/configurator/components/product-choice/Quantit
 const props = defineProps({
   choice: { type: Object, required: true },
 })
+
+const emit = defineEmits(['onSelect'])
 </script>
 
 <template>
@@ -23,7 +25,7 @@ const props = defineProps({
 
       <Quantity :choice />
 
-      <Action @click="$emit('select', choice)" />
+      <Action @click="$emit('onSelect', choice)" />
     </div>
   </div>
 </template>

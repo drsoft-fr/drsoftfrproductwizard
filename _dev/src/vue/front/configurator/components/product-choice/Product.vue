@@ -7,6 +7,8 @@ const props = defineProps({
   noPictureImage: { type: Object, required: true },
   product: { type: Object, required: true },
 })
+
+const emit = defineEmits(['onSelect'])
 </script>
 
 <template>
@@ -33,7 +35,7 @@ const props = defineProps({
       ></div>
 
       <Quantity :choice />
-      <Action @click="$emit('select', choice)" />
+      <Action @click="$emit('onSelect', choice)" />
     </div>
   </div>
 </template>

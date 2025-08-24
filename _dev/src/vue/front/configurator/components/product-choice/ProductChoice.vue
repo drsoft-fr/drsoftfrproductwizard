@@ -20,7 +20,10 @@ const { applyRulesFromStep } = useQuantityRule()
 const selected = ref(false)
 
 const disabled = computed(
-  () => 0 >= props.choice.quantity && 'none' !== props.choice.quantityRule.mode && null !== props.choice.productId,
+  () =>
+    0 >= props.choice.quantity &&
+    'none' !== props.choice.quantityRule.mode &&
+    null !== props.choice.productId,
 )
 
 const { drsoftfrproductwizard } = window?.prestashop?.modules || {
@@ -88,14 +91,9 @@ provide('disabled', disabled)
       :choice
       :noPictureImage
       :product="choice.product"
-      @select="handleSelect"
+      @on-select="handleSelect"
     />
-    <NoProduct
-      v-else
-      :choice
-      :noPictureImage
-      @select="handleSelect"
-    />
+    <NoProduct v-else :choice :noPictureImage @on-select="handleSelect" />
   </div>
 </template>
 
