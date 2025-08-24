@@ -20,7 +20,7 @@ const { applyRulesFromStep } = useQuantityRule()
 const selected = ref(false)
 
 const disabled = computed(
-  () => 0 >= props.choice.quantity && 'none' !== props.choice.quantityRule.mode,
+  () => 0 >= props.choice.quantity && 'none' !== props.choice.quantityRule.mode && null !== props.choice.productId,
 )
 
 const { drsoftfrproductwizard } = window?.prestashop?.modules || {
