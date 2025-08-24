@@ -272,7 +272,7 @@ export const useConfiguratorStore = defineStore('configurator', {
           locked: false,
           sources: [],
           offset: 1,
-          min: null,
+          min: 1,
           max: null,
           round: 'none',
         },
