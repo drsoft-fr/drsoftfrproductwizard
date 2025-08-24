@@ -371,7 +371,7 @@ final class ConfiguratorValidatorService
             );
         }
 
-        if (QuantityRule::MODE_FIXED !== $qr['mode'] && false === $qr['locked']) {
+        if (QuantityRule::MODE_FIXED !== $qr['mode']) {
             return;
         }
 
