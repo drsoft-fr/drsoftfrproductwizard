@@ -15,7 +15,7 @@ const { onSelectedQuantityChanged } = useQuantityRule()
 
 const rule = computed(() => props.choice.quantityRule)
 const locked = computed(() => !!rule.value?.locked)
-const min = computed(() => rule.value?.min ?? 1)
+const min = computed(() => rule.value?.min ?? 0)
 const max = computed(() => rule.value?.max ?? null)
 
 function updateQty(newVal) {
