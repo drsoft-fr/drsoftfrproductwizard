@@ -83,7 +83,6 @@ final class QuantityRule
     {
         return [
             'step' => (int)$s['step'],
-            'choice' => (int)$s['choice'],
             'coeff' => (float)($s['coeff'] ?? self::DEFAULT_COEFF),
         ];
     }
@@ -111,13 +110,12 @@ final class QuantityRule
                 continue;
             }
 
-            if (!isset($item['step'], $item['choice'])) {
+            if (!isset($item['step'])) {
                 continue;
             }
 
             $result[] = [
                 'step' => (int)$item['step'],
-                'choice' => (int)$item['choice'],
                 'coeff' => isset($item['coeff']) ? (float)$item['coeff'] : self::DEFAULT_COEFF,
             ];
         }

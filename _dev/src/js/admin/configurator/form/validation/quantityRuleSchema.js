@@ -8,7 +8,6 @@ export const QuantityRuleSchema = z
       .array(
         z.object({
           step: z.union([z.number().int().positive(), z.string().min(1)]),
-          choice: z.union([z.number().int().positive(), z.string().min(1)]),
           coeff: z.number(),
         }),
       )

@@ -9,9 +9,9 @@ use DrSoftFr\Module\ProductWizard\ValueObject\ProductChoice\QuantityRule;
 final class QuantityRuleApplier
 {
     /**
-     * @param array<int,int|float> $quantitiesByChoiceId ex: [choiceId => qty]
+     * @param array<int,int|float> $quantitiesByStepId ex: [stepId => qty]
      */
-    public function resolveQuantity(QuantityRule $rule, array $quantitiesByChoiceId, int $userQtyFallback = 1): int
+    public function resolveQuantity(QuantityRule $rule, array $quantitiesByStepId, int $userQtyFallback = 1): int
     {
         $rule = $rule->getValue();
 
@@ -25,7 +25,7 @@ final class QuantityRuleApplier
             $sum = 0.0;
 
             foreach ($rule['sources'] as $term) {
-                $srcQty = (float)($quantitiesByChoiceId[$term['choice']] ?? 0);
+                $srcQty = (float)($quantitiesByStepId[$term['step']] ?? 0);
                 $sum += ((float)($term['coeff'] ?? 1.0)) * $srcQty;
             }
             $qty = $sum + (float)$rule['offset'];

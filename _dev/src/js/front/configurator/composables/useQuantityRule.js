@@ -3,7 +3,7 @@ export function useQuantityRule() {
     for (let i = 0; i < steps.length; i++) {
       const list = steps[i].choices || []
 
-      if (false === list.some((c) => c.id === choiceId)) {
+      if (false === list.some((c) => Number(c.id) === Number(choiceId))) {
         continue
       }
 
@@ -13,8 +13,8 @@ export function useQuantityRule() {
     return -1
   }
 
-  const _selectedQty = (selections, choiceId) => {
-    const sel = selections.find((s) => Number(s.id) === Number(choiceId))
+  const _selectedQty = (selections, stepId) => {
+    const sel = selections.find((s) => Number(s.stepId) === Number(stepId))
 
     return sel ? Number(sel.quantity || 0) : 0
   }
@@ -66,10 +66,18 @@ export function useQuantityRule() {
         return rule.offset
       case 'expression':
         // expression: Σ(coeff_i * qty(selected source_i)) + offset
-        const sum = (rule.sources || []).reduce((acc, s) => {
-          const q = _selectedQty(selections, s.choice)
+        const sources = Array.isArray(rule.sources) ? rule.sources : []
+        const sum = sources.reduce((acc, s) => {
+          const coeff = s?.coeff ?? 1
+          const stepId = s?.step
 
-          return acc + (s.coeff ?? 1) * q
+          if (null === stepId) {
+            return acc
+          }
+
+          const q = _selectedQty(selections, stepId)
+
+          return acc + coeff * q
         }, 0)
 
         return _clampAndRound(sum + (rule.offset ?? 0), rule)
@@ -79,9 +87,11 @@ export function useQuantityRule() {
     }
   }
 
-  const applyRulesFromStep = (steps, selections) => {
-    for (const step of steps) {
-      for (const choice of step.choices || []) {
+  const applyRulesFromStep = (steps, selections, idx) => {
+    for (let i = idx + 1; i < steps.length; i++) {
+      const choices = steps[i].choices || []
+
+      for (const choice of choices) {
         const rule = choice.quantityRule || null
 
         if (null === rule) {
@@ -108,7 +118,7 @@ export function useQuantityRule() {
     }
 
     if (k >= 0) {
-      applyRulesFromStep(steps, selections)
+      applyRulesFromStep(steps, selections, k)
     }
   }
 

@@ -17,17 +17,6 @@ export function useQuantityRule(stepId, productChoiceId) {
   const currentStepPosition = computed(() => currentStep.value.position || 0)
 
   /**
-   * Get available choices for a selected step
-   *
-   * @param {String|Number} selectedStepId - The ID of the selected step
-   *
-   * @returns {Array} - Array of available choices
-   */
-  const getAvailableChoices = (selectedStepId) => {
-    return store.getAvailableChoicesForStep(selectedStepId)
-  }
-
-  /**
    * Check if the current product choice is virtual
    */
   const isVirtual = computed(() => {
@@ -42,7 +31,6 @@ export function useQuantityRule(stepId, productChoiceId) {
     currentProductChoice,
     currentStep,
     currentStepPosition,
-    getAvailableChoices,
     isVirtual,
   }
 }

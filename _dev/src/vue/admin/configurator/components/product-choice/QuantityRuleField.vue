@@ -11,7 +11,7 @@ const props = defineProps({
 const $t = inject('$t')
 const store = useConfiguratorStore()
 
-const { availableSteps, getAvailableChoices, isVirtual } = useQuantityRule(
+const { availableSteps, isVirtual } = useQuantityRule(
   props.stepId,
   props.productChoiceId,
 )
@@ -50,12 +50,6 @@ const stepOptions = computed(() =>
     value: s.id,
   })),
 )
-
-const getChoicesForStep = (stepId) => {
-  return getAvailableChoices(stepId)
-    .filter((c) => c.active)
-    .map((c) => ({ label: `${c.label} (#${c.id})`, value: c.id }))
-}
 
 const addSource = () => {
   const r = { ...rule.value }
@@ -226,7 +220,7 @@ const handleChangeMode = (event) => {
           :key="idx"
           class="row g-2 align-items-end mt-2"
         >
-          <div class="col-md-4 d-flex flex-column gap-2">
+          <div class="col-md-6 d-flex flex-column gap-2">
             <label :for="`qr-src-step-${productChoiceId}-${idx}`">{{
               $t('Step')
             }}</label>
@@ -239,20 +233,7 @@ const handleChangeMode = (event) => {
             />
           </div>
 
-          <div class="col-md-4 d-flex flex-column gap-2">
-            <label :for="`qr-src-choice-${productChoiceId}-${idx}`">{{
-              $t('Choice')
-            }}</label>
-            <Dropdown
-              :inputId="`qr-src-choice-${productChoiceId}-${idx}`"
-              v-model="src.choice"
-              :options="getChoicesForStep(src.step)"
-              optionLabel="label"
-              optionValue="value"
-            />
-          </div>
-
-          <div class="col-md-3 d-flex flex-column gap-2">
+          <div class="col-md-5 d-flex flex-column gap-2">
             <label :for="`qr-src-coeff-${productChoiceId}-${idx}`">{{
               $t('Coeff.')
             }}</label>

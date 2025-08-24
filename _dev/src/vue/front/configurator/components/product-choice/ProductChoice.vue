@@ -46,7 +46,7 @@ function handleSelect(choice) {
 
   selections.value = arr
 
-  applyRulesFromStep(steps.value, selections.value)
+  applyRulesFromStep(steps.value, selections.value, stepIndex)
 
   // @TODO recalculer le prix total
 

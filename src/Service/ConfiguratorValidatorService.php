@@ -553,9 +553,8 @@ final class ConfiguratorValidatorService
 
         foreach ($qr['sources'] as $idxSrc => $src) {
             $refStepId = $src['step'] ?? null;
-            $refChoiceId = $src['choice'] ?? null;
 
-            if (empty($refStepId) || empty($refChoiceId)) {
+            if (empty($refStepId)) {
                 throw new ProductChoiceConstraintException(
                     sprintf('Step "%s": Choice "%s" quantity rule source #%d is invalid.', $stepDto->label, $dto->label ?: ('#' . ($cIdx + 1)), $idxSrc + 1),
                     ProductChoiceConstraintException::INVALID_QUANTITY_RULE_SOURCES
@@ -590,38 +589,15 @@ final class ConfiguratorValidatorService
                 );
             }
 
-            // Locate referenced choice
-            $refChoice = null;
-            $choices = is_array($refStep->productChoices) ? $refStep->productChoices : [];
-
-            foreach ($choices as $rc) {
-                if ((string)$rc->id !== (string)$refChoiceId) {
-                    continue;
-                }
-
-                $refChoice = $rc;
-
-                break;
-            }
-
-            if ($refChoice === null) {
-                throw new ProductChoiceConstraintException(
-                    sprintf('Step "%s": Quantity rule source #%d references a choice that does not exist in the target step.', $stepDto->label, $idxSrc + 1),
-                    ProductChoiceConstraintException::INVALID_QUANTITY_RULE_SOURCES
-                );
-            }
-
             // Prevent duplicate (step, choice)
-            $key = $refStepId . '_' . $refChoiceId;
-
-            if (true === isset($seen[$key])) {
+            if (true === isset($seen[$refStepId])) {
                 throw new ProductChoiceConstraintException(
-                    sprintf('Step "%s": Quantity rule has duplicate source (step,choice).', $stepDto->label),
+                    sprintf('Step "%s": Quantity rule has duplicate source (step).', $stepDto->label),
                     ProductChoiceConstraintException::INVALID_QUANTITY_RULE_SOURCES
                 );
             }
 
-            $seen[$key] = true;
+            $seen[$refStepId] = true;
         }
     }
 
