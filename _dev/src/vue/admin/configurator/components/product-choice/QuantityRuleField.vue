@@ -230,6 +230,8 @@ const removeSource = (idx) => {
             <InputNumber
               :inputId="`qr-src-coeff-${productChoiceId}-${idx}`"
               v-model.number="src.coeff"
+              :minFractionDigits="2"
+              :maxFractionDigits="5"
               :min="-999999"
             />
           </div>
