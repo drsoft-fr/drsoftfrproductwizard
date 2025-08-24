@@ -112,12 +112,42 @@ final class ConfiguratorNormalizer
      */
     private function sanitizeHtml(?string $value): ?string
     {
-        if (true === empty($value) || '<p></p>' === $value) {
+        if (null === $value) {
             return null;
         }
 
-        $clean = \Tools::purifyHTML((string)$value, null, true);
+        $raw = trim((string)$value);
 
-        return false === empty($clean) ? $clean : null;
+        // Considers content that does not contain visible text (tags alone, spaces, &nbsp;, etc.) to be “empty.”
+        if ($this->isHtmlVisuallyEmpty($raw)) {
+            return null;
+        }
+
+        $clean = \Tools::purifyHTML($raw, null, true);
+
+        // Revalidate after purification to handle cases such as <p><br></p>, &nbsp;, etc.
+        if ($this->isHtmlVisuallyEmpty($clean)) {
+            return null;
+        }
+
+        return $clean;
+    }
+
+    /**
+     * Indicates whether HTML is visually empty (only tags, spaces, NBSP, or zero-width characters).
+     */
+    private function isHtmlVisuallyEmpty(string $html): bool
+    {
+        if ('' === $html) {
+            return true;
+        }
+
+        // Normalize NBSPs and zero-width characters
+        $normalized = preg_replace('/\x{00A0}|\x{200B}|\x{200C}|\x{200D}|\x{FEFF}|&nbsp;/u', ' ', $html);
+
+        // Remove tags and decode HTML entities to keep only visible text
+        $text = trim(html_entity_decode(strip_tags((string)$normalized), ENT_QUOTES | ENT_HTML5));
+
+        return '' === $text;
     }
 }
