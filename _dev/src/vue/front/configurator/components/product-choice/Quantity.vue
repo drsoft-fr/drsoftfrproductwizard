@@ -1,39 +1,62 @@
 <script setup>
-import { inject, ref } from 'vue'
+import { inject, computed } from 'vue'
+import { useQuantityRule } from '@/js/front/configurator/composables/useQuantityRule.js'
 
 const props = defineProps({
   choice: { type: Object, required: true },
+  isSelected: { type: Boolean, required: true },
 })
 
+const selections = inject('selections')
+const steps = inject('steps')
 const $t = inject('$t')
 
-function increment() {
-  const max = props.choice.quantityRule.max
-    ? props.choice.quantityRule.max
-    : null
+const { onSelectedQuantityChanged } = useQuantityRule()
 
-  if (null !== max && max <= props.choice.quantity) {
-    return
+const rule = computed(() => props.choice.quantityRule)
+const locked = computed(() => !!rule.value?.locked)
+const min = computed(() => rule.value?.min ?? 1)
+const max = computed(() => rule.value?.max ?? null)
+
+function updateQty(newVal) {
+  let v = Number(newVal || 0)
+  if (min.value != null) v = Math.max(min.value, v)
+  if (max.value != null) v = Math.min(max.value, v)
+  props.choice.quantity = v
+
+  if (props.isSelected) {
+    onSelectedQuantityChanged(steps.value, props.choice, selections.value)
   }
-
-  props.choice.quantity++
 }
 
-function decrement() {
-  const min = props.choice.quantityRule.min ? props.choice.quantityRule.min : 1
-
-  if (min >= props.choice.quantity) {
+const increment = () => {
+  if (locked.value) {
     return
   }
 
-  props.choice.quantity--
+  const nxt =
+    max.value !== null
+      ? Math.min(max.value, (props.choice.quantity || 0) + 1)
+      : (props.choice.quantity || 0) + 1
+
+  updateQty(nxt)
+}
+
+const decrement = () => {
+  if (locked.value) {
+    return
+  }
+
+  const nxt = Math.max(min.value ?? 1, (props.choice.quantity || 0) - 1)
+
+  updateQty(nxt)
 }
 </script>
 
 <template>
   <div class="product-quantity mt-3">
-    <template v-if="false === choice.quantityRule.locked">
-      <label for="quantity-input" class="form-label">{{
+    <template v-if="false === locked">
+      <label :for="`pc-${choice.id}__quantity-input`" class="form-label">{{
         $t('Quantity:')
       }}</label>
       <div class="quantity-input-group">
@@ -41,18 +64,21 @@ function decrement() {
           type="button"
           class="btn btn-outline-secondary btn-sm"
           @click="decrement"
-          :disabled="choice.quantity <= 1"
+          :disabled="choice.quantity <= min"
         >
           <i class="fa fa-minus" aria-hidden="true"></i>
         </button>
+
         <input
           type="number"
-          id="quantity-input"
+          :id="`pc-${choice.id}__quantity-input`"
           class="form-control"
-          v-model.number="choice.quantity"
-          :min="choice.quantityRule.min ? choice.quantityRule.min : 1"
-          :max="choice.quantityRule.max ? choice.quantityRule.max : null"
+          :value="choice.quantity"
+          :min="min"
+          :max="max"
+          @input="updateQty($event.target.value)"
         />
+
         <button
           type="button"
           class="btn btn-outline-secondary btn-sm"

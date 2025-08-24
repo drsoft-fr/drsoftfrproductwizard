@@ -13,12 +13,12 @@ final class QuantityRule
     public const ROUND_FLOOR = 'floor';
     public const ROUND_CEIL = 'ceil';
     public const ROUND_ROUND = 'round';
-    private const ALLOWED_MODES = [
+    public const ALLOWED_MODES = [
         self::MODE_NONE,
         self::MODE_FIXED,
         self::MODE_EXPRESSION,
     ];
-    private const ALLOWED_ROUNDS = [
+    public const ALLOWED_ROUNDS = [
         self::ROUND_NONE,
         self::ROUND_FLOOR,
         self::ROUND_CEIL,

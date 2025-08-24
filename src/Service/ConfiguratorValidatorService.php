@@ -279,9 +279,115 @@ final class ConfiguratorValidatorService
 
         $qr = $dto->quantityRule;
 
+        $this->validateQuantityRuleMode($qr, $dto, $cIdx, $stepDto);
+        $this->validateQuantityRuleLocked($qr, $dto, $cIdx, $stepDto);
+        $this->validateQuantityRuleRound($qr, $dto, $cIdx, $stepDto);
         $this->validateQuantityRuleOffset($qr, $dto, $cIdx, $stepDto);
         $this->validateQuantityRuleMinAndMax($qr, $dto, $cIdx, $stepDto);
         $this->validateQuantityRuleSources($qr, $dto, $cIdx, $stepDto, $configuratorDto);
+    }
+
+    /**
+     * Validates the quantity rule mode to ensure it adheres to the allowable modes.
+     *
+     * @param array $qr An array containing quantity rule data, including the mode to be validated.
+     * @param ProductChoiceDto $dto The product choice data transfer object providing context for validation.
+     * @param int $cIdx The index of the current choice in the sequence.
+     * @param StepDto $stepDto The step data transfer object providing additional context for validation.
+     *
+     * @return void
+     *
+     * @throws ProductChoiceConstraintException If the mode is not in the list of allowed quantity rule modes.
+     */
+    private function validateQuantityRuleMode(
+        array            $qr,
+        ProductChoiceDto $dto,
+        int              $cIdx,
+        StepDto          $stepDto
+    ): void
+    {
+        if (false === in_array($qr['mode'], QuantityRule::ALLOWED_MODES)) {
+            throw new ProductChoiceConstraintException(
+                sprintf('Step “%s”: Choice “%s”, invalid mode.', $stepDto->label, $dto->label ?: ('#' . ($cIdx + 1))),
+                ProductChoiceConstraintException::INVALID_QUANTITY_RULE_MODE
+            );
+        }
+    }
+
+    /**
+     * Validates the quantity rule locking constraints for a given choice within a step.
+     *
+     * @param array $qr The quantity rule data for the choice, including 'locked' status and 'mode'.
+     * @param ProductChoiceDto $dto The product choice data transfer object associated with the validation context.
+     * @param int $cIdx The index of the current product choice within the step.
+     * @param StepDto $stepDto The step data transfer object containing context for validation.
+     *
+     * @return void
+     *
+     * @throws ProductChoiceConstraintException If the 'locked' value is not a valid boolean,
+     *                                          or if the 'locked' constraint is invalid based on the 'mode'.
+     */
+    private function validateQuantityRuleLocked(
+        array            $qr,
+        ProductChoiceDto $dto,
+        int              $cIdx,
+        StepDto          $stepDto
+    ): void
+    {
+        if (false === is_bool($qr['locked'])) {
+            throw new ProductChoiceConstraintException(
+                sprintf('Step “%s”: Choice “%s”, is not a valid boolean.', $stepDto->label, $dto->label ?: ('#' . ($cIdx + 1))),
+                ProductChoiceConstraintException::INVALID_QUANTITY_RULE_LOCKED
+            );
+        }
+
+        if (true === $qr['locked'] && QuantityRule::MODE_NONE === $qr['mode']) {
+            throw new ProductChoiceConstraintException(
+                sprintf('Step “%s”: Choice “%s”, in NONE mode, locked should not be defined.', $stepDto->label, $dto->label ?: ('#' . ($cIdx + 1))),
+                ProductChoiceConstraintException::INVALID_QUANTITY_RULE_LOCKED
+            );
+        }
+
+        if (false === $qr['locked'] && QuantityRule::MODE_EXPRESSION === $qr['mode']) {
+            throw new ProductChoiceConstraintException(
+                sprintf('Step “%s”: Choice “%s”, in EXPRESSION mode, locked should be defined.', $stepDto->label, $dto->label ?: ('#' . ($cIdx + 1))),
+                ProductChoiceConstraintException::INVALID_QUANTITY_RULE_LOCKED
+            );
+        }
+    }
+
+    /**
+     * Validates the provided quantity rule round and ensures it meets defined constraints.
+     *
+     * @param array $qr An associative array representing the quantity rule parameters.
+     * @param ProductChoiceDto $dto The product choice data transfer object containing context for validation.
+     * @param int $cIdx The index of the current product choice for context in error messages.
+     * @param StepDto $stepDto The step data transfer object containing the current step's context.
+     *
+     * @return void
+     *
+     * @throws ProductChoiceConstraintException If the quantity rule round is invalid or conflicts with the mode.
+     */
+    private function validateQuantityRuleRound(
+        array            $qr,
+        ProductChoiceDto $dto,
+        int              $cIdx,
+        StepDto          $stepDto
+    ): void
+    {
+        if (false === in_array($qr['round'], QuantityRule::ALLOWED_ROUNDS)) {
+            throw new ProductChoiceConstraintException(
+                sprintf('Step “%s”: Choice “%s”, invalid round.', $stepDto->label, $dto->label ?: ('#' . ($cIdx + 1))),
+                ProductChoiceConstraintException::INVALID_QUANTITY_RULE_ROUND
+            );
+        }
+
+        if (QuantityRule::ROUND_NONE !== $qr['round'] && QuantityRule::MODE_EXPRESSION !== $qr['mode']) {
+            throw new ProductChoiceConstraintException(
+                sprintf('Step “%s”: Choice “%s”, in FIXED or NONE mode, round should be NONE.', $stepDto->label, $dto->label ?: ('#' . ($cIdx + 1))),
+                ProductChoiceConstraintException::INVALID_QUANTITY_RULE_ROUND
+            );
+        }
     }
 
     /**
@@ -305,13 +411,31 @@ final class ConfiguratorValidatorService
         StepDto          $stepDto
     ): void
     {
-        if (true === $qr['locked']) {
-            return;
-        }
-
-        // Quantity selection allowed => validate optional min/max
         $minQ = $qr['min'];
         $maxQ = $qr['max'];
+
+        if (true === $qr['locked'] && (null !== $minQ || null !== $maxQ)) {
+            if (null !== $minQ) {
+                throw new ProductChoiceConstraintException(
+                    sprintf('Step “%s”: Since the quantity is blocked for the choice “%s”, the minimum quantity must be empty.', $stepDto->label, $dto->label ?: ('#' . ($cIdx + 1))),
+                    ProductChoiceConstraintException::INVALID_QUANTITY_RULE_MIN
+                );
+            }
+
+            if (null !== $maxQ) {
+                throw new ProductChoiceConstraintException(
+                    sprintf('Step “%s”: Since the quantity is blocked for the choice “%s”, the maximal quantity must be empty.', $stepDto->label, $dto->label ?: ('#' . ($cIdx + 1))),
+                    ProductChoiceConstraintException::INVALID_QUANTITY_RULE_MAX
+                );
+            }
+        }
+
+        if ('fixed' !== $qr['mode'] && (null !== $minQ || null !== $maxQ)) {
+            throw new ProductChoiceConstraintException(
+                sprintf('Step “%s”: Choice “%s”, the minimum and maximum quantities can only be set in “FIXED” mode.', $stepDto->label, $dto->label ?: ('#' . ($cIdx + 1))),
+                ProductChoiceConstraintException::INVALID_QUANTITY_RULE_MIN_MAX_LOGIC
+            );
+        }
 
         if (null !== $minQ && (!is_int($minQ) || $minQ < 1)) {
             throw new ProductChoiceConstraintException(
@@ -356,6 +480,13 @@ final class ConfiguratorValidatorService
     {
         $minQ = $qr['min'];
         $maxQ = $qr['max'];
+
+        if (QuantityRule::MODE_NONE === $qr['mode'] && 0 !== (int)$qr['offset']) {
+            throw new ProductChoiceConstraintException(
+                sprintf('Step “%s”: The choice “%s” is in NONE mode, but the quantity selection is enabled.', $stepDto->label, $dto->label ?: ('#' . ($cIdx + 1))),
+                ProductChoiceConstraintException::INVALID_QUANTITY_RULE_OFFSET
+            );
+        }
 
         if (null !== $minQ && $minQ > $qr['offset']) {
             throw new ProductChoiceConstraintException(
@@ -404,10 +535,10 @@ final class ConfiguratorValidatorService
         ConfiguratorDto  $configuratorDto
     ): void
     {
-        if ($qr['mode'] === 'fixed' && false === empty($qr['sources'])) {
+        if ($qr['mode'] !== 'expression' && false === empty($qr['sources'])) {
             // Fixed: no sources allowed
             throw new ProductChoiceConstraintException(
-                sprintf('Step "%s": Choice "%s" quantity rule in FIXED mode must not define any sources.', $stepDto->label, $dto->label ?: ('#' . ($cIdx + 1))),
+                sprintf('Step "%s": Choice "%s" quantity rule in FIXED or NONE mode must not define any sources.', $stepDto->label, $dto->label ?: ('#' . ($cIdx + 1))),
                 ProductChoiceConstraintException::INVALID_QUANTITY_RULE_SOURCES
             );
         } elseif ($qr['mode'] === 'expression' && true === empty($qr['sources'])) {

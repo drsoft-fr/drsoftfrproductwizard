@@ -2,6 +2,7 @@
 import { inject, provide, ref, watch } from 'vue'
 import NoProduct from '@/vue/front/configurator/components/product-choice/NoProduct.vue'
 import Product from '@/vue/front/configurator/components/product-choice/Product.vue'
+import { useQuantityRule } from '@/js/front/configurator/composables/useQuantityRule.js'
 
 const props = defineProps({
   step: { type: Object, required: true },
@@ -13,6 +14,8 @@ const configurator = inject('configurator')
 const selections = inject('selections')
 const selectedChoice = inject('selectedChoice')
 const steps = inject('steps')
+
+const { applyRulesFromStep } = useQuantityRule()
 
 const selected = ref(false)
 
@@ -42,6 +45,8 @@ function handleSelect(choice) {
   arr.sort((a, b) => a.stepPosition - b.stepPosition)
 
   selections.value = arr
+
+  applyRulesFromStep(steps.value, selections.value)
 
   // @TODO recalculer le prix total
 
@@ -74,9 +79,16 @@ provide('selected', selected)
       :choice
       :noPictureImage
       :product="choice.product"
+      :is-selected="selected"
       @select="handleSelect"
     />
-    <NoProduct v-else :choice :noPictureImage @select="handleSelect" />
+    <NoProduct
+      v-else
+      :choice
+      :noPictureImage
+      :is-selected="selected"
+      @select="handleSelect"
+    />
   </div>
 </template>
 

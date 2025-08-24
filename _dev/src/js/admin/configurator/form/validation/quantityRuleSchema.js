@@ -20,18 +20,99 @@ export const QuantityRuleSchema = z
   })
   .strict()
   .superRefine((v, ctx) => {
-    if (v.mode === 'fixed' && v.sources.length > 0) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        message: 'In FIXED mode, no source should be defined.',
-        path: ['sources'],
-      })
-    }
-    if (v.mode === 'expression' && v.sources.length === 0) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        message: 'In EXPRESSION mode, at least one source is required.',
-        path: ['sources'],
-      })
+    switch (v.mode) {
+      case 'none':
+        if (v.offset !== 0) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: 'In NONE mode, offset should be 0.',
+            path: ['offset'],
+          })
+        }
+
+        if (v.min !== null || v.max !== null) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: 'In NONE mode, min/max should not be defined.',
+            path: ['min', 'max'],
+          })
+        }
+
+        if (v.sources.length > 0) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: 'In NONE mode, no source should be defined.',
+            path: ['sources'],
+          })
+        }
+
+        if (true === v.locked) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: 'In NONE mode, locked should not be defined.',
+            path: ['locked'],
+          })
+        }
+
+        if (v.round !== 'none') {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: 'In NONE mode, round should not be defined.',
+            path: ['round'],
+          })
+        }
+
+        break
+      case 'fixed':
+        if (v.sources.length > 0) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: 'In FIXED mode, no source should be defined.',
+            path: ['sources'],
+          })
+        }
+
+        if (true === v.locked && (v.min !== null || v.max !== null)) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message:
+              'In FIXED mode, min/max should not be defined when locked.',
+            path: ['min', 'max'],
+          })
+        }
+
+        if (v.round !== 'none') {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: 'In FIXED mode, round should not be defined.',
+            path: ['round'],
+          })
+        }
+
+        break
+      case 'expression':
+        if (false === v.locked) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: 'In EXPRESSION mode, locked should be defined.',
+            path: ['locked'],
+          })
+        }
+
+        if (v.sources.length === 0) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: 'In EXPRESSION mode, at least one source is required.',
+            path: ['sources'],
+          })
+        }
+
+        if (v.min !== null || v.max !== null) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: 'In EXPRESSION mode, min/max should not be defined.',
+            path: ['min', 'max'],
+          })
+        }
     }
   })
