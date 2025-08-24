@@ -73,6 +73,16 @@ const removeSource = (idx) => {
   r.sources = (r.sources || []).filter((_, i) => i !== idx)
   rule.value = r
 }
+
+const handleChangeMode = (event) => {
+  if (event.value === 'none') {
+    rule.value.locked = false
+  }
+
+  if (event.value !== 'expression') {
+    rule.value.round = 'none'
+  }
+}
 </script>
 
 <template>
@@ -96,19 +106,10 @@ const removeSource = (idx) => {
     <template v-else>
       <div class="row">
         <div class="col-md-4 d-flex flex-column gap-2">
-          <label :for="`qr-locked-${productChoiceId}`">{{
-            $t('Locked')
-          }}</label>
-          <ToggleSwitch
-            :inputId="`qr-locked-${productChoiceId}`"
-            v-model="rule.locked"
-          />
-        </div>
-
-        <div class="col-md-4 d-flex flex-column gap-2">
           <label :for="`qr-mode-${productChoiceId}`">{{ $t('Mode') }}</label>
           <Dropdown
             :inputId="`qr-mode-${productChoiceId}`"
+            @change="handleChangeMode"
             v-model="rule.mode"
             :options="[
               { label: $t('None'), value: 'none' },
@@ -117,6 +118,17 @@ const removeSource = (idx) => {
             ]"
             optionLabel="label"
             optionValue="value"
+          />
+        </div>
+
+        <div class="col-md-4 d-flex flex-column gap-2">
+          <label :for="`qr-locked-${productChoiceId}`">{{
+            $t('Locked')
+          }}</label>
+          <ToggleSwitch
+            :inputId="`qr-locked-${productChoiceId}`"
+            v-model="rule.locked"
+            :disabled="rule.mode === 'none'"
           />
         </div>
 
@@ -135,6 +147,7 @@ const removeSource = (idx) => {
             ]"
             optionLabel="label"
             optionValue="value"
+            :disabled="rule.mode !== 'expression'"
           />
         </div>
       </div>
