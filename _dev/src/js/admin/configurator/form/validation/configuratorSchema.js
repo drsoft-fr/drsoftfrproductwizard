@@ -24,7 +24,10 @@ const ProductChoiceSchema = z
       .optional(),
     reduction: z.number().nonnegative().optional().default(0),
     reduction_tax: z.boolean().optional().default(true),
-    reduction_type: z.union([z.literal('amount'), z.literal('percentage')]).optional().default('amount'),
+    reduction_type: z
+      .union([z.literal('amount'), z.literal('percentage')])
+      .optional()
+      .default('amount'),
     display_conditions: z.array(ConditionSchema).optional().default([]),
     quantity_rule: z.union([QuantityRuleSchema]),
     is_virtual: z.boolean().optional(),
@@ -41,7 +44,10 @@ const StepSchema = z
     active: z.boolean(),
     reduction: z.number().nonnegative().optional().default(0),
     reduction_tax: z.boolean().optional().default(true),
-    reduction_type: z.union([z.literal('amount'), z.literal('percentage')]).optional().default('amount'),
+    reduction_type: z
+      .union([z.literal('amount'), z.literal('percentage')])
+      .optional()
+      .default('amount'),
     product_choices: z
       .array(ProductChoiceSchema)
       .min(1, 'At least one choice by step is required.'),
@@ -58,7 +64,10 @@ export const ConfiguratorSchema = z
     active: z.boolean(),
     reduction: z.number().nonnegative().optional().default(0),
     reduction_tax: z.boolean().optional().default(true),
-    reduction_type: z.union([z.literal('amount'), z.literal('percentage')]).optional().default('amount'),
+    reduction_type: z
+      .union([z.literal('amount'), z.literal('percentage')])
+      .optional()
+      .default('amount'),
     steps: z.array(StepSchema).min(1, 'At least one step is required.'),
   })
   .strict()
@@ -83,7 +92,10 @@ export const ConfiguratorSchema = z
       )
 
       // Step-level reduction % range
-      if (step.reduction_type === 'percentage' && (step.reduction < 0 || step.reduction > 100)) {
+      if (
+        step.reduction_type === 'percentage' &&
+        (step.reduction < 0 || step.reduction > 100)
+      ) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
           message: `Step "${step.label}": The percentage reduction must be between 0 and 100.`,
@@ -150,10 +162,24 @@ export const ConfiguratorSchema = z
               path: ['steps', idx, 'product_choices', cIdx, 'min_quantity'],
             })
           }
+
+          if (
+            null !== choice.product_id &&
+            'none' === choice.quantity_rule.mode
+          ) {
+            ctx.addIssue({
+              code: z.ZodIssueCode.custom,
+              message: `Step "${step.label}" choice "${choice.label}": Quantity rule must be set when product is selected.`,
+              path: ['steps', idx, 'product_choices', cIdx, 'quantity_rule'],
+            })
+          }
         }
 
         // Reduction % range at choice level
-        if (choice.reduction_type === 'percentage' && (choice.reduction < 0 || choice.reduction > 100)) {
+        if (
+          choice.reduction_type === 'percentage' &&
+          (choice.reduction < 0 || choice.reduction > 100)
+        ) {
           ctx.addIssue({
             code: z.ZodIssueCode.custom,
             message: `Step "${step.label}" choice "${choice.label}": The percentage reduction must be between 0 and 100.`,
@@ -180,10 +206,14 @@ export const ConfiguratorSchema = z
     }
 
     // Validate reduction percentage ranges based on type
-    if (cfg.reduction_type === 'percentage' && (cfg.reduction < 0 || cfg.reduction > 100)) {
+    if (
+      cfg.reduction_type === 'percentage' &&
+      (cfg.reduction < 0 || cfg.reduction > 100)
+    ) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
-        message: 'Configurator: The percentage reduction must be between 0 and 100.',
+        message:
+          'Configurator: The percentage reduction must be between 0 and 100.',
         path: ['reduction'],
       })
     }

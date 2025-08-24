@@ -312,6 +312,13 @@ final class ConfiguratorValidatorService
                 ProductChoiceConstraintException::INVALID_QUANTITY_RULE_MODE
             );
         }
+
+        if (null !== $dto->productId && QuantityRule::MODE_NONE === $qr['mode']) {
+            throw new ProductChoiceConstraintException(
+                sprintf('Step “%s”: Choice “%s”, the mode cannot be NONE when a product is assigned.', $stepDto->label, $dto->label ?: ('#' . ($cIdx + 1))),
+                ProductChoiceConstraintException::INVALID_QUANTITY_RULE_MODE
+            );
+        }
     }
 
     /**
@@ -502,11 +509,7 @@ final class ConfiguratorValidatorService
             );
         }
 
-        if (QuantityRule::MODE_FIXED !== $qr['mode']) {
-            return;
-        }
-
-        if (!is_int($qr['offset']) || $qr['offset'] < 1) {
+        if (true === $qr['locked'] && QuantityRule::MODE_FIXED === $qr['mode'] && (!is_int($qr['offset']) || $qr['offset'] < 1)) {
             throw new ProductChoiceConstraintException(
                 sprintf('Step “%s”: The choice “%s” must have a valid imposed quantity (offset) (integer >= 1) when quantity selection is disabled.', $stepDto->label, $dto->label ?: ('#' . ($cIdx + 1))),
                 ProductChoiceConstraintException::INVALID_QUANTITY_RULE_OFFSET
