@@ -1,61 +1,6 @@
 import { z } from 'zod'
-import { QuantityRuleSchema } from '@/js/admin/configurator/form/validation/quantityRuleSchema.js'
+import { StepSchema } from '@/js/admin/configurator/form/validation/stepSchema'
 
-// Zod schema for a Condition
-const ConditionSchema = z
-  .object({
-    step: z.union([z.number().int().nonnegative(), z.string().min(1)]),
-    choice: z.union([z.number().int().nonnegative(), z.string().min(1)]),
-    is_virtual: z.boolean().optional(),
-  })
-  .strict()
-
-// Zod schema for a Product Choice
-const ProductChoiceSchema = z
-  .object({
-    id: z.union([z.number().int(), z.string().min(1)]),
-    label: z.string().trim().min(1, 'The wording of a choice is mandatory.'),
-    description: z.string().optional().nullable(),
-    active: z.boolean(),
-    is_default: z.boolean().optional().default(false),
-    product_id: z
-      .union([z.number().int().nullable(), z.null()])
-      .nullable()
-      .optional(),
-    reduction: z.number().nonnegative().optional().default(0),
-    reduction_tax: z.boolean().optional().default(true),
-    reduction_type: z
-      .union([z.literal('amount'), z.literal('percentage')])
-      .optional()
-      .default('amount'),
-    display_conditions: z.array(ConditionSchema).optional().default([]),
-    quantity_rule: z.union([QuantityRuleSchema]),
-    is_virtual: z.boolean().optional(),
-  })
-  .strict()
-
-// Zod schema for a Step
-const StepSchema = z
-  .object({
-    id: z.union([z.number().int(), z.string().min(1)]),
-    label: z.string().trim().min(1, 'The wording is mandatory.'),
-    description: z.string().optional().nullable(),
-    position: z.number().int().nonnegative({ message: 'Invalid position.' }),
-    active: z.boolean(),
-    reduction: z.number().nonnegative().optional().default(0),
-    reduction_tax: z.boolean().optional().default(true),
-    reduction_type: z
-      .union([z.literal('amount'), z.literal('percentage')])
-      .optional()
-      .default('amount'),
-    product_choices: z
-      .array(ProductChoiceSchema)
-      .min(1, 'At least one choice by step is required.'),
-    is_virtual: z.boolean().optional(),
-  })
-  .strict()
-
-// Main Configurator Zod schema
 export const ConfiguratorSchema = z
   .object({
     id: z.union([z.number().int().nullable(), z.null()]).nullable(),
