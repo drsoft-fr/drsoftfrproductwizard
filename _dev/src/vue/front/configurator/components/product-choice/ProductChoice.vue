@@ -1,5 +1,5 @@
 <script setup>
-import { inject, provide, ref, watch } from 'vue'
+import { computed, inject, provide, ref, watch } from 'vue'
 import NoProduct from '@/vue/front/configurator/components/product-choice/NoProduct.vue'
 import Product from '@/vue/front/configurator/components/product-choice/Product.vue'
 import { useQuantityRule } from '@/js/front/configurator/composables/useQuantityRule.js'
@@ -19,6 +19,10 @@ const { applyRulesFromStep } = useQuantityRule()
 
 const selected = ref(false)
 
+const disabled = computed(
+  () => 0 >= props.choice.quantity && 'none' !== props.choice.quantityRule.mode,
+)
+
 const { drsoftfrproductwizard } = window?.prestashop?.modules || {
   noPictureImage: {},
 }
@@ -29,6 +33,10 @@ watch(selectedChoice, () => {
 })
 
 function handleSelect(choice) {
+  if (true === disabled.value) {
+    return
+  }
+
   selectedChoice.value = choice
 
   const stepIndex = steps.value.findIndex((step) => step.id === props.step.id)
@@ -59,6 +67,7 @@ function handleSelect(choice) {
 }
 
 provide('selected', selected)
+provide('disabled', disabled)
 </script>
 
 <template>
@@ -79,14 +88,12 @@ provide('selected', selected)
       :choice
       :noPictureImage
       :product="choice.product"
-      :is-selected="selected"
       @select="handleSelect"
     />
     <NoProduct
       v-else
       :choice
       :noPictureImage
-      :is-selected="selected"
       @select="handleSelect"
     />
   </div>

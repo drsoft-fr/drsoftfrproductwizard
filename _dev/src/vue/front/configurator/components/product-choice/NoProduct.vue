@@ -4,7 +4,6 @@ import Quantity from '@/vue/front/configurator/components/product-choice/Quantit
 
 const props = defineProps({
   choice: { type: Object, required: true },
-  isSelected: { type: Boolean, required: true },
 })
 </script>
 
@@ -22,7 +21,7 @@ const props = defineProps({
         class="mt-3"
       ></div>
 
-      <Quantity :choice :is-selected="isSelected" />
+      <Quantity :choice />
 
       <Action @click="$emit('select', choice)" />
     </div>

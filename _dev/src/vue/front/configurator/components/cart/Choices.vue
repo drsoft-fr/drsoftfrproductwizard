@@ -12,8 +12,11 @@ const $t = inject('$t')
   <TransitionGroup name="slide-fade" tag="ul">
     <li v-for="choice in selections" :key="choice.stepId">
       <div :class="{ 'text-muted': choice.productId }">
-        <span>{{ choice.stepLabel }}</span> - <span>{{ choice.label }}</span> -
-        <span>{{ $t('Quantity') }}:</span> <span>{{ choice.quantity }}</span>
+        <span>{{ choice.stepLabel }}</span> - <span>{{ choice.label }}</span
+        ><span v-if="null === choice.productId && 0 < choice.quantity">
+          - <span>{{ $t('Quantity') }}:</span>
+          <span>{{ choice.quantity }}</span></span
+        >
       </div>
       <Product
         v-if="null !== choice.productId"

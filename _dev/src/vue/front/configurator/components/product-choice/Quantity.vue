@@ -4,9 +4,9 @@ import { useQuantityRule } from '@/js/front/configurator/composables/useQuantity
 
 const props = defineProps({
   choice: { type: Object, required: true },
-  isSelected: { type: Boolean, required: true },
 })
 
+const selected = inject('selected')
 const selections = inject('selections')
 const steps = inject('steps')
 const $t = inject('$t')
@@ -24,7 +24,7 @@ function updateQty(newVal) {
   if (max.value != null) v = Math.min(max.value, v)
   props.choice.quantity = v
 
-  if (props.isSelected) {
+  if (true === selected.value) {
     onSelectedQuantityChanged(steps.value, props.choice, selections.value)
   }
 }
@@ -54,45 +54,47 @@ const decrement = () => {
 </script>
 
 <template>
-  <div class="product-quantity mt-3">
-    <template v-if="false === locked">
-      <label :for="`pc-${choice.id}__quantity-input`" class="form-label">{{
-        $t('Quantity:')
-      }}</label>
-      <div class="quantity-input-group">
-        <button
-          type="button"
-          class="btn btn-outline-secondary btn-sm"
-          @click="decrement"
-          :disabled="choice.quantity <= min"
-        >
-          <i class="fa fa-minus" aria-hidden="true"></i>
-        </button>
+  <template v-if="'none' !== rule.mode">
+    <div class="product-quantity mt-3">
+      <template v-if="false === locked">
+        <label :for="`pc-${choice.id}__quantity-input`" class="form-label">{{
+          $t('Quantity:')
+        }}</label>
+        <div class="quantity-input-group">
+          <button
+            type="button"
+            class="btn btn-outline-secondary btn-sm"
+            @click="decrement"
+            :disabled="choice.quantity <= min"
+          >
+            <i class="fa fa-minus" aria-hidden="true"></i>
+          </button>
 
-        <input
-          type="number"
-          :id="`pc-${choice.id}__quantity-input`"
-          class="form-control"
-          :value="choice.quantity"
-          :min="min"
-          :max="max"
-          @input="updateQty($event.target.value)"
-        />
+          <input
+            type="number"
+            :id="`pc-${choice.id}__quantity-input`"
+            class="form-control"
+            :value="choice.quantity"
+            :min="min"
+            :max="max"
+            @input="updateQty($event.target.value)"
+          />
 
-        <button
-          type="button"
-          class="btn btn-outline-secondary btn-sm"
-          @click="increment"
-        >
-          <i class="fa fa-plus" aria-hidden="true"></i>
-        </button>
-      </div>
-    </template>
-    <template v-else>
-      <div class="form-label">{{ $t('Quantity:') }}</div>
-      <div class="form-control text-center">x {{ choice.quantity }}</div>
-    </template>
-  </div>
+          <button
+            type="button"
+            class="btn btn-outline-secondary btn-sm"
+            @click="increment"
+          >
+            <i class="fa fa-plus" aria-hidden="true"></i>
+          </button>
+        </div>
+      </template>
+      <template v-else>
+        <div class="form-label">{{ $t('Quantity:') }}</div>
+        <div class="form-control text-center">x {{ choice.quantity }}</div>
+      </template>
+    </div>
+  </template>
 </template>
 
 <style scoped lang="scss">
