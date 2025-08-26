@@ -23,7 +23,7 @@ final class ReductionType
         $value = strtolower($value);
         $value = trim($value);
 
-        $this->assertIsValidType($value);
+        self::assertIsValidType($value);
 
         $this->value = $value;
     }
@@ -64,7 +64,7 @@ final class ReductionType
     /**
      * @throws ProductChoiceConstraintException
      */
-    private function assertIsValidType(string $value): void
+    private static function assertIsValidType(string $value): void
     {
         if (false === in_array($value, [self::AMOUNT, self::PERCENTAGE], true)) {
             throw new ProductChoiceConstraintException(

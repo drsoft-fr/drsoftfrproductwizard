@@ -15,7 +15,7 @@ final class Quantity
      */
     public function __construct(int $value)
     {
-        $this->assertIntegerIsGreaterThanZero($value);
+        self::assertIntegerIsGreaterThanZero($value);
 
         $this->value = $value;
     }
@@ -46,7 +46,7 @@ final class Quantity
     /**
      * @throws ProductChoiceConstraintException
      */
-    private function assertIntegerIsGreaterThanZero(int $value): void
+    private static function assertIntegerIsGreaterThanZero(int $value): void
     {
         if (0 >= $value) {
             throw new ProductChoiceConstraintException(
