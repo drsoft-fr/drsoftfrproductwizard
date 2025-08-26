@@ -47,8 +47,6 @@ final class ProductChoiceId
     }
 
     /**
-     * @param int $value
-     *
      * @throws ProductChoiceConstraintException
      */
     private function assertIntegerIsGreaterThanZero(int $value): void
