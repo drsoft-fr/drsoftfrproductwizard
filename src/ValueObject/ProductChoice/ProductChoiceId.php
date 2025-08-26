@@ -39,7 +39,7 @@ final class ProductChoiceId
     {
         if (0 >= $value) {
             throw new ProductChoiceConstraintException(
-                sprintf('Invalid configurator id "%s".', var_export($value, true)),
+                sprintf('Invalid product choice id "%s".', var_export($value, true)),
                 ProductChoiceConstraintException::INVALID_ID);
         }
     }
