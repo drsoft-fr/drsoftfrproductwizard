@@ -10,6 +10,10 @@ final class ReductionType
 {
     public const AMOUNT = 'amount';
     public const PERCENTAGE = 'percentage';
+    public const ALLOWED_TYPES = [
+        self::AMOUNT,
+        self::PERCENTAGE,
+    ];
 
     private readonly string $value;
 
@@ -66,7 +70,7 @@ final class ReductionType
      */
     private static function assertIsValidType(string $value): void
     {
-        if (false === in_array($value, [self::AMOUNT, self::PERCENTAGE], true)) {
+        if (false === in_array($value, self::ALLOWED_TYPES, true)) {
             throw new ProductChoiceConstraintException(
                 sprintf('Invalid product choice reduction type "%s".', var_export($value, true)),
                 ProductChoiceConstraintException::INVALID_REDUCTION_TYPE);
