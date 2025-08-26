@@ -75,6 +75,17 @@ final class ActionFrontControllerSetVariablesController extends AbstractHookCont
                         'ajax' => true,
                     ]
                 );
+
+            $values['routes']['addToCart'] = $this->getContext()
+                ->link
+                ->getModuleLink(
+                    $this->module->name,
+                    'ajax',
+                    [
+                        'action' => 'add-to-cart',
+                        'ajax' => true,
+                    ]
+                );
         } catch (Throwable $t) {
             $this->handleException($t);
         } finally {

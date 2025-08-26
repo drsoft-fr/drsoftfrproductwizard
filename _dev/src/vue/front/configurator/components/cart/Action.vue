@@ -1,8 +1,13 @@
 <script setup>
 import { inject } from 'vue'
 
+const addToCart = inject('addToCart')
 const selections = inject('selections')
 const $t = inject('$t')
+
+function handleClick() {
+  addToCart()
+}
 </script>
 
 <template>
@@ -11,6 +16,7 @@ const $t = inject('$t')
       type="button"
       class="btn btn-primary btn-lg btn-block"
       :disabled="selections.length === 0"
+      @click="handleClick"
     >
       <i class="cart-btn-icon">&#128722;</i> {{ $t('Add to Cart') }}
     </button>

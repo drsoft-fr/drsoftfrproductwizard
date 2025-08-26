@@ -56,6 +56,10 @@ final class DrsoftfrproductwizardAjaxModuleFrontController extends ModuleFrontCo
     {
         try {
             switch ($this->action) {
+                case 'add-to-cart':
+                    $this->addToCartAction();
+
+                    break;
                 case 'get-configurator':
                     $this->getConfiguratorAction();
 
@@ -113,6 +117,71 @@ final class DrsoftfrproductwizardAjaxModuleFrontController extends ModuleFrontCo
             ]);
         } finally {
             die;
+        }
+    }
+
+    private function addToCartAction()
+    {
+        try {
+            $data = json_decode(Tools::getValue('data', '{}'), true);
+
+            if (!isset($data['selections']) || !is_array($data['selections'])) {
+                $this->sendErrorResponse('Invalid data format');
+            }
+
+            $selections = array_values(array_filter((array)$data['selections']));
+
+            // Get the cart
+            $cart = $this->context->cart;
+
+            // Create a new cart if it doesn't exist
+            if (!Validate::isLoadedObject($cart)) {
+                $cart = new Cart();
+                $cart->id_customer = (int)$this->context->customer->id;
+                $cart->id_lang = (int)$this->context->language->id;
+
+                $cart->save();
+
+                $this->context->cart = $cart;
+            }
+
+            // Add products to cart
+            $addedProducts = [];
+            foreach ($selections as $selection) {
+                $productId = (int)$selection['productId'];
+                $combinationId = isset($selection['combinationId']) ? (int)$selection['combinationId'] : 0;
+                $quantity = max(1, (int)$selection['quantity']);
+
+                // Add product to cart (increase by quantity)
+                $result = $cart->updateQty(
+                    $quantity,
+                    $productId,
+                    $combinationId
+                );
+
+                if ($result) {
+                    $product = new Product($productId, false, (int)$this->context->language->id);
+                    $addedProducts[] = [
+                        'id' => $productId,
+                        'name' => $product->name,
+                        'combinationId' => $combinationId,
+                        'quantity' => $quantity,
+                    ];
+                }
+            }
+
+            // Update cart cookie
+            $this->context->cookie->__set('id_cart', (int)$cart->id);
+            $this->context->cookie->write();
+
+            $this->ajaxRender(json_encode([
+                'success' => true,
+                'message' => $this->trans('Products added to cart successfully', [], 'Modules.Drsoftfrproductwizard.Shop'),
+                'cartUrl' => $this->context->link->getPageLink('cart', null, null, ['action' => 'show']),
+                'addedProducts' => $addedProducts,
+            ]));
+        } catch (Throwable $t) {
+            $this->sendErrorResponse('An error occurred while adding products to cart: ' . $t->getMessage());
         }
     }
 
