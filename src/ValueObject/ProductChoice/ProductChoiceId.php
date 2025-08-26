@@ -6,9 +6,6 @@ namespace DrSoftFr\Module\ProductWizard\ValueObject\ProductChoice;
 
 use DrSoftFr\Module\ProductWizard\Exception\ProductChoice\ProductChoiceConstraintException;
 
-/**
- * Class provides product choice id
- */
 final class ProductChoiceId
 {
     private readonly int $value;
@@ -18,7 +15,7 @@ final class ProductChoiceId
      */
     public function __construct(int $value)
     {
-        $this->assertIntegerIsGreaterThanZero($value);
+        self::assertIntegerIsGreaterThanZero($value);
 
         $this->value = $value;
     }
@@ -49,7 +46,7 @@ final class ProductChoiceId
     /**
      * @throws ProductChoiceConstraintException
      */
-    private function assertIntegerIsGreaterThanZero(int $value): void
+    private static function assertIntegerIsGreaterThanZero(int $value): void
     {
         if (0 >= $value) {
             throw new ProductChoiceConstraintException(
