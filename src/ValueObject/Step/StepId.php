@@ -6,9 +6,6 @@ namespace DrSoftFr\Module\ProductWizard\ValueObject\Step;
 
 use DrSoftFr\Module\ProductWizard\Exception\Step\StepConstraintException;
 
-/**
- * Class provides step id
- */
 final class StepId
 {
     private readonly int $value;
@@ -18,7 +15,7 @@ final class StepId
      */
     public function __construct(int $value)
     {
-        $this->assertIntegerIsGreaterThanZero($value);
+        self::assertIntegerIsGreaterThanZero($value);
 
         $this->value = $value;
     }
@@ -49,7 +46,7 @@ final class StepId
     /**
      * @throws StepConstraintException
      */
-    private function assertIntegerIsGreaterThanZero(int $value): void
+    private static function assertIntegerIsGreaterThanZero(int $value): void
     {
         if (0 >= $value) {
             throw new StepConstraintException(
