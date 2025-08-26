@@ -6,6 +6,7 @@ use DrSoftFr\Module\ProductWizard\Dto\ConfiguratorDto;
 use DrSoftFr\Module\ProductWizard\Dto\StepDto;
 use DrSoftFr\Module\ProductWizard\Dto\ProductChoiceDto;
 use DrSoftFr\Module\ProductWizard\Exception\ProductChoice\ProductChoiceConstraintException;
+use DrSoftFr\Module\ProductWizard\Exception\Step\StepConstraintException;
 use DrSoftFr\Module\ProductWizard\ValueObject\ProductChoice\DisplayCondition;
 use DrSoftFr\Module\ProductWizard\ValueObject\ProductChoice\QuantityRule;
 
@@ -13,6 +14,7 @@ final class ConfiguratorNormalizer
 {
     /**
      * @throws ProductChoiceConstraintException
+     * @throws StepConstraintException
      */
     public function denormalize(array $data): ConfiguratorDto
     {

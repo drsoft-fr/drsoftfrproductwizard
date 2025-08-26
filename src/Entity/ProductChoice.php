@@ -7,6 +7,7 @@ use DateTimeInterface;
 use Doctrine\ORM\Mapping as ORM;
 use DrSoftFr\Module\ProductWizard\Config as Configuration;
 use DrSoftFr\Module\ProductWizard\Exception\ProductChoice\ProductChoiceConstraintException;
+use DrSoftFr\Module\ProductWizard\Exception\Step\StepConstraintException;
 use DrSoftFr\Module\ProductWizard\ValueObject\ProductChoice\DisplayCondition;
 use DrSoftFr\Module\ProductWizard\ValueObject\ProductChoice\QuantityRule;
 use DrSoftFr\PrestaShopModuleHelper\Traits\ClassHydrateTrait;
@@ -250,6 +251,7 @@ class ProductChoice
      * @return DisplayCondition[]
      *
      * @throws ProductChoiceConstraintException
+     * @throws StepConstraintException
      */
     public function getDisplayConditions(): array
     {

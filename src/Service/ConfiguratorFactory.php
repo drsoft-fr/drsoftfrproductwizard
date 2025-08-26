@@ -10,6 +10,8 @@ use DrSoftFr\Module\ProductWizard\Entity\Configurator;
 use DrSoftFr\Module\ProductWizard\Entity\Step;
 use DrSoftFr\Module\ProductWizard\Entity\ProductChoice;
 use DrSoftFr\Module\ProductWizard\Exception\Configurator\ConfiguratorNotFoundException;
+use DrSoftFr\Module\ProductWizard\Exception\ProductChoice\ProductChoiceConstraintException;
+use DrSoftFr\Module\ProductWizard\Exception\Step\StepConstraintException;
 use DrSoftFr\Module\ProductWizard\Repository\ConfiguratorRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use DrSoftFr\Module\ProductWizard\ValueObject\ProductChoice\DisplayCondition;
@@ -109,6 +111,9 @@ final class ConfiguratorFactory
      * @param ProductChoiceDto[] $choicesDto
      *
      * @return void
+     *
+     * @throws ProductChoiceConstraintException
+     * @throws StepConstraintException
      */
     private function mapProductChoices(Step $step, array $choicesDto): void
     {
