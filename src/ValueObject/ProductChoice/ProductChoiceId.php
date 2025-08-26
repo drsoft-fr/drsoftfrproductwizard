@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace DrSoftFr\Module\ProductWizard\ValueObject\ProductChoice;
 
 use DrSoftFr\Module\ProductWizard\Exception\ProductChoice\ProductChoiceConstraintException;
@@ -9,25 +11,39 @@ use DrSoftFr\Module\ProductWizard\Exception\ProductChoice\ProductChoiceConstrain
  */
 final class ProductChoiceId
 {
-    private int $value;
+    private readonly int $value;
 
     /**
-     * @param int $value
-     *
      * @throws ProductChoiceConstraintException
      */
     public function __construct(int $value)
     {
         $this->assertIntegerIsGreaterThanZero($value);
+
         $this->value = $value;
     }
 
     /**
-     * @return int
+     * @throws ProductChoiceConstraintException
      */
-    public function getValue(): int
+    public static function fromInt(int $value): self
+    {
+        return new self($value);
+    }
+
+    final public function getValue(): int
     {
         return $this->value;
+    }
+
+    public function equals(ProductChoiceId $other): bool
+    {
+        return $this->value === $other->value;
+    }
+
+    public function __toString(): string
+    {
+        return (string)$this->value;
     }
 
     /**
