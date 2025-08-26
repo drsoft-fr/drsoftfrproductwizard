@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace DrSoftFr\Module\ProductWizard\ValueObject\ProductChoice;
 
 final class ReductionTax
@@ -10,8 +12,23 @@ final class ReductionTax
     {
     }
 
-    public function getValue(): bool
+    public static function fromBool(bool $value): self
+    {
+        return new self($value);
+    }
+
+    final public function getValue(): bool
     {
         return $this->value;
+    }
+
+    public function equals(ReductionTax $other): bool
+    {
+        return $this->value === $other->value;
+    }
+
+    public function __toString(): string
+    {
+        return (string)$this->value;
     }
 }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace DrSoftFr\Module\ProductWizard\ValueObject\ProductChoice;
 
 use DrSoftFr\Module\ProductWizard\Exception\ProductChoice\ProductChoiceConstraintException;
@@ -9,7 +11,7 @@ final class ReductionType
     public const AMOUNT = 'amount';
     public const PERCENTAGE = 'percentage';
 
-    private string $value;
+    private readonly string $value;
 
     /**
      * @throws ProductChoiceConstraintException
@@ -49,14 +51,14 @@ final class ReductionType
         return $this->__toString();
     }
 
-    public function __toString(): string
-    {
-        return $this->value;
-    }
-
     public function equals(ReductionType $other): bool
     {
         return $this->value === $other->value;
+    }
+
+    public function __toString(): string
+    {
+        return $this->value;
     }
 
     /**
