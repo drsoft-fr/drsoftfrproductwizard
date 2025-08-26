@@ -23,6 +23,20 @@ final class DisplayCondition
      */
     public static function fromArray(array $arr): self
     {
+        if (false === isset($arr['step'])) {
+            throw new ProductChoiceConstraintException(
+                sprintf('Missing step in display condition "%s".', var_export($arr, true)),
+                ProductChoiceConstraintException::INVALID_DISPLAY_CONDITION_STEP
+            );
+        }
+
+        if (false === isset($arr['choice'])) {
+            throw new ProductChoiceConstraintException(
+                sprintf('Missing choice in display condition "%s".', var_export($arr, true)),
+                ProductChoiceConstraintException::INVALID_DISPLAY_CONDITION_CHOICE
+            );
+        }
+
         return new self(
             StepId::fromInt((int)$arr['step']),
             ProductChoiceId::fromInt((int)$arr['choice']),
