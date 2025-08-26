@@ -47,7 +47,7 @@ async function addToCart() {
     const data = await response.json()
 
     if (false === data.success) {
-      const errorMessage = $t('Add to cart failed')
+      const errorMessage = $t('Add to cart failed', {}, 'Error')
 
       showAlert('danger', data.message || errorMessage)
 
@@ -62,7 +62,7 @@ async function addToCart() {
   } catch (error) {
     showAlert(
       'danger',
-      $t('An error occurred while loading the configurator', {}),
+      $t('An error occurred while loading the configurator', {}, 'Error'),
     )
   } finally {
     loading.value = false

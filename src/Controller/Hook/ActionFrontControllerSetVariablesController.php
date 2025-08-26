@@ -59,6 +59,7 @@ final class ActionFrontControllerSetVariablesController extends AbstractHookCont
                         'Failed to load configurator' => $this->getContext()->getTranslator()->trans('Failed to load configurator', [], 'Modules.Drsoftfrproductwizard.Error'),
                         'Error fetching configurator: %error%' => $this->getContext()->getTranslator()->trans('Error fetching configurator: %error%', [], 'Modules.Drsoftfrproductwizard.Error'),
                         'An error occurred while loading the configurator' => $this->getContext()->getTranslator()->trans('An error occurred while loading the configurator', [], 'Modules.Drsoftfrproductwizard.Error'),
+                        'Add to cart failed' => $this->getContext()->getTranslator()->trans('Add to cart failed', [], 'Modules.Drsoftfrproductwizard.Error'),
                     ],
                 ],
                 'noPictureImage' => $imageRetriever->getNoPictureImage($this->getContext()->language),
