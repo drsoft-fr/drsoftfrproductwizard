@@ -120,7 +120,7 @@ final class DrsoftfrproductwizardAjaxModuleFrontController extends ModuleFrontCo
         }
     }
 
-    private function addToCartAction()
+    private function addToCartAction(): void
     {
         try {
             $data = json_decode(Tools::getValue('data', '{}'), true);
@@ -156,7 +156,6 @@ final class DrsoftfrproductwizardAjaxModuleFrontController extends ModuleFrontCo
                 $combinationId = isset($selection['combinationId']) ? (int)$selection['combinationId'] : 0;
                 $quantity = max(1, (int)$selection['quantity']);
 
-                // Add product to cart (increase by quantity)
                 $result = $cart->updateQty(
                     $quantity,
                     $productId,
@@ -164,10 +163,8 @@ final class DrsoftfrproductwizardAjaxModuleFrontController extends ModuleFrontCo
                 );
 
                 if ($result) {
-                    $product = new Product($productId, false, (int)$this->context->language->id);
                     $addedProducts[] = [
                         'id' => $productId,
-                        'name' => $product->name,
                         'combinationId' => $combinationId,
                         'quantity' => $quantity,
                     ];
