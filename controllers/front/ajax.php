@@ -130,6 +130,11 @@ final class DrsoftfrproductwizardAjaxModuleFrontController extends ModuleFrontCo
             }
 
             $selections = array_values(array_filter((array)$data['selections']));
+            $validationError = $this->validateSelections($selections);
+
+            if (null !== $validationError) {
+                $this->sendErrorResponse($validationError);
+            }
 
             // Get the cart
             $cart = $this->context->cart;
@@ -139,7 +144,6 @@ final class DrsoftfrproductwizardAjaxModuleFrontController extends ModuleFrontCo
                 $cart = new Cart();
                 $cart->id_customer = (int)$this->context->customer->id;
                 $cart->id_lang = (int)$this->context->language->id;
-
                 $cart->save();
 
                 $this->context->cart = $cart;
@@ -183,6 +187,41 @@ final class DrsoftfrproductwizardAjaxModuleFrontController extends ModuleFrontCo
         } catch (Throwable $t) {
             $this->sendErrorResponse('An error occurred while adding products to cart: ' . $t->getMessage());
         }
+    }
+
+    /**
+     * Validate given selections (products, quantities and combinations)
+     *
+     * @param array $selections
+     *
+     * @return string|null Error message if invalid, null if ok
+     */
+    private function validateSelections(array $selections): ?string
+    {
+        if (true === empty($selections)) {
+            return $this->trans('No products selected.', [], 'Modules.Drsoftfrproductwizard.Error');
+        }
+
+        foreach ($selections as $s) {
+            if (false === isset($s['productId'])) {
+                return $this->trans('Invalid selection format.', [], 'Modules.Drsoftfrproductwizard.Error');
+            }
+
+            $productId = (int)$s['productId'];
+            $quantity = isset($s['quantity']) ? (int)$s['quantity'] : 0;
+
+            if ($productId <= 0 || $quantity <= 0) {
+                return $this->trans('Invalid product or quantity.', [], 'Modules.Drsoftfrproductwizard.Error');
+            }
+
+            $product = new Product($productId, true, (int)$this->context->language->id);
+
+            if (!Validate::isLoadedObject($product) || !$product->active) {
+                return $this->trans('A selected product is not available anymore.', [], 'Modules.Drsoftfrproductwizard.Error');
+            }
+        }
+
+        return null;
     }
 
     private function getConfiguratorAction(): void
