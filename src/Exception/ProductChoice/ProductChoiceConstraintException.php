@@ -25,4 +25,5 @@ class ProductChoiceConstraintException extends ProductChoiceException
     public const INVALID_QUANTITY_RULE_ROUND = 16;
     public const INVALID_ID = 17;
     public const INVALID_QUANTITY = 18;
+    public const INVALID_QUANTITY_RULE_RANGE = 9;
 }
