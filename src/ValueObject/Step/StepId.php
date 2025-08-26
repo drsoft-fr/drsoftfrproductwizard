@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace DrSoftFr\Module\ProductWizard\ValueObject\Step;
 
 use DrSoftFr\Module\ProductWizard\Exception\Step\StepConstraintException;
@@ -9,30 +11,42 @@ use DrSoftFr\Module\ProductWizard\Exception\Step\StepConstraintException;
  */
 final class StepId
 {
-    private int $value;
+    private readonly int $value;
 
     /**
-     * @param int $value
-     *
      * @throws StepConstraintException
      */
     public function __construct(int $value)
     {
         $this->assertIntegerIsGreaterThanZero($value);
+
         $this->value = $value;
     }
 
     /**
-     * @return int
+     * @throws StepConstraintException
      */
-    public function getValue(): int
+    public static function fromInt(int $value): self
+    {
+        return new self($value);
+    }
+
+    final public function getValue(): int
     {
         return $this->value;
     }
 
+    public function equals(StepId $other): bool
+    {
+        return $this->value === $other->value;
+    }
+
+    public function __toString(): string
+    {
+        return (string)$this->value;
+    }
+
     /**
-     * @param int $value
-     *
      * @throws StepConstraintException
      */
     private function assertIntegerIsGreaterThanZero(int $value): void
