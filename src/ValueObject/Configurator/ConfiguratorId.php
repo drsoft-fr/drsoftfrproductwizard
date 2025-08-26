@@ -6,9 +6,6 @@ namespace DrSoftFr\Module\ProductWizard\ValueObject\Configurator;
 
 use DrSoftFr\Module\ProductWizard\Exception\Configurator\ConfiguratorConstraintException;
 
-/**
- * Class provides configurator id
- */
 final class ConfiguratorId
 {
     private readonly int $value;
@@ -18,7 +15,7 @@ final class ConfiguratorId
      */
     public function __construct(int $value)
     {
-        $this->assertIntegerIsGreaterThanZero($value);
+        self::assertIntegerIsGreaterThanZero($value);
 
         $this->value = $value;
     }
@@ -49,7 +46,7 @@ final class ConfiguratorId
     /**
      * @throws ConfiguratorConstraintException
      */
-    private function assertIntegerIsGreaterThanZero(int $value): void
+    private static function assertIntegerIsGreaterThanZero(int $value): void
     {
         if (0 >= $value) {
             throw new ConfiguratorConstraintException(
