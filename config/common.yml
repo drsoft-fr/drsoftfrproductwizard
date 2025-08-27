@@ -10,7 +10,7 @@ services:
     class: DrSoftFr\Module\ProductWizard\Infrastructure\Persistence\Doctrine\ConfiguratorRepository
     factory: [ '@doctrine.orm.default_entity_manager', getRepository ]
     arguments:
-      - DrSoftFr\Module\ProductWizard\Entity\Configurator
+      - DrSoftFr\Module\ProductWizard\Domain\Entity\Configurator
 
   DrSoftFr\Module\ProductWizard\Domain\Repository\ConfiguratorRepositoryInterface:
     alias: drsoft_fr.module.product_wizard.infrastructure.persistence.doctrine.configurator_repository
@@ -19,13 +19,13 @@ services:
     class: DrSoftFr\Module\ProductWizard\Infrastructure\Persistence\Doctrine\StepRepository
     factory: [ '@doctrine.orm.default_entity_manager', getRepository ]
     arguments:
-      - DrSoftFr\Module\ProductWizard\Entity\Step
+      - DrSoftFr\Module\ProductWizard\Domain\Entity\Step
 
   drsoft_fr.module.product_wizard.infrastructure.persistence.doctrine.product_choice_repository:
     class: DrSoftFr\Module\ProductWizard\Infrastructure\Persistence\Doctrine\ProductChoiceRepository
     factory: [ '@doctrine.orm.default_entity_manager', getRepository ]
     arguments:
-      - DrSoftFr\Module\ProductWizard\Entity\ProductChoice
+      - DrSoftFr\Module\ProductWizard\Domain\Entity\ProductChoice
 
   drsoft_fr.module.product_wizard.service.configurator_presenter_service:
     class: DrSoftFr\Module\ProductWizard\Service\ConfiguratorPresenterService

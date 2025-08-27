@@ -2,7 +2,7 @@
 
 namespace DrSoftFr\Module\ProductWizard\Application\Dto;
 
-use DrSoftFr\Module\ProductWizard\Entity\Configurator;
+use DrSoftFr\Module\ProductWizard\Domain\Entity\Configurator;
 
 final class ConfiguratorDto
 {

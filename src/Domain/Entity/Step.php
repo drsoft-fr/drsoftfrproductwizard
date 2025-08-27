@@ -1,23 +1,21 @@
 <?php
 
-namespace DrSoftFr\Module\ProductWizard\Entity;
+namespace DrSoftFr\Module\ProductWizard\Domain\Entity;
 
 use DateTime;
 use DateTimeInterface;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
 use DrSoftFr\Module\ProductWizard\Config as Configuration;
-use DrSoftFr\Module\ProductWizard\Exception\ProductChoice\ProductChoiceConstraintException;
-use DrSoftFr\Module\ProductWizard\Exception\Step\StepConstraintException;
-use DrSoftFr\Module\ProductWizard\ValueObject\ProductChoice\DisplayCondition;
-use DrSoftFr\Module\ProductWizard\ValueObject\ProductChoice\QuantityRule;
 use DrSoftFr\PrestaShopModuleHelper\Traits\ClassHydrateTrait;
 
 /**
- * @ORM\Table(name=Configuration::PRODUCT_CHOICE_TABLE_NAME)
- * @ORM\Entity(repositoryClass="DrSoftFr\Module\ProductWizard\Infrastructure\Persistence\Doctrine\ProductChoiceRepository")
+ * @ORM\Table(name=Configuration::STEP_TABLE_NAME)
+ * @ORM\Entity(repositoryClass="DrSoftFr\Module\ProductWizard\Infrastructure\Persistence\Doctrine\StepRepository")
  * @ORM\HasLifecycleCallbacks
  */
-class ProductChoice
+class Step
 {
     use ClassHydrateTrait;
 
@@ -25,7 +23,7 @@ class ProductChoice
      * @var int $id
      *
      * @ORM\Id
-     * @ORM\Column(name="id_product_choice", type="integer", nullable=false, options={"unsigned"=true})
+     * @ORM\Column(name="id_step", type="integer", nullable=false, options={"unsigned"=true})
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     private $id = 0;
@@ -52,18 +50,26 @@ class ProductChoice
     private ?string $description = null;
 
     /**
-     * @var ?int $productId
+     * @var Configurator $configurator
      *
-     * @ORM\Column(name="id_product", type="integer", length=10, nullable=true, options={"unsigned"=true})
+     * @ORM\ManyToOne(targetEntity="DrSoftFr\Module\ProductWizard\Domain\Entity\Configurator", inversedBy="steps")
+     * @ORM\JoinColumn(name="id_configurator", referencedColumnName="id_configurator", nullable=false, onDelete="CASCADE")
      */
-    private $productId;
+    private $configurator;
 
     /**
-     * @var bool $isDefault
+     * @var Collection<ProductChoice> $productChoices
      *
-     * @ORM\Column(name="is_default", type="boolean", nullable=false, options={"default":0, "unsigned"=true})
+     * @ORM\OneToMany(targetEntity="DrSoftFr\Module\ProductWizard\Domain\Entity\ProductChoice", cascade={"persist", "remove"}, orphanRemoval=true, mappedBy="step")
      */
-    private $isDefault = false;
+    private $productChoices;
+
+    /**
+     * @var int $position
+     *
+     * @ORM\Column(name="position", type="integer", nullable=false, options={"default":0, "unsigned"=true})
+     */
+    private $position = 0;
 
     /**
      * @var float $reduction
@@ -87,24 +93,6 @@ class ProductChoice
     private $reductionType = 'amount';
 
     /**
-     * @var Step $step
-     *
-     * @ORM\ManyToOne(targetEntity="DrSoftFr\Module\ProductWizard\Entity\Step", inversedBy="productChoices")
-     * @ORM\JoinColumn(name="id_step", referencedColumnName="id_step", nullable=false, onDelete="CASCADE")
-     */
-    private $step;
-
-    /**
-     * @ORM\Column(name="display_conditions", type="json", nullable=true)
-     */
-    private array $displayConditions = [];
-
-    /**
-     * @ORM\Column(name="quantity_rule", type="json", nullable=true)
-     */
-    private ?array $quantityRule = null;
-
-    /**
      * @var ?DateTimeInterface $dateAdd creation date
      *
      * @ORM\Column(name="date_add", type="datetime", nullable=false)
@@ -120,38 +108,70 @@ class ProductChoice
 
     public function __construct()
     {
+        $this->productChoices = new ArrayCollection();
         $this->dateAdd = new \DateTimeImmutable();
     }
 
     /**
-     * @return array
+     * @param ProductChoice $productChoice
      *
-     * @throws ProductChoiceConstraintException
+     * @return $this
+     */
+    public function addProductChoice(ProductChoice $productChoice): Step
+    {
+        if (true === $this->productChoices->contains($productChoice)) {
+            return $this;
+        }
+
+        $productChoice->setStep($this);
+        $this->productChoices->add($productChoice);
+
+        return $this;
+    }
+
+    /**
+     * @param ProductChoice $productChoice
+     *
+     * @return $this
+     */
+    public function removeProductChoice(ProductChoice $productChoice): Step
+    {
+        if (false === $this->productChoices->contains($productChoice)) {
+            return $this;
+        }
+
+        $this->productChoices->removeElement($productChoice);
+
+        return $this;
+    }
+
+    /**
+     * @return array
      */
     public function toArray(): array
     {
-        $arr = [];
+        /** @var ProductChoice[] $productChoices */
+        $productChoices = [];
 
-        foreach ($this->getDisplayConditions() as $condition) {
-            $arr[] = $condition->getValue();
+        /** @var ProductChoice $productChoice */
+        foreach ($this->getProductChoices() as $productChoice) {
+            $productChoices[] = $productChoice->toArray();
         }
 
         return [
             'id' => $this->getId(),
-            'id_product_choice' => $this->getId(),
-            'id_step' => $this->getStep()->getId(),
+            'id_step' => $this->getId(),
+            'id_configurator' => $this->getConfigurator()->getId(),
             'active' => $this->isActive(),
             'date_add' => $this->getDateAdd(),
             'date_upd' => $this->getDateUpd(),
             'label' => $this->getLabel(),
             'description' => $this->getDescription(),
-            'product_id' => $this->getProductId(),
-            'is_default' => $this->isDefault(),
+            'position' => $this->getPosition(),
             'reduction' => $this->getReduction(),
             'reduction_tax' => $this->isReductionTax(),
             'reduction_type' => $this->getReductionType(),
-            'display_conditions' => $arr,
-            'quantity_rule' => $this->getQuantityRule()->getValue(),
+            'product_choices' => $productChoices,
         ];
     }
 
@@ -175,7 +195,7 @@ class ProductChoice
         return $this->id;
     }
 
-    public function setId(int $id): ProductChoice
+    public function setId(int $id): Step
     {
         $this->id = $id;
         return $this;
@@ -186,7 +206,7 @@ class ProductChoice
         return $this->active;
     }
 
-    public function setActive(bool $active): ProductChoice
+    public function setActive(bool $active): Step
     {
         $this->active = $active;
         return $this;
@@ -197,7 +217,7 @@ class ProductChoice
         return $this->label;
     }
 
-    public function setLabel(string $label): ProductChoice
+    public function setLabel(string $label): Step
     {
         $this->label = $label;
         return $this;
@@ -208,87 +228,56 @@ class ProductChoice
         return $this->description;
     }
 
-    public function setDescription(?string $description): ProductChoice
+    public function setDescription(?string $description): Step
     {
         $this->description = $description;
         return $this;
     }
 
-    public function getProductId(): ?int
+    public function getConfigurator(): Configurator
     {
-        return $this->productId;
+        return $this->configurator;
     }
 
-    public function setProductId(?int $productId): ProductChoice
+    public function setConfigurator(Configurator $configurator): Step
     {
-        $this->productId = $productId;
-        return $this;
-    }
-
-    public function isDefault(): bool
-    {
-        return $this->isDefault;
-    }
-
-    public function setIsDefault(bool $isDefault): ProductChoice
-    {
-        $this->isDefault = $isDefault;
-        return $this;
-    }
-
-    public function getStep(): Step
-    {
-        return $this->step;
-    }
-
-    public function setStep(Step $step): ProductChoice
-    {
-        $this->step = $step;
+        $this->configurator = $configurator;
         return $this;
     }
 
     /**
-     * @return DisplayCondition[]
-     *
-     * @throws ProductChoiceConstraintException
-     * @throws StepConstraintException
+     * @return Collection
      */
-    public function getDisplayConditions(): array
+    public function getProductChoices(): Collection
     {
-        $arr = [];
-
-        foreach ($this->displayConditions as $condition) {
-            $arr[] = DisplayCondition::fromArray($condition ?: []);
-        }
-
-        return $arr;
+        return $this->productChoices;
     }
 
     /**
-     * @param DisplayCondition[] $displayConditions
-     *
-     * @return $this
+     * @param Collection $productChoices
+     * @return Step
      */
-    public function setDisplayConditions(array $displayConditions): ProductChoice
+    public function setProductChoices(Collection $productChoices): Step
     {
-        $conditionsMap = [];
-        $uniqueConditions = [];
-
-        foreach ($displayConditions as $condition) {
-            $value = $condition->getValue();
-
-            $key = $value['step'] . '_' . $value['choice'];
-
-            if (isset($conditionsMap[$key])) {
-                continue;
-            }
-
-            $conditionsMap[$key] = true;
-            $uniqueConditions[] = $value;
+        foreach ($this->productChoices as $productChoice) {
+            $this->removeProductChoice($productChoice);
         }
 
-        $this->displayConditions = $uniqueConditions;
+        foreach ($productChoices as $productChoice) {
+            $this->addProductChoice($productChoice);
+        }
 
+        return $this;
+    }
+
+    public function getPosition(): int
+    {
+        return $this->position;
+    }
+
+    public function setPosition(int $position): Step
+    {
+        $this->position = $position;
         return $this;
     }
 
@@ -297,7 +286,7 @@ class ProductChoice
         return $this->reduction;
     }
 
-    public function setReduction(float $reduction): ProductChoice
+    public function setReduction(float $reduction): Step
     {
         $this->reduction = $reduction;
         return $this;
@@ -308,7 +297,7 @@ class ProductChoice
         return $this->reductionTax;
     }
 
-    public function setReductionTax(bool $reductionTax): ProductChoice
+    public function setReductionTax(bool $reductionTax): Step
     {
         $this->reductionTax = $reductionTax;
         return $this;
@@ -319,25 +308,18 @@ class ProductChoice
         return $this->reductionType;
     }
 
-    public function setReductionType(string $reductionType): ProductChoice
+    public function setReductionType(string $reductionType): Step
     {
         $this->reductionType = $reductionType;
         return $this;
     }
 
-    /**
-     * @return DateTimeInterface
-     */
     public function getDateAdd(): ?DateTimeInterface
     {
         return $this->dateAdd;
     }
 
-    /**
-     * @param DateTimeInterface $dateAdd
-     * @return ProductChoice
-     */
-    public function setDateAdd(DateTimeInterface $dateAdd)
+    public function setDateAdd(DateTimeInterface $dateAdd): Step
     {
         $this->dateAdd = $dateAdd;
         return $this;
@@ -348,19 +330,9 @@ class ProductChoice
         return $this->dateUpd;
     }
 
-    public function setDateUpd(DateTimeInterface $dateUpd): ProductChoice
+    public function setDateUpd(DateTimeInterface $dateUpd): Step
     {
         $this->dateUpd = $dateUpd;
         return $this;
-    }
-
-    public function getQuantityRule(): QuantityRule
-    {
-        return QuantityRule::fromArray($this->quantityRule ?: []);
-    }
-
-    public function setQuantityRule(QuantityRule $rule): void
-    {
-        $this->quantityRule = $rule->getValue();
     }
 }

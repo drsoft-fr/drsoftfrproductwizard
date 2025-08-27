@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace DrSoftFr\Module\ProductWizard\UI\Admin\Controller;
 
 use Doctrine\ORM\EntityManagerInterface;
+use DrSoftFr\Module\ProductWizard\Domain\Entity\Configurator;
 use DrSoftFr\Module\ProductWizard\Domain\Repository\ConfiguratorRepositoryInterface;
-use DrSoftFr\Module\ProductWizard\Entity\Configurator;
 use DrSoftFr\PrestaShopModuleHelper\Domain\Asset\Package;
 use DrSoftFr\PrestaShopModuleHelper\Domain\Asset\VersionStrategy\JsonManifestVersionStrategy;
 use drsoftfrproductwizard;

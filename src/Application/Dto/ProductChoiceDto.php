@@ -2,7 +2,7 @@
 
 namespace DrSoftFr\Module\ProductWizard\Application\Dto;
 
-use DrSoftFr\Module\ProductWizard\Entity\ProductChoice;
+use DrSoftFr\Module\ProductWizard\Domain\Entity\ProductChoice;
 use DrSoftFr\Module\ProductWizard\Exception\ProductChoice\ProductChoiceConstraintException;
 
 final class ProductChoiceDto

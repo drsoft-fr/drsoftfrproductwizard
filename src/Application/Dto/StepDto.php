@@ -2,7 +2,7 @@
 
 namespace DrSoftFr\Module\ProductWizard\Application\Dto;
 
-use DrSoftFr\Module\ProductWizard\Entity\Step;
+use DrSoftFr\Module\ProductWizard\Domain\Entity\Step;
 
 final class StepDto
 {
