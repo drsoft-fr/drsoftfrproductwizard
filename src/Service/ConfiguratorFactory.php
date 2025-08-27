@@ -10,12 +10,12 @@ use DrSoftFr\Module\ProductWizard\Domain\Entity\Configurator;
 use DrSoftFr\Module\ProductWizard\Domain\Entity\ProductChoice;
 use DrSoftFr\Module\ProductWizard\Domain\Entity\Step;
 use DrSoftFr\Module\ProductWizard\Domain\Repository\ConfiguratorRepositoryInterface;
+use DrSoftFr\Module\ProductWizard\Domain\ValueObject\ProductChoice\DisplayCondition;
+use DrSoftFr\Module\ProductWizard\Domain\ValueObject\ProductChoice\QuantityRule;
 use DrSoftFr\Module\ProductWizard\Exception\Configurator\ConfiguratorNotFoundException;
 use DrSoftFr\Module\ProductWizard\Exception\ProductChoice\ProductChoiceConstraintException;
 use DrSoftFr\Module\ProductWizard\Exception\Step\StepConstraintException;
 use Doctrine\Common\Collections\ArrayCollection;
-use DrSoftFr\Module\ProductWizard\ValueObject\ProductChoice\DisplayCondition;
-use DrSoftFr\Module\ProductWizard\ValueObject\ProductChoice\QuantityRule;
 
 final class ConfiguratorFactory
 {

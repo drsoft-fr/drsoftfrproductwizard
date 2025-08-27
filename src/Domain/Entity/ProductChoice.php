@@ -6,10 +6,10 @@ use DateTime;
 use DateTimeInterface;
 use Doctrine\ORM\Mapping as ORM;
 use DrSoftFr\Module\ProductWizard\Config as Configuration;
+use DrSoftFr\Module\ProductWizard\Domain\ValueObject\ProductChoice\DisplayCondition;
+use DrSoftFr\Module\ProductWizard\Domain\ValueObject\ProductChoice\QuantityRule;
 use DrSoftFr\Module\ProductWizard\Exception\ProductChoice\ProductChoiceConstraintException;
 use DrSoftFr\Module\ProductWizard\Exception\Step\StepConstraintException;
-use DrSoftFr\Module\ProductWizard\ValueObject\ProductChoice\DisplayCondition;
-use DrSoftFr\Module\ProductWizard\ValueObject\ProductChoice\QuantityRule;
 use DrSoftFr\PrestaShopModuleHelper\Traits\ClassHydrateTrait;
 
 /**

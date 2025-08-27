@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
+use DrSoftFr\Module\ProductWizard\Domain\ValueObject\Configurator\ConfiguratorId;
 use DrSoftFr\Module\ProductWizard\Exception\Configurator\ConfiguratorConstraintException;
 use DrSoftFr\Module\ProductWizard\Exception\Configurator\ConfiguratorNotFoundException;
 use DrSoftFr\Module\ProductWizard\Service\ConfiguratorPresenterService;
-use DrSoftFr\Module\ProductWizard\ValueObject\Configurator\ConfiguratorId;
 
 // @TODO il faut aussi que le client est le droit de voir le produit, ou sinon on masque le choix ?
 

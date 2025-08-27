@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace DrSoftFr\Module\ProductWizard\ValueObject\ProductChoice;
+namespace DrSoftFr\Module\ProductWizard\Domain\ValueObject\ProductChoice;
 
 final class Reduction
 {

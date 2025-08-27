@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace DrSoftFr\Module\ProductWizard\Service;
 
-use DrSoftFr\Module\ProductWizard\ValueObject\ProductChoice\QuantityRule;
-use DrSoftFr\Module\ProductWizard\ValueObject\ProductChoice\QuantityRuleMode;
-use DrSoftFr\Module\ProductWizard\ValueObject\ProductChoice\QuantityRuleRound;
+use DrSoftFr\Module\ProductWizard\Domain\ValueObject\ProductChoice\QuantityRule;
+use DrSoftFr\Module\ProductWizard\Domain\ValueObject\ProductChoice\QuantityRuleMode;
+use DrSoftFr\Module\ProductWizard\Domain\ValueObject\ProductChoice\QuantityRuleRound;
 
 final class QuantityRuleApplier
 {

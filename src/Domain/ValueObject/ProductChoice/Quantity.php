@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace DrSoftFr\Module\ProductWizard\ValueObject\Configurator;
+namespace DrSoftFr\Module\ProductWizard\Domain\ValueObject\ProductChoice;
 
-use DrSoftFr\Module\ProductWizard\Exception\Configurator\ConfiguratorConstraintException;
+use DrSoftFr\Module\ProductWizard\Exception\ProductChoice\ProductChoiceConstraintException;
 
-final class ConfiguratorId
+final class Quantity
 {
     private readonly int $value;
 
     /**
-     * @throws ConfiguratorConstraintException
+     * @throws ProductChoiceConstraintException
      */
     public function __construct(int $value)
     {
@@ -21,7 +21,7 @@ final class ConfiguratorId
     }
 
     /**
-     * @throws ConfiguratorConstraintException
+     * @throws ProductChoiceConstraintException
      */
     public static function fromInt(int $value): self
     {
@@ -33,7 +33,7 @@ final class ConfiguratorId
         return $this->value;
     }
 
-    public function equals(ConfiguratorId $other): bool
+    public function equals(Quantity $other): bool
     {
         return $this->value === $other->value;
     }
@@ -44,14 +44,14 @@ final class ConfiguratorId
     }
 
     /**
-     * @throws ConfiguratorConstraintException
+     * @throws ProductChoiceConstraintException
      */
     private static function assertIntegerIsGreaterThanZero(int $value): void
     {
         if (0 >= $value) {
-            throw new ConfiguratorConstraintException(
-                sprintf('Invalid configurator id "%s".', var_export($value, true)),
-                ConfiguratorConstraintException::INVALID_ID);
+            throw new ProductChoiceConstraintException(
+                sprintf('Invalid product choice quantity "%s".', var_export($value, true)),
+                ProductChoiceConstraintException::INVALID_QUANTITY);
         }
     }
 }

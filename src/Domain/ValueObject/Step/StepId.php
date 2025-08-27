@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace DrSoftFr\Module\ProductWizard\ValueObject\Step;
+namespace DrSoftFr\Module\ProductWizard\Domain\ValueObject\Step;
 
 use DrSoftFr\Module\ProductWizard\Exception\Step\StepConstraintException;
 
