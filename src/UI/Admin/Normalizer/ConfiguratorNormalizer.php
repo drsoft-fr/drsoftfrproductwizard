@@ -1,10 +1,11 @@
 <?php
 
-namespace DrSoftFr\Module\ProductWizard\Normalizer;
+namespace DrSoftFr\Module\ProductWizard\UI\Admin\Normalizer;
 
 use DrSoftFr\Module\ProductWizard\Application\Dto\ConfiguratorDto;
 use DrSoftFr\Module\ProductWizard\Application\Dto\ProductChoiceDto;
 use DrSoftFr\Module\ProductWizard\Application\Dto\StepDto;
+use DrSoftFr\Module\ProductWizard\Application\Port\Security\HtmlSanitizerInterface;
 use DrSoftFr\Module\ProductWizard\Domain\Exception\ProductChoice\ProductChoiceConstraintException;
 use DrSoftFr\Module\ProductWizard\Domain\Exception\Step\StepConstraintException;
 use DrSoftFr\Module\ProductWizard\Domain\ValueObject\ProductChoice\DisplayCondition;
@@ -12,6 +13,12 @@ use DrSoftFr\Module\ProductWizard\Domain\ValueObject\ProductChoice\QuantityRule;
 
 final class ConfiguratorNormalizer
 {
+    public function __construct(
+        private readonly HtmlSanitizerInterface $htmlSanitizer
+    )
+    {
+    }
+
     /**
      * @throws ProductChoiceConstraintException
      * @throws StepConstraintException
@@ -21,7 +28,7 @@ final class ConfiguratorNormalizer
         $dto = new ConfiguratorDto();
         $dto->id = $data['id'] ?? null;
         $dto->name = $data['name'] ?? '';
-        $dto->description = false === empty($data['description']) ? $this->sanitizeHtml($data['description']) : null;
+        $dto->description = false === empty($data['description']) ? $this->htmlSanitizer->sanitize($data['description']) : null;
         $dto->active = (bool)($data['active'] ?? true);
         $dto->reduction = (float)($data['reduction'] ?? 0);
         $dto->reductionTax = (bool)($data['reduction_tax'] ?? true);
@@ -31,7 +38,7 @@ final class ConfiguratorNormalizer
             $stepDto = new StepDto();
             $stepDto->id = $stepData['id'] ?? null;
             $stepDto->label = $stepData['label'] ?? '';
-            $stepDto->description = false === empty($stepData['description']) ? $this->sanitizeHtml($stepData['description']) : null;
+            $stepDto->description = false === empty($stepData['description']) ? $this->htmlSanitizer->sanitize($stepData['description']) : null;
             $stepDto->position = (int)($stepData['position'] ?? 0);
             $stepDto->active = (bool)($stepData['active'] ?? true);
             $stepDto->reduction = (float)($stepData['reduction'] ?? 0);
@@ -42,7 +49,7 @@ final class ConfiguratorNormalizer
                 $choiceDto = new ProductChoiceDto();
                 $choiceDto->id = $choiceData['id'] ?? null;
                 $choiceDto->label = $choiceData['label'] ?? '';
-                $choiceDto->description = false === empty($choiceData['description']) ? $this->sanitizeHtml($choiceData['description']) : null;
+                $choiceDto->description = false === empty($choiceData['description']) ? $this->htmlSanitizer->sanitize($choiceData['description']) : null;
                 $choiceDto->productId = false === empty($choiceData['product_id']) ? (int)$choiceData['product_id'] : null;
                 $choiceDto->isDefault = (bool)($choiceData['is_default'] ?? false);
                 $choiceDto->active = (bool)($choiceData['active'] ?? true);
@@ -103,53 +110,5 @@ final class ConfiguratorNormalizer
                 ], $s->productChoices),
             ], $dto->steps),
         ];
-    }
-
-    /**
-     * Sanitizes the given HTML input by removing or neutralizing potentially harmful content.
-     *
-     * @param string|null $value The HTML input to sanitize. Can be null or an empty string.
-     *
-     * @return string|null The sanitized HTML string, or null if the input was null or an empty string.
-     */
-    private function sanitizeHtml(?string $value): ?string
-    {
-        if (null === $value) {
-            return null;
-        }
-
-        $raw = trim((string)$value);
-
-        // Considers content that does not contain visible text (tags alone, spaces, &nbsp;, etc.) to be “empty.”
-        if ($this->isHtmlVisuallyEmpty($raw)) {
-            return null;
-        }
-
-        $clean = \Tools::purifyHTML($raw, null, true);
-
-        // Revalidate after purification to handle cases such as <p><br></p>, &nbsp;, etc.
-        if ($this->isHtmlVisuallyEmpty($clean)) {
-            return null;
-        }
-
-        return $clean;
-    }
-
-    /**
-     * Indicates whether HTML is visually empty (only tags, spaces, NBSP, or zero-width characters).
-     */
-    private function isHtmlVisuallyEmpty(string $html): bool
-    {
-        if ('' === $html) {
-            return true;
-        }
-
-        // Normalize NBSPs and zero-width characters
-        $normalized = preg_replace('/\x{00A0}|\x{200B}|\x{200C}|\x{200D}|\x{FEFF}|&nbsp;/u', ' ', $html);
-
-        // Remove tags and decode HTML entities to keep only visible text
-        $text = trim(html_entity_decode(strip_tags((string)$normalized), ENT_QUOTES | ENT_HTML5));
-
-        return '' === $text;
     }
 }

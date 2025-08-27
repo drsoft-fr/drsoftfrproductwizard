@@ -8,9 +8,9 @@ use Doctrine\ORM\EntityManagerInterface;
 use DrSoftFr\Module\ProductWizard\Application\Dto\ConfiguratorDto;
 use DrSoftFr\Module\ProductWizard\Domain\Repository\ConfiguratorRepositoryInterface;
 use DrSoftFr\Module\ProductWizard\Entity\Configurator;
-use DrSoftFr\Module\ProductWizard\Normalizer\ConfiguratorNormalizer;
 use DrSoftFr\Module\ProductWizard\Service\ConfiguratorFactory;
 use DrSoftFr\Module\ProductWizard\Service\ConfiguratorValidatorService;
+use DrSoftFr\Module\ProductWizard\UI\Admin\Normalizer\ConfiguratorNormalizer;
 use PrestaShop\PrestaShop\Adapter\Product\Repository\ProductRepository;
 use PrestaShop\PrestaShop\Core\Domain\Language\ValueObject\LanguageId;
 use PrestaShop\PrestaShop\Core\Domain\Product\ValueObject\ProductId;
@@ -54,8 +54,8 @@ final class ConfiguratorApiController extends FrameworkBundleAdminController
      * @return JsonResponse
      */
     public function getAction(
-        Request                $request,
-        ConfiguratorNormalizer $normalizer,
+        Request                         $request,
+        ConfiguratorNormalizer          $normalizer,
         ConfiguratorRepositoryInterface $repository
     ): JsonResponse
     {
