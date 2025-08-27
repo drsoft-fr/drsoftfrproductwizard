@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace DrSoftFr\Module\ProductWizard\UI\Admin\Controller;
 
 use Doctrine\ORM\EntityManagerInterface;
+use DrSoftFr\Module\ProductWizard\Domain\Repository\ConfiguratorRepositoryInterface;
 use DrSoftFr\Module\ProductWizard\Entity\Configurator;
-use DrSoftFr\Module\ProductWizard\Repository\ConfiguratorRepository;
 use DrSoftFr\PrestaShopModuleHelper\Domain\Asset\Package;
 use DrSoftFr\PrestaShopModuleHelper\Domain\Asset\VersionStrategy\JsonManifestVersionStrategy;
 use drsoftfrproductwizard;
@@ -54,13 +54,13 @@ final class ConfiguratorController extends FrameworkBundleAdminController
      * )
      *
      * @param Request $request
-     * @param ConfiguratorRepository $repository
+     * @param ConfiguratorRepositoryInterface $repository
      *
      * @return Response
      */
     public function indexAction(
-        Request                $request,
-        ConfiguratorRepository $repository
+        Request                         $request,
+        ConfiguratorRepositoryInterface $repository
     ): Response
     {
         return $this->render(self::TEMPLATE_FOLDER . 'home/index.html.twig', [

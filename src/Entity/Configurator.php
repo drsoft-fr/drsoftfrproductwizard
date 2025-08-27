@@ -12,7 +12,7 @@ use DrSoftFr\PrestaShopModuleHelper\Traits\ClassHydrateTrait;
 
 /**
  * @ORM\Table(name=Configuration::CONFIGURATOR_TABLE_NAME)
- * @ORM\Entity(repositoryClass="DrSoftFr\Module\ProductWizard\Repository\ConfiguratorRepository")
+ * @ORM\Entity(repositoryClass="DrSoftFr\Module\ProductWizard\Infrastructure\Persistence\Doctrine\ConfiguratorRepository")
  * @ORM\HasLifecycleCallbacks
  */
 class Configurator

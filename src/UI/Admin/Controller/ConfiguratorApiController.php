@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace DrSoftFr\Module\ProductWizard\UI\Admin\Controller;
 
 use Doctrine\ORM\EntityManagerInterface;
+use DrSoftFr\Module\ProductWizard\Domain\Repository\ConfiguratorRepositoryInterface;
 use DrSoftFr\Module\ProductWizard\Dto\ConfiguratorDto;
 use DrSoftFr\Module\ProductWizard\Entity\Configurator;
 use DrSoftFr\Module\ProductWizard\Normalizer\ConfiguratorNormalizer;
-use DrSoftFr\Module\ProductWizard\Repository\ConfiguratorRepository;
 use DrSoftFr\Module\ProductWizard\Service\ConfiguratorFactory;
 use DrSoftFr\Module\ProductWizard\Service\ConfiguratorValidatorService;
 use PrestaShop\PrestaShop\Adapter\Product\Repository\ProductRepository;
@@ -49,14 +49,14 @@ final class ConfiguratorApiController extends FrameworkBundleAdminController
      * )
      *
      * @param Request $request
-     * @param ConfiguratorRepository $repository
+     * @param ConfiguratorRepositoryInterface $repository
      *
      * @return JsonResponse
      */
     public function getAction(
         Request                $request,
         ConfiguratorNormalizer $normalizer,
-        ConfiguratorRepository $repository
+        ConfiguratorRepositoryInterface $repository
     ): JsonResponse
     {
         $configuratorId = $request->query->get('configuratorId');

@@ -3,6 +3,7 @@
 namespace DrSoftFr\Module\ProductWizard\Service;
 
 use Doctrine\ORM\EntityManagerInterface;
+use DrSoftFr\Module\ProductWizard\Domain\Repository\ConfiguratorRepositoryInterface;
 use DrSoftFr\Module\ProductWizard\Dto\ConfiguratorDto;
 use DrSoftFr\Module\ProductWizard\Dto\ProductChoiceDto;
 use DrSoftFr\Module\ProductWizard\Dto\StepDto;
@@ -12,7 +13,6 @@ use DrSoftFr\Module\ProductWizard\Entity\ProductChoice;
 use DrSoftFr\Module\ProductWizard\Exception\Configurator\ConfiguratorNotFoundException;
 use DrSoftFr\Module\ProductWizard\Exception\ProductChoice\ProductChoiceConstraintException;
 use DrSoftFr\Module\ProductWizard\Exception\Step\StepConstraintException;
-use DrSoftFr\Module\ProductWizard\Repository\ConfiguratorRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use DrSoftFr\Module\ProductWizard\ValueObject\ProductChoice\DisplayCondition;
 use DrSoftFr\Module\ProductWizard\ValueObject\ProductChoice\QuantityRule;
@@ -20,8 +20,8 @@ use DrSoftFr\Module\ProductWizard\ValueObject\ProductChoice\QuantityRule;
 final class ConfiguratorFactory
 {
     public function __construct(
-        private readonly EntityManagerInterface $em,
-        private readonly ConfiguratorRepository $configuratorRepository
+        private readonly EntityManagerInterface          $em,
+        private readonly ConfiguratorRepositoryInterface $configuratorRepository
     )
     {
     }

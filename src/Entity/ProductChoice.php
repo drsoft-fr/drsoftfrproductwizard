@@ -14,7 +14,7 @@ use DrSoftFr\PrestaShopModuleHelper\Traits\ClassHydrateTrait;
 
 /**
  * @ORM\Table(name=Configuration::PRODUCT_CHOICE_TABLE_NAME)
- * @ORM\Entity(repositoryClass="DrSoftFr\Module\ProductWizard\Repository\ProductChoiceRepository")
+ * @ORM\Entity(repositoryClass="DrSoftFr\Module\ProductWizard\Infrastructure\Persistence\Doctrine\ProductChoiceRepository")
  * @ORM\HasLifecycleCallbacks
  */
 class ProductChoice

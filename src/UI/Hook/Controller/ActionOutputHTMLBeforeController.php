@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace DrSoftFr\Module\ProductWizard\UI\Hook\Controller;
 
 use DrSoftFr\Module\ProductWizard\Config;
+use DrSoftFr\Module\ProductWizard\Domain\Repository\ConfiguratorRepositoryInterface;
 use DrSoftFr\Module\ProductWizard\Entity\Configurator;
-use DrSoftFr\Module\ProductWizard\Repository\ConfiguratorRepository;
 use DrSoftFr\PrestaShopModuleHelper\Controller\Hook\AbstractHookController;
 use DrSoftFr\PrestaShopModuleHelper\Controller\Hook\HookControllerInterface;
 use Exception;
@@ -14,7 +14,7 @@ use Throwable;
 
 final class ActionOutputHTMLBeforeController extends AbstractHookController implements HookControllerInterface
 {
-    private const CONFIGURATOR_REPOSITORY = 'drsoft_fr.module.product_wizard.repository.configurator_repository';
+    private const CONFIGURATOR_REPOSITORY = 'drsoft_fr.module.product_wizard.infrastructure.persistence.doctrine.configurator_repository';
     private const WIZARD_TAG_PATTERN = '/\[drsoft-fr-product-wizard id="(\d+)"]/';
     private const SCRIPT_TEMPLATE = '
         <div>
@@ -128,9 +128,9 @@ final class ActionOutputHTMLBeforeController extends AbstractHookController impl
     /**
      * @throws Exception
      */
-    private function getRepository(): ConfiguratorRepository
+    private function getRepository(): ConfiguratorRepositoryInterface
     {
-        /** @type ConfiguratorRepository */
+        /** @type ConfiguratorRepositoryInterface */
         return $this->module->get(self::CONFIGURATOR_REPOSITORY);
     }
 }

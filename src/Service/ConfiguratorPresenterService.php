@@ -3,12 +3,12 @@
 namespace DrSoftFr\Module\ProductWizard\Service;
 
 use Context;
+use DrSoftFr\Module\ProductWizard\Domain\Repository\ConfiguratorRepositoryInterface;
 use DrSoftFr\Module\ProductWizard\Dto\ConfiguratorDto;
 use DrSoftFr\Module\ProductWizard\Dto\ProductChoiceDto;
 use DrSoftFr\Module\ProductWizard\Dto\StepDto;
 use DrSoftFr\Module\ProductWizard\Entity\Configurator;
 use DrSoftFr\Module\ProductWizard\Exception\Configurator\ConfiguratorNotFoundException;
-use DrSoftFr\Module\ProductWizard\Repository\ConfiguratorRepository;
 use DrSoftFr\Module\ProductWizard\ValueObject\Configurator\ConfiguratorId;
 use DrSoftFr\Module\ProductWizard\ValueObject\ProductChoice\QuantityRule;
 use PrestaShop\PrestaShop\Adapter\Image\ImageRetriever;
@@ -31,12 +31,12 @@ final class ConfiguratorPresenterService
     private $context;
 
     /**
-     * @var ConfiguratorRepository
+     * @var ConfiguratorRepositoryInterface
      */
     private $repository;
 
     public function __construct(
-        ConfiguratorRepository $repository
+        ConfiguratorRepositoryInterface $repository
     )
     {
         $this->context = Context::getContext();

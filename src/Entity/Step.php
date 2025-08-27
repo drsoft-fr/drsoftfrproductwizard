@@ -12,7 +12,7 @@ use DrSoftFr\PrestaShopModuleHelper\Traits\ClassHydrateTrait;
 
 /**
  * @ORM\Table(name=Configuration::STEP_TABLE_NAME)
- * @ORM\Entity(repositoryClass="DrSoftFr\Module\ProductWizard\Repository\StepRepository")
+ * @ORM\Entity(repositoryClass="DrSoftFr\Module\ProductWizard\Infrastructure\Persistence\Doctrine\StepRepository")
  * @ORM\HasLifecycleCallbacks
  */
 class Step
