@@ -2,7 +2,7 @@ admin_drsoft_fr_product_wizard_configurator_index:
   path: /
   methods: [ GET ]
   defaults:
-    _controller: DrSoftFr\Module\ProductWizard\Controller\Admin\ConfiguratorController::indexAction
+    _controller: DrSoftFr\Module\ProductWizard\UI\Admin\Controller\ConfiguratorController::indexAction
     _legacy_controller: AdminDrSoftFrProductWizardConfigurator
     _legacy_link:
       - AdminDrSoftFrProductWizardConfigurator
@@ -12,7 +12,7 @@ admin_drsoft_fr_product_wizard_configurator_new:
   path: /new
   methods: [ GET, POST ]
   defaults:
-    _controller: DrSoftFr\Module\ProductWizard\Controller\Admin\ConfiguratorController::newAction
+    _controller: DrSoftFr\Module\ProductWizard\UI\Admin\Controller\ConfiguratorController::newAction
     _legacy_controller: AdminDrSoftFrProductWizardConfigurator
     _legacy_link: AdminDrSoftFrProductWizardConfigurator:new
 
@@ -20,7 +20,7 @@ admin_drsoft_fr_product_wizard_configurator_edit:
   path: /{id}/edit
   methods: [ GET, POST ]
   defaults:
-    _controller: DrSoftFr\Module\ProductWizard\Controller\Admin\ConfiguratorController::editAction
+    _controller: DrSoftFr\Module\ProductWizard\UI\Admin\Controller\ConfiguratorController::editAction
     _legacy_controller: AdminDrSoftFrProductWizardConfigurator
     _legacy_link: AdminDrSoftFrProductWizardConfigurator:edit
     _legacy_parameters:
@@ -32,7 +32,7 @@ admin_drsoft_fr_product_wizard_configurator_delete:
   path: /{id}/delete
   methods: [ GET, POST ]
   defaults:
-    _controller: DrSoftFr\Module\ProductWizard\Controller\Admin\ConfiguratorController::deleteAction
+    _controller: DrSoftFr\Module\ProductWizard\UI\Admin\Controller\ConfiguratorController::deleteAction
     _legacy_controller: AdminDrSoftFrProductWizardConfigurator
     _legacy_link: AdminDrSoftFrProductWizardConfigurator:delete
     _legacy_parameters:

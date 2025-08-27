@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace DrSoftFr\Module\ProductWizard\Controller\Hook;
+namespace DrSoftFr\Module\ProductWizard\UI\Hook\Controller;
 
 use DrSoftFr\Module\ProductWizard\Config;
 use DrSoftFr\PrestaShopModuleHelper\Controller\Hook\AbstractHookController;

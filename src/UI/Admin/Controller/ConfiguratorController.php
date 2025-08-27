@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace DrSoftFr\Module\ProductWizard\Controller\Admin;
+namespace DrSoftFr\Module\ProductWizard\UI\Admin\Controller;
 
 use Doctrine\ORM\EntityManagerInterface;
 use DrSoftFr\Module\ProductWizard\Entity\Configurator;
@@ -26,7 +26,7 @@ final class ConfiguratorController extends FrameworkBundleAdminController
 {
     const TAB_CLASS_NAME = 'AdminDrSoftFrProductWizardConfigurator';
     const PAGE_INDEX_ROUTE = 'admin_drsoft_fr_product_wizard_configurator_index';
-    const TEMPLATE_FOLDER = '@Modules/drsoftfrproductwizard/views/templates/admin/configurator/';
+    const TEMPLATE_FOLDER = '@Modules/drsoftfrproductwizard/src/UI/Admin/View/configurator/';
 
     /**
      * @var Package

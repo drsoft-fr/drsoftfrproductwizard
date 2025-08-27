@@ -2,7 +2,7 @@ admin_drsoft_fr_product_wizard_configurator_api_get:
   path: /
   methods: [ GET ]
   defaults:
-    _controller: DrSoftFr\Module\ProductWizard\Controller\Admin\ConfiguratorApiController::getAction
+    _controller: DrSoftFr\Module\ProductWizard\UI\Admin\Controller\ConfiguratorApiController::getAction
     _legacy_controller: AdminDrSoftFrProductWizardConfiguratorApi
     _legacy_link: AdminDrSoftFrProductWizardConfiguratorApi:get
 
@@ -10,7 +10,7 @@ admin_drsoft_fr_product_wizard_configurator_api_save:
   path: /save
   methods: [ POST ]
   defaults:
-    _controller: DrSoftFr\Module\ProductWizard\Controller\Admin\ConfiguratorApiController::saveAction
+    _controller: DrSoftFr\Module\ProductWizard\UI\Admin\Controller\ConfiguratorApiController::saveAction
     _legacy_controller: AdminDrSoftFrProductWizardConfiguratorApi
     _legacy_link: AdminDrSoftFrProductWizardConfiguratorApi:save
 
@@ -18,7 +18,7 @@ admin_drsoft_fr_product_wizard_configurator_api_product_search:
   path: /product-search
   methods: [ GET ]
   defaults:
-    _controller: DrSoftFr\Module\ProductWizard\Controller\Admin\ConfiguratorApiController::productSearchAction
+    _controller: DrSoftFr\Module\ProductWizard\UI\Admin\Controller\ConfiguratorApiController::productSearchAction
     _legacy_controller: AdminDrSoftFrProductWizardConfiguratorApi
     _legacy_link: AdminDrSoftFrProductWizardConfiguratorApi:productSearch
 
@@ -26,6 +26,6 @@ admin_drsoft_fr_product_wizard_configurator_api_product:
   path: /product
   methods: [ GET ]
   defaults:
-    _controller: DrSoftFr\Module\ProductWizard\Controller\Admin\ConfiguratorApiController::getProductAction
+    _controller: DrSoftFr\Module\ProductWizard\UI\Admin\Controller\ConfiguratorApiController::getProductAction
     _legacy_controller: AdminDrSoftFrProductWizardConfiguratorApi
     _legacy_link: AdminDrSoftFrProductWizardConfiguratorApi:getProduct

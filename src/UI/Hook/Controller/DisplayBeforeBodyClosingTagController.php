@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace DrSoftFr\Module\ProductWizard\Controller\Hook;
+namespace DrSoftFr\Module\ProductWizard\UI\Hook\Controller;
 
 use DrSoftFr\Module\ProductWizard\Config;
 use DrSoftFr\PrestaShopModuleHelper\Controller\Hook\AbstractHookController;
@@ -78,7 +78,7 @@ final class DisplayBeforeBodyClosingTagController extends AbstractHookController
                 'url' => $url,
             ]);
 
-            return $this->module->display($this->file, '/views/templates/hook/display_before_body_closing_tag.tpl');
+            return $this->module->display($this->file, '/src/UI/Hook/View/display_before_body_closing_tag.tpl');
         } catch (Throwable $t) {
             $this->handleException($t);
 

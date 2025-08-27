@@ -2,12 +2,12 @@ imports:
   - { resource: ../common.yml }
 
 services:
-  DrSoftFr\Module\ProductWizard\Controller\Admin\ConfiguratorController:
+  DrSoftFr\Module\ProductWizard\UI\Admin\Controller\ConfiguratorController:
     tags: [ 'controller.service_arguments' ]
     arguments:
       - '@drsoft_fr.module.product_wizard.module'
 
-  DrSoftFr\Module\ProductWizard\Controller\Admin\ConfiguratorApiController:
+  DrSoftFr\Module\ProductWizard\UI\Admin\Controller\ConfiguratorApiController:
     tags: [ 'controller.service_arguments' ]
     arguments:
       - '@=service("prestashop.adapter.legacy.context").getLanguage().id'

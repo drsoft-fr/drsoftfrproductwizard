@@ -3,12 +3,12 @@
 declare(strict_types=1);
 
 use DrSoftFr\Module\ProductWizard\Config;
-use DrSoftFr\Module\ProductWizard\Controller\Admin\ConfiguratorApiController;
-use DrSoftFr\Module\ProductWizard\Controller\Admin\ConfiguratorController;
-use DrSoftFr\Module\ProductWizard\Controller\Hook\ActionFrontControllerSetMediaController;
-use DrSoftFr\Module\ProductWizard\Controller\Hook\ActionFrontControllerSetVariablesController;
-use DrSoftFr\Module\ProductWizard\Controller\Hook\ActionOutputHTMLBeforeController;
-use DrSoftFr\Module\ProductWizard\Controller\Hook\DisplayBeforeBodyClosingTagController;
+use DrSoftFr\Module\ProductWizard\UI\Admin\Controller\ConfiguratorApiController;
+use DrSoftFr\Module\ProductWizard\UI\Admin\Controller\ConfiguratorController;
+use DrSoftFr\Module\ProductWizard\UI\Hook\Controller\ActionFrontControllerSetMediaController;
+use DrSoftFr\Module\ProductWizard\UI\Hook\Controller\ActionFrontControllerSetVariablesController;
+use DrSoftFr\Module\ProductWizard\UI\Hook\Controller\ActionOutputHTMLBeforeController;
+use DrSoftFr\Module\ProductWizard\UI\Hook\Controller\DisplayBeforeBodyClosingTagController;
 use DrSoftFr\Module\ProductWizard\Install\Factory\InstallerFactory;
 use DrSoftFr\Module\ProductWizard\Install\Installer;
 use PrestaShop\PrestaShop\Core\Cache\Clearer\CacheClearerChain;
