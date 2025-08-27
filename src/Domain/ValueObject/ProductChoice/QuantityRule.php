@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace DrSoftFr\Module\ProductWizard\Domain\ValueObject\ProductChoice;
 
-use DrSoftFr\Module\ProductWizard\Exception\ProductChoice\ProductChoiceConstraintException;
-use DrSoftFr\Module\ProductWizard\Exception\Step\StepConstraintException;
+use DrSoftFr\Module\ProductWizard\Domain\Exception\ProductChoice\ProductChoiceConstraintException;
+use DrSoftFr\Module\ProductWizard\Domain\Exception\Step\StepConstraintException;
 
 final class QuantityRule
 {

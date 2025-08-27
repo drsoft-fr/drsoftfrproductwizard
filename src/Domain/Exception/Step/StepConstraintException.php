@@ -1,6 +1,6 @@
 <?php
 
-namespace DrSoftFr\Module\ProductWizard\Exception\Step;
+namespace DrSoftFr\Module\ProductWizard\Domain\Exception\Step;
 
 /**
  * Is thrown when Step constraints are violated

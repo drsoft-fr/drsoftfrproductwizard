@@ -1,6 +1,6 @@
 <?php
 
-namespace DrSoftFr\Module\ProductWizard\Exception\Configurator;
+namespace DrSoftFr\Module\ProductWizard\Domain\Exception\Configurator;
 
 /**
  * Is thrown when Configurator constraints are violated

@@ -5,10 +5,10 @@ namespace DrSoftFr\Module\ProductWizard\Normalizer;
 use DrSoftFr\Module\ProductWizard\Application\Dto\ConfiguratorDto;
 use DrSoftFr\Module\ProductWizard\Application\Dto\ProductChoiceDto;
 use DrSoftFr\Module\ProductWizard\Application\Dto\StepDto;
+use DrSoftFr\Module\ProductWizard\Domain\Exception\ProductChoice\ProductChoiceConstraintException;
+use DrSoftFr\Module\ProductWizard\Domain\Exception\Step\StepConstraintException;
 use DrSoftFr\Module\ProductWizard\Domain\ValueObject\ProductChoice\DisplayCondition;
 use DrSoftFr\Module\ProductWizard\Domain\ValueObject\ProductChoice\QuantityRule;
-use DrSoftFr\Module\ProductWizard\Exception\ProductChoice\ProductChoiceConstraintException;
-use DrSoftFr\Module\ProductWizard\Exception\Step\StepConstraintException;
 
 final class ConfiguratorNormalizer
 {

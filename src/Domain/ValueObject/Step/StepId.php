@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace DrSoftFr\Module\ProductWizard\Domain\ValueObject\Step;
 
-use DrSoftFr\Module\ProductWizard\Exception\Step\StepConstraintException;
+use DrSoftFr\Module\ProductWizard\Domain\Exception\Step\StepConstraintException;
 
 final class StepId
 {

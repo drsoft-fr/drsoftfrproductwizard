@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace DrSoftFr\Module\ProductWizard\Domain\ValueObject\Configurator;
 
-use DrSoftFr\Module\ProductWizard\Exception\Configurator\ConfiguratorConstraintException;
+use DrSoftFr\Module\ProductWizard\Domain\Exception\Configurator\ConfiguratorConstraintException;
 
 final class ConfiguratorId
 {

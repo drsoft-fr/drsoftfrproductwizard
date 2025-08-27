@@ -1,6 +1,6 @@
 <?php
 
-namespace DrSoftFr\Module\ProductWizard\Exception\ProductChoice;
+namespace DrSoftFr\Module\ProductWizard\Domain\Exception\ProductChoice;
 
 /**
  * Is thrown when ProductChoice constraints are violated

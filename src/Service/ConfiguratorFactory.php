@@ -6,15 +6,15 @@ use Doctrine\ORM\EntityManagerInterface;
 use DrSoftFr\Module\ProductWizard\Application\Dto\ConfiguratorDto;
 use DrSoftFr\Module\ProductWizard\Application\Dto\ProductChoiceDto;
 use DrSoftFr\Module\ProductWizard\Application\Dto\StepDto;
+use DrSoftFr\Module\ProductWizard\Application\Exception\Configurator\ConfiguratorNotFoundException;
 use DrSoftFr\Module\ProductWizard\Domain\Entity\Configurator;
 use DrSoftFr\Module\ProductWizard\Domain\Entity\ProductChoice;
 use DrSoftFr\Module\ProductWizard\Domain\Entity\Step;
+use DrSoftFr\Module\ProductWizard\Domain\Exception\ProductChoice\ProductChoiceConstraintException;
+use DrSoftFr\Module\ProductWizard\Domain\Exception\Step\StepConstraintException;
 use DrSoftFr\Module\ProductWizard\Domain\Repository\ConfiguratorRepositoryInterface;
 use DrSoftFr\Module\ProductWizard\Domain\ValueObject\ProductChoice\DisplayCondition;
 use DrSoftFr\Module\ProductWizard\Domain\ValueObject\ProductChoice\QuantityRule;
-use DrSoftFr\Module\ProductWizard\Exception\Configurator\ConfiguratorNotFoundException;
-use DrSoftFr\Module\ProductWizard\Exception\ProductChoice\ProductChoiceConstraintException;
-use DrSoftFr\Module\ProductWizard\Exception\Step\StepConstraintException;
 use Doctrine\Common\Collections\ArrayCollection;
 
 final class ConfiguratorFactory
@@ -26,6 +26,9 @@ final class ConfiguratorFactory
     {
     }
 
+    /**
+     * @throws ConfiguratorNotFoundException
+     */
     public function createOrUpdateFromDto(ConfiguratorDto $dto): Configurator
     {
         $isNew = empty($dto->id);
