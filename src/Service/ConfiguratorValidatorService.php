@@ -308,14 +308,14 @@ final class ConfiguratorValidatorService
         StepDto          $stepDto
     ): void
     {
-        if (false === in_array($qr['mode'], QuantityRule::ALLOWED_MODES)) {
+        if (false === in_array($qr['mode'], QuantityRuleMode::ALLOWED_MODES)) {
             throw new ProductChoiceConstraintException(
                 sprintf('Step “%s”: Choice “%s”, invalid mode.', $stepDto->label, $dto->label ?: ('#' . ($cIdx + 1))),
                 ProductChoiceConstraintException::INVALID_QUANTITY_RULE_MODE
             );
         }
 
-        if (null !== $dto->productId && QuantityRule::MODE_NONE === $qr['mode']) {
+        if (null !== $dto->productId && QuantityRuleMode::NONE === $qr['mode']) {
             throw new ProductChoiceConstraintException(
                 sprintf('Step “%s”: Choice “%s”, the mode cannot be NONE when a product is assigned.', $stepDto->label, $dto->label ?: ('#' . ($cIdx + 1))),
                 ProductChoiceConstraintException::INVALID_QUANTITY_RULE_MODE
