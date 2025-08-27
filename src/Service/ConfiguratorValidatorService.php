@@ -350,14 +350,14 @@ final class ConfiguratorValidatorService
             );
         }
 
-        if (false === $qr['locked'] && QuantityRule::MODE_NONE === $qr['mode']) {
+        if (false === $qr['locked'] && QuantityRuleMode::NONE === $qr['mode']) {
             throw new ProductChoiceConstraintException(
                 sprintf('Step “%s”: Choice “%s”, in NONE mode, locked should be defined.', $stepDto->label, $dto->label ?: ('#' . ($cIdx + 1))),
                 ProductChoiceConstraintException::INVALID_QUANTITY_RULE_LOCKED
             );
         }
 
-        if (false === $qr['locked'] && QuantityRule::MODE_EXPRESSION === $qr['mode']) {
+        if (false === $qr['locked'] && QuantityRuleMode::EXPRESSION === $qr['mode']) {
             throw new ProductChoiceConstraintException(
                 sprintf('Step “%s”: Choice “%s”, in EXPRESSION mode, locked should be defined.', $stepDto->label, $dto->label ?: ('#' . ($cIdx + 1))),
                 ProductChoiceConstraintException::INVALID_QUANTITY_RULE_LOCKED
@@ -490,7 +490,7 @@ final class ConfiguratorValidatorService
         $minQ = $qr['min'];
         $maxQ = $qr['max'];
 
-        if (QuantityRule::MODE_NONE === $qr['mode'] && 0 !== (int)$qr['offset']) {
+        if (QuantityRuleMode::NONE === $qr['mode'] && 0 !== (int)$qr['offset']) {
             throw new ProductChoiceConstraintException(
                 sprintf('Step “%s”: The choice “%s” is in NONE mode, but the quantity selection is enabled.', $stepDto->label, $dto->label ?: ('#' . ($cIdx + 1))),
                 ProductChoiceConstraintException::INVALID_QUANTITY_RULE_OFFSET
@@ -511,7 +511,7 @@ final class ConfiguratorValidatorService
             );
         }
 
-        if (true === $qr['locked'] && QuantityRule::MODE_FIXED === $qr['mode'] && (!is_int($qr['offset']) || $qr['offset'] < 1)) {
+        if (true === $qr['locked'] && QuantityRuleMode::FIXED === $qr['mode'] && (!is_int($qr['offset']) || $qr['offset'] < 1)) {
             throw new ProductChoiceConstraintException(
                 sprintf('Step “%s”: The choice “%s” must have a valid imposed quantity (offset) (integer >= 1) when quantity selection is disabled.', $stepDto->label, $dto->label ?: ('#' . ($cIdx + 1))),
                 ProductChoiceConstraintException::INVALID_QUANTITY_RULE_OFFSET
