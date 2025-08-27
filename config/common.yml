@@ -2,16 +2,16 @@ services:
   _defaults:
     public: true
 
-  DrSoftFr\Module\ProductWizard\Infrastructure\Security\HtmlSanitizer:
+  drsoft_fr.module.product_wizard.infrastructure.security.html_sanitizer:
     class: DrSoftFr\Module\ProductWizard\Infrastructure\Security\HtmlSanitizer
 
   DrSoftFr\Module\ProductWizard\Application\Port\Security\HtmlSanitizerInterface:
-    alias: DrSoftFr\Module\ProductWizard\Infrastructure\Security\HtmlSanitizer
+    alias: drsoft_fr.module.product_wizard.infrastructure.security.html_sanitizer
 
   DrSoftFr\Module\ProductWizard\UI\Admin\Normalizer\ConfiguratorNormalizer:
     class: DrSoftFr\Module\ProductWizard\UI\Admin\Normalizer\ConfiguratorNormalizer
     arguments:
-      - DrSoftFr\Module\ProductWizard\Application\Port\Security\HtmlSanitizerInterface
+      - '@DrSoftFr\Module\ProductWizard\Application\Port\Security\HtmlSanitizerInterface'
 
   # repository
   drsoft_fr.module.product_wizard.infrastructure.persistence.doctrine.configurator_repository:
