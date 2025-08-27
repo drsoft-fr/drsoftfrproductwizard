@@ -31,7 +31,7 @@ final class QuantityRuleSource
      * @throws ProductChoiceConstraintException
      * @throws StepConstraintException
      */
-    public static function fromArray(array $data): ?self
+    public static function fromArray(array $data): self
     {
         if (false === isset($data['step'])) {
             throw new ProductChoiceConstraintException(
