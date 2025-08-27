@@ -1,6 +1,6 @@
 <?php
 
-namespace DrSoftFr\Module\ProductWizard\Domain\Entity;
+namespace DrSoftFr\Module\ProductWizard\Entity;
 
 use DateTime;
 use DateTimeInterface;
@@ -73,7 +73,7 @@ class Configurator
     /**
      * @var Collection<Step> $steps
      *
-     * @ORM\OneToMany(targetEntity="DrSoftFr\Module\ProductWizard\Domain\Entity\Step", cascade={"persist", "remove"}, orphanRemoval=true, mappedBy="configurator")
+     * @ORM\OneToMany(targetEntity="DrSoftFr\Module\ProductWizard\Entity\Step", cascade={"persist", "remove"}, orphanRemoval=true, mappedBy="configurator")
      * @ORM\OrderBy({"position" = "ASC"})
      */
     private $steps;

@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace DrSoftFr\Module\ProductWizard\UI\Hook\Controller;
 
 use DrSoftFr\Module\ProductWizard\Config;
-use DrSoftFr\Module\ProductWizard\Domain\Entity\Configurator;
 use DrSoftFr\Module\ProductWizard\Domain\Repository\ConfiguratorRepositoryInterface;
+use DrSoftFr\Module\ProductWizard\Entity\Configurator;
 use DrSoftFr\PrestaShopModuleHelper\Controller\Hook\AbstractHookController;
 use DrSoftFr\PrestaShopModuleHelper\Controller\Hook\HookControllerInterface;
 use Exception;

@@ -1,6 +1,6 @@
 <?php
 
-namespace DrSoftFr\Module\ProductWizard\Domain\Entity;
+namespace DrSoftFr\Module\ProductWizard\Entity;
 
 use DateTime;
 use DateTimeInterface;
@@ -52,7 +52,7 @@ class Step
     /**
      * @var Configurator $configurator
      *
-     * @ORM\ManyToOne(targetEntity="DrSoftFr\Module\ProductWizard\Domain\Entity\Configurator", inversedBy="steps")
+     * @ORM\ManyToOne(targetEntity="DrSoftFr\Module\ProductWizard\Entity\Configurator", inversedBy="steps")
      * @ORM\JoinColumn(name="id_configurator", referencedColumnName="id_configurator", nullable=false, onDelete="CASCADE")
      */
     private $configurator;
@@ -60,7 +60,7 @@ class Step
     /**
      * @var Collection<ProductChoice> $productChoices
      *
-     * @ORM\OneToMany(targetEntity="DrSoftFr\Module\ProductWizard\Domain\Entity\ProductChoice", cascade={"persist", "remove"}, orphanRemoval=true, mappedBy="step")
+     * @ORM\OneToMany(targetEntity="DrSoftFr\Module\ProductWizard\Entity\ProductChoice", cascade={"persist", "remove"}, orphanRemoval=true, mappedBy="step")
      */
     private $productChoices;
 

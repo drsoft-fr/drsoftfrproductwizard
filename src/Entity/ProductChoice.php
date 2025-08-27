@@ -1,6 +1,6 @@
 <?php
 
-namespace DrSoftFr\Module\ProductWizard\Domain\Entity;
+namespace DrSoftFr\Module\ProductWizard\Entity;
 
 use DateTime;
 use DateTimeInterface;
@@ -89,7 +89,7 @@ class ProductChoice
     /**
      * @var Step $step
      *
-     * @ORM\ManyToOne(targetEntity="DrSoftFr\Module\ProductWizard\Domain\Entity\Step", inversedBy="productChoices")
+     * @ORM\ManyToOne(targetEntity="DrSoftFr\Module\ProductWizard\Entity\Step", inversedBy="productChoices")
      * @ORM\JoinColumn(name="id_step", referencedColumnName="id_step", nullable=false, onDelete="CASCADE")
      */
     private $step;
