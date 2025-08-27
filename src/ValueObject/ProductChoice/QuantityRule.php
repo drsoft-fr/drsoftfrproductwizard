@@ -4,136 +4,103 @@ declare(strict_types=1);
 
 namespace DrSoftFr\Module\ProductWizard\ValueObject\ProductChoice;
 
+use DrSoftFr\Module\ProductWizard\Exception\ProductChoice\ProductChoiceConstraintException;
+use DrSoftFr\Module\ProductWizard\Exception\Step\StepConstraintException;
+
 final class QuantityRule
 {
-    public const MODE_NONE = 'none';
-    public const MODE_FIXED = 'fixed';
-    public const MODE_EXPRESSION = 'expression';
-    public const ROUND_NONE = 'none';
-    public const ROUND_FLOOR = 'floor';
-    public const ROUND_CEIL = 'ceil';
-    public const ROUND_ROUND = 'round';
-    public const ALLOWED_MODES = [
-        self::MODE_NONE,
-        self::MODE_FIXED,
-        self::MODE_EXPRESSION,
-    ];
-    public const ALLOWED_ROUNDS = [
-        self::ROUND_NONE,
-        self::ROUND_FLOOR,
-        self::ROUND_CEIL,
-        self::ROUND_ROUND,
-    ];
-    private const DEFAULT_COEFF = 1.0;
-    private const DEFAULT_OFFSET = 0;
+    private readonly QuantityRuleRange $min;
+    private readonly QuantityRuleRange $max;
 
+    /**
+     * @throws ProductChoiceConstraintException
+     */
     private function __construct(
-        private string        $mode = self::MODE_NONE,
-        private readonly bool $locked = false,
-        /** @var array<int, array{step:int, choice:int, coeff:float}> */
-        private array         $sources = [],
-        private readonly int  $offset = 0,
-        private ?int          $min = null,
-        private ?int          $max = null,
-        private string        $round = self::ROUND_NONE
+        private readonly QuantityRuleMode   $mode,
+        private readonly QuantityRuleLocked $locked,
+        /** @var QuantityRuleSource[] */
+        private readonly array              $sources,
+        private readonly QuantityRuleOffset $offset,
+        QuantityRuleRange                   $min,
+        QuantityRuleRange                   $max,
+        private readonly QuantityRuleRound  $round
     )
     {
-        $this->mode = $this->sanitizeMode($mode);
-        $this->sources = $this->parseSources($sources);
-        $this->min = $this->parseNullableInt($min);
-        $this->max = $this->parseNullableInt($max);
-        $this->round = $this->sanitizeRound($round);
+        self::assertRangeIsValid($min->getValue(), $max->getValue());
+
+        $this->min = $min;
+        $this->max = $max;
     }
 
+    /**
+     * @throws StepConstraintException
+     * @throws ProductChoiceConstraintException
+     */
     public static function fromArray(array $data): self
     {
+        $mode = QuantityRuleMode::fromString((string)($data['mode'] ?? QuantityRuleMode::DEFAULT_MODE));
+        $locked = QuantityRuleLocked::fromBool((bool)($data['locked'] ?? QuantityRuleLocked::DEFAULT_LOCKED));
+
+        $sources = [];
+        $rawSources = is_array($data['sources'] ?? null) ? $data['sources'] : [];
+        foreach ($rawSources as $item) {
+            if (false === is_array($item)) {
+                continue;
+            }
+
+            $sources[] = QuantityRuleSource::fromArray($item);
+        }
+
+        $offset = QuantityRuleOffset::fromInt((int)($data['offset'] ?? QuantityRuleOffset::DEFAULT_OFFSET));
+        $min = QuantityRuleRange::fromNullOrInt(isset($data['min']) && is_numeric($data['min']) ? (int)$data['min'] : null);
+        $max = QuantityRuleRange::fromNullOrInt(isset($data['max']) && is_numeric($data['max']) ? (int)$data['max'] : null);
+        $round = QuantityRuleRound::fromString((string)($data['round'] ?? QuantityRuleRound::DEFAULT_ROUND));
+
         return new self(
-            $data['mode'] ?? self::MODE_NONE,
-            (bool)($data['locked'] ?? false),
-            $data['sources'] ?? [],
-            (int)($data['offset'] ?? self::DEFAULT_OFFSET),
-            $data['min'] ?? null,
-            $data['max'] ?? null,
-            $data['round'] ?? self::ROUND_NONE
+            $mode,
+            $locked,
+            $sources,
+            $offset,
+            $min,
+            $max,
+            $round
         );
     }
 
-    public function getValue(): array
+    final public function getValue(): array
     {
         return [
-            'mode' => $this->mode,
-            'locked' => $this->locked,
+            'mode' => $this->mode->getValue(),
+            'locked' => $this->locked->getValue(),
             'sources' => array_values(array_map(
-                $this->normalizeSourceForExport(...),
+                fn(QuantityRuleSource $s) => $this->normalizeSourceForExport($s),
                 $this->sources
             )),
-            'offset' => $this->offset,
-            'min' => $this->min,
-            'max' => $this->max,
-            'round' => $this->round,
+            'offset' => $this->offset->getValue(),
+            'min' => $this->min->getValue(),
+            'max' => $this->max->getValue(),
+            'round' => $this->round->getValue(),
         ];
     }
 
     /**
-     * @param array<string, mixed> $s
-     *
-     * @return array{step:int, choice:int, coeff:float}
+     * @return array{step:int, coeff:float}
      */
-    private function normalizeSourceForExport(array $s): array
+    private function normalizeSourceForExport(QuantityRuleSource $s): array
     {
-        return [
-            'step' => (int)$s['step'],
-            'coeff' => (float)($s['coeff'] ?? self::DEFAULT_COEFF),
-        ];
-    }
-
-    private function parseNullableInt(mixed $value): ?int
-    {
-        if ($value === null) {
-            return null;
-        }
-
-        return is_numeric($value) ? (int)$value : null;
+        return $s->toArray();
     }
 
     /**
-     * @param array $sources
-     *
-     * @return array<int, array{step:int, choice:int, coeff:float}>
+     * @throws ProductChoiceConstraintException
      */
-    private function parseSources(array $sources): array
+    private static function assertRangeIsValid(?int $min, ?int $max): void
     {
-        $result = [];
-
-        foreach ($sources as $item) {
-            if (!is_array($item)) {
-                continue;
-            }
-
-            if (!isset($item['step'])) {
-                continue;
-            }
-
-            $result[] = [
-                'step' => (int)$item['step'],
-                'coeff' => isset($item['coeff']) ? (float)$item['coeff'] : self::DEFAULT_COEFF,
-            ];
+        if (null !== $min && null !== $max && $min > $max) {
+            throw new ProductChoiceConstraintException(
+                sprintf('Invalid quantity range: min "%s" is greater than max "%s".', var_export($min, true), var_export($max, true)),
+                ProductChoiceConstraintException::INVALID_QUANTITY_RULE_MIN_MAX_LOGIC
+            );
         }
-
-        return $result;
-    }
-
-    private function sanitizeMode(mixed $mode): string
-    {
-        $mode = (string)$mode;
-
-        return in_array($mode, self::ALLOWED_MODES, true) ? $mode : self::MODE_NONE;
-    }
-
-    private function sanitizeRound($round): string
-    {
-        $round = (string)$round;
-
-        return in_array($round, self::ALLOWED_ROUNDS, true) ? $round : self::ROUND_NONE;
     }
 }
