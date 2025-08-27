@@ -2,9 +2,9 @@
 
 namespace DrSoftFr\Module\ProductWizard\Normalizer;
 
-use DrSoftFr\Module\ProductWizard\Dto\ConfiguratorDto;
-use DrSoftFr\Module\ProductWizard\Dto\StepDto;
-use DrSoftFr\Module\ProductWizard\Dto\ProductChoiceDto;
+use DrSoftFr\Module\ProductWizard\Application\Dto\ConfiguratorDto;
+use DrSoftFr\Module\ProductWizard\Application\Dto\ProductChoiceDto;
+use DrSoftFr\Module\ProductWizard\Application\Dto\StepDto;
 use DrSoftFr\Module\ProductWizard\Exception\ProductChoice\ProductChoiceConstraintException;
 use DrSoftFr\Module\ProductWizard\Exception\Step\StepConstraintException;
 use DrSoftFr\Module\ProductWizard\ValueObject\ProductChoice\DisplayCondition;

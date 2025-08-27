@@ -3,10 +3,10 @@
 namespace DrSoftFr\Module\ProductWizard\Service;
 
 use Context;
+use DrSoftFr\Module\ProductWizard\Application\Dto\ConfiguratorDto;
+use DrSoftFr\Module\ProductWizard\Application\Dto\ProductChoiceDto;
+use DrSoftFr\Module\ProductWizard\Application\Dto\StepDto;
 use DrSoftFr\Module\ProductWizard\Domain\Repository\ConfiguratorRepositoryInterface;
-use DrSoftFr\Module\ProductWizard\Dto\ConfiguratorDto;
-use DrSoftFr\Module\ProductWizard\Dto\ProductChoiceDto;
-use DrSoftFr\Module\ProductWizard\Dto\StepDto;
 use DrSoftFr\Module\ProductWizard\Entity\Configurator;
 use DrSoftFr\Module\ProductWizard\Exception\Configurator\ConfiguratorNotFoundException;
 use DrSoftFr\Module\ProductWizard\ValueObject\Configurator\ConfiguratorId;
