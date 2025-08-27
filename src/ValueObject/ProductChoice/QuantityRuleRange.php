@@ -8,13 +8,15 @@ use DrSoftFr\Module\ProductWizard\Exception\ProductChoice\ProductChoiceConstrain
 
 final class QuantityRuleRange
 {
+    public const DEFAULT_RANGE = null;
+
     private readonly ?int $value;
 
     /**
      * @throws ProductChoiceConstraintException
      */
     public function __construct(
-        ?int $value = null
+        ?int $value = self::DEFAULT_RANGE
     )
     {
         self::assertRangeIsValid($value);
@@ -25,7 +27,9 @@ final class QuantityRuleRange
     /**
      * @throws ProductChoiceConstraintException
      */
-    public static function fromNullOrInt(?int $value = null): self
+    public static function fromNullOrInt(
+        ?int $value = self::DEFAULT_RANGE
+    ): self
     {
         return new self($value);
     }

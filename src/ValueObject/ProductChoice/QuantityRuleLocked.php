@@ -6,13 +6,17 @@ namespace DrSoftFr\Module\ProductWizard\ValueObject\ProductChoice;
 
 final class QuantityRuleLocked
 {
+    public const DEFAULT_LOCKED = false;
+
     public function __construct(
-        private readonly bool $value = false
+        private readonly bool $value = self::DEFAULT_LOCKED
     )
     {
     }
 
-    public static function fromBool(bool $value = false): self
+    public static function fromBool(
+        bool $value = self::DEFAULT_LOCKED
+    ): self
     {
         return new self($value);
     }

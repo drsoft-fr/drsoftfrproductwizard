@@ -40,7 +40,9 @@ final class QuantityRuleRound
     /**
      * @throws ProductChoiceConstraintException
      */
-    public static function fromString(string $value): self
+    public static function fromString(
+        string $value = self::DEFAULT_ROUND
+    ): self
     {
         return new self($value);
     }

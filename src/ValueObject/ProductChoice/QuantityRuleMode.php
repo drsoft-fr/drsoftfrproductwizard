@@ -38,7 +38,9 @@ final class QuantityRuleMode
     /**
      * @throws ProductChoiceConstraintException
      */
-    public static function fromString(string $value): self
+    public static function fromString(
+        string $value = self::DEFAULT_MODE
+    ): self
     {
         return new self($value);
     }

@@ -6,16 +6,20 @@ namespace DrSoftFr\Module\ProductWizard\ValueObject\ProductChoice;
 
 final class QuantityRuleOffset
 {
+    public const DEFAULT_OFFSET = 0;
+
     /**
      * @param int $value
      */
     public function __construct(
-        private readonly int $value
+        private readonly int $value = self::DEFAULT_OFFSET
     )
     {
     }
 
-    public static function fromInt(int $value): self
+    public static function fromInt(
+        int $value = self::DEFAULT_OFFSET
+    ): self
     {
         return new self($value);
     }
