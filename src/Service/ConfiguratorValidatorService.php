@@ -9,6 +9,8 @@ use DrSoftFr\Module\ProductWizard\Exception\Configurator\ConfiguratorConstraintE
 use DrSoftFr\Module\ProductWizard\Exception\ProductChoice\ProductChoiceConstraintException;
 use DrSoftFr\Module\ProductWizard\Exception\Step\StepConstraintException;
 use DrSoftFr\Module\ProductWizard\ValueObject\ProductChoice\QuantityRule;
+use DrSoftFr\Module\ProductWizard\ValueObject\ProductChoice\QuantityRuleMode;
+use DrSoftFr\Module\ProductWizard\ValueObject\ProductChoice\QuantityRuleRound;
 use Exception;
 
 final class ConfiguratorValidatorService
@@ -382,14 +384,14 @@ final class ConfiguratorValidatorService
         StepDto          $stepDto
     ): void
     {
-        if (false === in_array($qr['round'], QuantityRule::ALLOWED_ROUNDS)) {
+        if (false === in_array($qr['round'], QuantityRuleRound::ALLOWED_ROUNDS)) {
             throw new ProductChoiceConstraintException(
                 sprintf('Step “%s”: Choice “%s”, invalid round.', $stepDto->label, $dto->label ?: ('#' . ($cIdx + 1))),
                 ProductChoiceConstraintException::INVALID_QUANTITY_RULE_ROUND
             );
         }
 
-        if (QuantityRule::ROUND_NONE !== $qr['round'] && QuantityRule::MODE_EXPRESSION !== $qr['mode']) {
+        if (QuantityRuleRound::NONE !== $qr['round'] && QuantityRuleMode::EXPRESSION !== $qr['mode']) {
             throw new ProductChoiceConstraintException(
                 sprintf('Step “%s”: Choice “%s”, in FIXED or NONE mode, round should be NONE.', $stepDto->label, $dto->label ?: ('#' . ($cIdx + 1))),
                 ProductChoiceConstraintException::INVALID_QUANTITY_RULE_ROUND
