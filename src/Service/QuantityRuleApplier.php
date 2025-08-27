@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace DrSoftFr\Module\ProductWizard\Service;
 
 use DrSoftFr\Module\ProductWizard\ValueObject\ProductChoice\QuantityRule;
+use DrSoftFr\Module\ProductWizard\ValueObject\ProductChoice\QuantityRuleMode;
+use DrSoftFr\Module\ProductWizard\ValueObject\ProductChoice\QuantityRuleRound;
 
 final class QuantityRuleApplier
 {
@@ -15,11 +17,11 @@ final class QuantityRuleApplier
     {
         $rule = $rule->getValue();
 
-        if ($rule['mode'] === QuantityRule::MODE_NONE) {
+        if ($rule['mode'] === QuantityRuleMode::NONE) {
             return $userQtyFallback;
         }
 
-        if ($rule['mode'] === QuantityRule::MODE_FIXED) {
+        if ($rule['mode'] === QuantityRuleMode::FIXED) {
             $qty = $rule['offset'];
         } else {
             $sum = 0.0;
@@ -32,9 +34,9 @@ final class QuantityRuleApplier
         }
 
         $qty = match ($rule['round']) {
-            QuantityRule::ROUND_FLOOR => (int)floor($qty),
-            QuantityRule::ROUND_CEIL => (int)ceil($qty),
-            QuantityRule::ROUND_ROUND => (int)round($qty),
+            QuantityRuleRound::FLOOR => (int)floor($qty),
+            QuantityRuleRound::CEIL => (int)ceil($qty),
+            QuantityRuleRound::ROUND => (int)round($qty),
             default => (int)$qty,
         };
 
