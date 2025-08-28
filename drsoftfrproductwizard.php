@@ -9,8 +9,8 @@ use DrSoftFr\Module\ProductWizard\UI\Hook\Controller\ActionFrontControllerSetMed
 use DrSoftFr\Module\ProductWizard\UI\Hook\Controller\ActionFrontControllerSetVariablesController;
 use DrSoftFr\Module\ProductWizard\UI\Hook\Controller\ActionOutputHTMLBeforeController;
 use DrSoftFr\Module\ProductWizard\UI\Hook\Controller\DisplayBeforeBodyClosingTagController;
-use DrSoftFr\Module\ProductWizard\Install\Factory\InstallerFactory;
-use DrSoftFr\Module\ProductWizard\Install\Installer;
+use DrSoftFr\Module\ProductWizard\Infrastructure\Install\Factory\InstallerFactory;
+use DrSoftFr\Module\ProductWizard\Infrastructure\Install\Installer;
 use PrestaShop\PrestaShop\Core\Cache\Clearer\CacheClearerChain;
 
 if (!defined('_PS_VERSION_') || !defined('_CAN_LOAD_FILES_')) {

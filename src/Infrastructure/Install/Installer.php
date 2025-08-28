@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace DrSoftFr\Module\ProductWizard\Install;
+namespace DrSoftFr\Module\ProductWizard\Infrastructure\Install;
 
 use DrSoftFr\PrestaShopModuleHelper\Traits\ExecuteSqlFromFileTrait;
 use Exception;
@@ -37,7 +37,7 @@ final class Installer
             throw new Exception('An error occurred when registering hooks for the module.');
         }
 
-        if (!$this->executeSqlFromFile($module->getLocalPath() . 'src/Install/Resources/sql/install.sql')) {
+        if (!$this->executeSqlFromFile($module->getLocalPath() . 'src/Infrastructure/Install/Resources/sql/install.sql')) {
             throw new Exception('An error has occurred while executing the installation SQL resources.');
         }
 
@@ -55,7 +55,7 @@ final class Installer
      */
     public function uninstall(Module $module): bool
     {
-        if (!$this->executeSqlFromFile($module->getLocalPath() . 'src/Install/Resources/sql/uninstall.sql')) {
+        if (!$this->executeSqlFromFile($module->getLocalPath() . 'src/Infrastructure/Install/Resources/sql/uninstall.sql')) {
             throw new Exception('Unable to uninstall sql resources from module.');
         }
 

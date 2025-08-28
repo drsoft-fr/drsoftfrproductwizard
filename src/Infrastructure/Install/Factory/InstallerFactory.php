@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace DrSoftFr\Module\ProductWizard\Install\Factory;
+namespace DrSoftFr\Module\ProductWizard\Infrastructure\Install\Factory;
 
-use DrSoftFr\Module\ProductWizard\Install\Installer;
+use DrSoftFr\Module\ProductWizard\Infrastructure\Install\Installer;
 
 /**
  * The InstallerFactory class is responsible for creating instances of the Installer class.
