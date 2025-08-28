@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace DrSoftFr\Module\ProductWizard\UI\Hook\Presenter;
 
 use Context;
@@ -8,10 +10,10 @@ use DrSoftFr\Module\ProductWizard\Application\Dto\ProductChoiceDto;
 use DrSoftFr\Module\ProductWizard\Application\Dto\StepDto;
 use DrSoftFr\Module\ProductWizard\Application\Exception\Configurator\ConfiguratorNotFoundException;
 use DrSoftFr\Module\ProductWizard\Domain\Repository\ConfiguratorRepositoryInterface;
+use DrSoftFr\Module\ProductWizard\Domain\Service\QuantityRuleApplier;
 use DrSoftFr\Module\ProductWizard\Domain\ValueObject\Configurator\ConfiguratorId;
 use DrSoftFr\Module\ProductWizard\Domain\ValueObject\ProductChoice\QuantityRule;
 use DrSoftFr\Module\ProductWizard\Entity\Configurator;
-use DrSoftFr\Module\ProductWizard\Service\QuantityRuleApplier;
 use PrestaShop\PrestaShop\Adapter\Image\ImageRetriever;
 use PrestaShop\PrestaShop\Adapter\Presenter\Product\ProductLazyArray;
 use PrestaShop\PrestaShop\Adapter\Presenter\Product\ProductPresenter;

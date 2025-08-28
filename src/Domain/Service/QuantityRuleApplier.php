@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace DrSoftFr\Module\ProductWizard\Service;
+namespace DrSoftFr\Module\ProductWizard\Domain\Service;
 
 use DrSoftFr\Module\ProductWizard\Domain\ValueObject\ProductChoice\QuantityRule;
 use DrSoftFr\Module\ProductWizard\Domain\ValueObject\ProductChoice\QuantityRuleMode;
