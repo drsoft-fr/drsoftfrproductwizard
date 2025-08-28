@@ -12,7 +12,7 @@ use DrSoftFr\Module\ProductWizard\Domain\ValueObject\ProductChoice\QuantityRuleM
 use DrSoftFr\Module\ProductWizard\Domain\ValueObject\ProductChoice\QuantityRuleRound;
 use Exception;
 
-final class ConfiguratorValidatorService
+final class ConfiguratorValidator
 {
     /**
      * Validates the provided configurator data transfer object.
