@@ -13,8 +13,8 @@ services:
       - '@=service("prestashop.adapter.legacy.context").getLanguage().id'
       - '@=service("prestashop.adapter.legacy.context").getContext().shop.id'
 
-  DrSoftFr\Module\ProductWizard\Service\ConfiguratorFactory:
-    class: DrSoftFr\Module\ProductWizard\Service\ConfiguratorFactory
+  DrSoftFr\Module\ProductWizard\Application\Factory\ConfiguratorFactory:
+    class: DrSoftFr\Module\ProductWizard\Application\Factory\ConfiguratorFactory
     autowire: true
 
   drsoft_fr.module.product_wizard.module:

@@ -1,8 +1,7 @@
 <?php
 
-namespace DrSoftFr\Module\ProductWizard\Service;
+namespace DrSoftFr\Module\ProductWizard\Application\Factory;
 
-use Doctrine\ORM\EntityManagerInterface;
 use DrSoftFr\Module\ProductWizard\Application\Dto\ConfiguratorDto;
 use DrSoftFr\Module\ProductWizard\Application\Dto\ProductChoiceDto;
 use DrSoftFr\Module\ProductWizard\Application\Dto\StepDto;
@@ -20,7 +19,6 @@ use Doctrine\Common\Collections\ArrayCollection;
 final class ConfiguratorFactory
 {
     public function __construct(
-        private readonly EntityManagerInterface          $em,
         private readonly ConfiguratorRepositoryInterface $configuratorRepository
     )
     {
@@ -51,7 +49,7 @@ final class ConfiguratorFactory
         $configurator->setReductionType($dto->reductionType);
 
         if (true === $isNew) {
-            $this->em->persist($configurator);
+            $this->configuratorRepository->save($configurator);
         }
 
         $this->mapSteps($configurator, $dto->steps);

@@ -8,7 +8,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use DrSoftFr\Module\ProductWizard\Application\Dto\ConfiguratorDto;
 use DrSoftFr\Module\ProductWizard\Domain\Repository\ConfiguratorRepositoryInterface;
 use DrSoftFr\Module\ProductWizard\Entity\Configurator;
-use DrSoftFr\Module\ProductWizard\Service\ConfiguratorFactory;
+use DrSoftFr\Module\ProductWizard\Application\Factory\ConfiguratorFactory;
 use DrSoftFr\Module\ProductWizard\Service\ConfiguratorValidatorService;
 use DrSoftFr\Module\ProductWizard\UI\Admin\Normalizer\ConfiguratorNormalizer;
 use PrestaShop\PrestaShop\Adapter\Product\Repository\ProductRepository;

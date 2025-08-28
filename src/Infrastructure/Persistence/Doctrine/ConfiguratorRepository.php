@@ -6,6 +6,7 @@ namespace DrSoftFr\Module\ProductWizard\Infrastructure\Persistence\Doctrine;
 
 use Doctrine\ORM\EntityRepository;
 use DrSoftFr\Module\ProductWizard\Domain\Repository\ConfiguratorRepositoryInterface;
+use DrSoftFr\Module\ProductWizard\Entity\Configurator;
 
 /**
  * Class ConfiguratorRepository
@@ -15,4 +16,8 @@ use DrSoftFr\Module\ProductWizard\Domain\Repository\ConfiguratorRepositoryInterf
  */
 class ConfiguratorRepository extends EntityRepository implements ConfiguratorRepositoryInterface
 {
+    public function save(Configurator $configurator): void
+    {
+        $this->_em->persist($configurator);
+    }
 }
