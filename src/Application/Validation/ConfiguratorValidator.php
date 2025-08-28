@@ -1,6 +1,6 @@
 <?php
 
-namespace DrSoftFr\Module\ProductWizard\Service;
+namespace DrSoftFr\Module\ProductWizard\Application\Validation;
 
 use DrSoftFr\Module\ProductWizard\Application\Dto\ConfiguratorDto;
 use DrSoftFr\Module\ProductWizard\Application\Dto\ProductChoiceDto;
