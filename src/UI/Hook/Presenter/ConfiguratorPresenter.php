@@ -1,6 +1,6 @@
 <?php
 
-namespace DrSoftFr\Module\ProductWizard\Service;
+namespace DrSoftFr\Module\ProductWizard\UI\Hook\Presenter;
 
 use Context;
 use DrSoftFr\Module\ProductWizard\Application\Dto\ConfiguratorDto;
@@ -11,6 +11,7 @@ use DrSoftFr\Module\ProductWizard\Domain\Repository\ConfiguratorRepositoryInterf
 use DrSoftFr\Module\ProductWizard\Domain\ValueObject\Configurator\ConfiguratorId;
 use DrSoftFr\Module\ProductWizard\Domain\ValueObject\ProductChoice\QuantityRule;
 use DrSoftFr\Module\ProductWizard\Entity\Configurator;
+use DrSoftFr\Module\ProductWizard\Service\QuantityRuleApplier;
 use PrestaShop\PrestaShop\Adapter\Image\ImageRetriever;
 use PrestaShop\PrestaShop\Adapter\Presenter\Product\ProductLazyArray;
 use PrestaShop\PrestaShop\Adapter\Presenter\Product\ProductPresenter;
@@ -23,7 +24,7 @@ use ProductPresenterFactory;
 use Throwable;
 use Validate;
 
-final class ConfiguratorPresenterService
+final class ConfiguratorPresenter
 {
     /**
      * @var Context
@@ -152,7 +153,7 @@ final class ConfiguratorPresenterService
         $variants = [];
 
         foreach ($combinations as $combination) {
-            $variants[] = $this->retrieveProduct($productId, $presenter, $presentationSettings, $assembler, $combination['id']);;
+            $variants[] = $this->retrieveProduct($productId, $presenter, $presentationSettings, $assembler, $combination['id']);
         }
 
         $quantityRuleApplier = new QuantityRuleApplier();

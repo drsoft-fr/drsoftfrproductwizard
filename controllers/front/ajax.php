@@ -5,13 +5,13 @@ declare(strict_types=1);
 use DrSoftFr\Module\ProductWizard\Application\Exception\Configurator\ConfiguratorNotFoundException;
 use DrSoftFr\Module\ProductWizard\Domain\Exception\Configurator\ConfiguratorConstraintException;
 use DrSoftFr\Module\ProductWizard\Domain\ValueObject\Configurator\ConfiguratorId;
-use DrSoftFr\Module\ProductWizard\Service\ConfiguratorPresenterService;
+use DrSoftFr\Module\ProductWizard\UI\Hook\Presenter\ConfiguratorPresenter;
 
 // @TODO il faut aussi que le client est le droit de voir le produit, ou sinon on masque le choix ?
 
 final class DrsoftfrproductwizardAjaxModuleFrontController extends ModuleFrontController
 {
-    private const PRESENTER_SERVICE = 'drsoft_fr.module.product_wizard.service.configurator_presenter_service';
+    private const PRESENTER_SERVICE = 'drsoft_fr.module.product_wizard.service.configurator_presenter';
 
     /**
      * @var null|string
@@ -269,9 +269,9 @@ final class DrsoftfrproductwizardAjaxModuleFrontController extends ModuleFrontCo
     /**
      * @throws Exception
      */
-    private function getPresenter(): ConfiguratorPresenterService
+    private function getPresenter(): ConfiguratorPresenter
     {
-        /** @type ConfiguratorPresenterService */
+        /** @type ConfiguratorPresenter */
         return $this->get(self::PRESENTER_SERVICE);
     }
 }

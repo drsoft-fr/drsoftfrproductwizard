@@ -35,7 +35,7 @@ services:
     arguments:
       - DrSoftFr\Module\ProductWizard\Entity\ProductChoice
 
-  drsoft_fr.module.product_wizard.service.configurator_presenter_service:
-    class: DrSoftFr\Module\ProductWizard\Service\ConfiguratorPresenterService
+  drsoft_fr.module.product_wizard.service.configurator_presenter:
+    class: DrSoftFr\Module\ProductWizard\UI\Hook\Presenter\ConfiguratorPresenter
     arguments:
       - '@drsoft_fr.module.product_wizard.infrastructure.persistence.doctrine.configurator_repository'
