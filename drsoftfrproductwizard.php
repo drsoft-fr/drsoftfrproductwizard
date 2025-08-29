@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use DrSoftFr\Module\ProductWizard\Config;
+use DrSoftFr\Module\ProductWizard\Shared\Logging\ErrorLogger;
 use DrSoftFr\Module\ProductWizard\UI\Admin\Controller\ConfiguratorApiController;
 use DrSoftFr\Module\ProductWizard\UI\Admin\Controller\ConfiguratorController;
 use DrSoftFr\Module\ProductWizard\UI\Hook\Controller\ActionFrontControllerSetMediaController;
@@ -188,7 +188,8 @@ class drsoftfrproductwizard extends Module
      */
     private function handleException(Throwable $t): void
     {
-        $errorMessage = Config::createErrorMessage(__METHOD__, __LINE__, $t);
+
+        $errorMessage = ErrorLogger::fromThrowable(__METHOD__, __LINE__, $t);
 
         PrestaShopLogger::addLog($errorMessage, 3);
 

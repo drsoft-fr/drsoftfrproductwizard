@@ -4,12 +4,11 @@ declare(strict_types=1);
 
 namespace DrSoftFr\Module\ProductWizard\UI\Hook\Controller;
 
-use DrSoftFr\Module\ProductWizard\Config;
+use DrSoftFr\Module\ProductWizard\Shared\Logging\ErrorLogger;
 use DrSoftFr\PrestaShopModuleHelper\Controller\Hook\AbstractHookController;
 use DrSoftFr\PrestaShopModuleHelper\Controller\Hook\HookControllerInterface;
 use DrSoftFr\PrestaShopModuleHelper\Domain\Asset\Package;
 use DrSoftFr\PrestaShopModuleHelper\Domain\Asset\VersionStrategy\JsonManifestVersionStrategy;
-use Exception;
 use Module;
 use Throwable;
 
@@ -48,25 +47,6 @@ final class ActionFrontControllerSetMediaController extends AbstractHookControll
     }
 
     /**
-     * Handles an exception by logging an error message.
-     *
-     * @param Throwable $t The exception to handle.
-     *
-     * @return void
-     */
-    private function handleException(Throwable $t): void
-    {
-        $errorMessage = Config::createErrorMessage(__METHOD__, __LINE__, $t);
-
-        $this->logger->error($errorMessage, [
-            'error_code' => $t->getCode(),
-            'object_type' => null,
-            'object_id' => null,
-            'allow_duplicate' => false,
-        ]);
-    }
-
-    /**
      * Runs the application.
      *
      * This function checks if the module is active and if the reCAPTCHA is enabled.
@@ -85,7 +65,7 @@ final class ActionFrontControllerSetMediaController extends AbstractHookControll
                 ['media' => 'all', 'priority' => 1000]
             );
         } catch (Throwable $t) {
-            $this->handleException($t);
+            ErrorLogger::exception($t, $this->logger);
         }
     }
 }
