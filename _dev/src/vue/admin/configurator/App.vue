@@ -50,6 +50,9 @@ const fetchConfigurator = async () => {
         id: null,
         name: '',
         active: true,
+        reduction: 0,
+        reduction_tax: true,
+        reduction_type: 'amount',
         steps: [],
       })
       store.setLoading(false)
@@ -112,6 +115,9 @@ const handleSubmit = async () => {
           name: store.name,
           active: store.active,
           description: store.description,
+          reduction: store.reduction,
+          reduction_tax: store.reduction_tax,
+          reduction_type: store.reduction_type,
           steps: store.steps,
         },
       }),
