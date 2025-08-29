@@ -28,6 +28,8 @@ if (file_exists($autoloadPath)) {
  */
 class drsoftfrproductwizard extends Module
 {
+    private const INSTALLER_SERVICE = 'drsoft_fr.module.product_wizard.infrastructure.install.installer';
+
     /**
      * @var string $authorEmail Author email
      */
@@ -308,7 +310,7 @@ class drsoftfrproductwizard extends Module
     {
         try {
             /** @var Installer $installer */
-            $installer = $this->get(Config::INSTALLER_SERVICE);
+            $installer = $this->get(self::INSTALLER_SERVICE);
 
             $installer->uninstall($this);
         } catch (Throwable $t) {

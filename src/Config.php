@@ -19,8 +19,6 @@ final class Config
 
     const ERROR_MESSAGE_PATTERN = 'drsoftfrproductwizard - %s - %d - Throwable #%d - %s.';
 
-    const INSTALLER_SERVICE = 'drsoft_fr.module.product_wizard.infrastructure.install.installer';
-
     /**
      * Creates an error message using the given method, line number and throwable object.
      *
