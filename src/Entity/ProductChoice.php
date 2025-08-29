@@ -5,15 +5,15 @@ namespace DrSoftFr\Module\ProductWizard\Entity;
 use DateTime;
 use DateTimeInterface;
 use Doctrine\ORM\Mapping as ORM;
-use DrSoftFr\Module\ProductWizard\Config as Configuration;
 use DrSoftFr\Module\ProductWizard\Domain\Exception\ProductChoice\ProductChoiceConstraintException;
 use DrSoftFr\Module\ProductWizard\Domain\Exception\Step\StepConstraintException;
 use DrSoftFr\Module\ProductWizard\Domain\ValueObject\ProductChoice\DisplayCondition;
 use DrSoftFr\Module\ProductWizard\Domain\ValueObject\ProductChoice\QuantityRule;
+use DrSoftFr\Module\ProductWizard\Infrastructure\Persistence\TableNames;
 use DrSoftFr\PrestaShopModuleHelper\Traits\ClassHydrateTrait;
 
 /**
- * @ORM\Table(name=Configuration::PRODUCT_CHOICE_TABLE_NAME)
+ * @ORM\Table(name=TableNames::PRODUCT_CHOICE)
  * @ORM\Entity(repositoryClass="DrSoftFr\Module\ProductWizard\Infrastructure\Persistence\Doctrine\ProductChoiceRepository")
  * @ORM\HasLifecycleCallbacks
  */

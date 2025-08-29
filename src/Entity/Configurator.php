@@ -7,11 +7,11 @@ use DateTimeInterface;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
-use DrSoftFr\Module\ProductWizard\Config as Configuration;
+use DrSoftFr\Module\ProductWizard\Infrastructure\Persistence\TableNames;
 use DrSoftFr\PrestaShopModuleHelper\Traits\ClassHydrateTrait;
 
 /**
- * @ORM\Table(name=Configuration::CONFIGURATOR_TABLE_NAME)
+ * @ORM\Table(name=TableNames::CONFIGURATOR)
  * @ORM\Entity(repositoryClass="DrSoftFr\Module\ProductWizard\Infrastructure\Persistence\Doctrine\ConfiguratorRepository")
  * @ORM\HasLifecycleCallbacks
  */
