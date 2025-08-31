@@ -6,7 +6,7 @@
             <div class="card">
                 <h1 class="card-header">Scénarios de configuration</h1>
                 <div class="card-body card-block">
-                    {% if is_granted('ROLE_MOD_TAB_ADMINDRSOFTFRPRODUCTWIZARDCONFIGURATOR_CREATE') %}
+                    {% if 'ROLE_MOD_TAB_ADMINDRSOFTFRPRODUCTWIZARDCONFIGURATOR_CREATE' in app.user.roles %}
                         <a class="btn btn-primary mb-3"
                            href="{{ path('admin_drsoft_fr_product_wizard_configurator_new') }}">Ajouter un
                             scénario</a>
@@ -31,11 +31,11 @@
                                 <td>[drsoft-fr-product-wizard id="{{ configurator.id }}"]</td>
                                 <td>{{ configurator.dateAdd|date('d/m/Y H:i') }}</td>
                                 <td>
-                                    {% if is_granted('ROLE_MOD_TAB_ADMINDRSOFTFRPRODUCTWIZARDCONFIGURATOR_UPDATE') %}
+                                    {% if 'ROLE_MOD_TAB_ADMINDRSOFTFRPRODUCTWIZARDCONFIGURATOR_UPDATE' in app.user.roles %}
                                         <a href="{{ path('admin_drsoft_fr_product_wizard_configurator_edit', {id: configurator.id}) }}"
                                            class="btn btn-sm btn-warning">Éditer</a>
                                     {% endif %}
-                                    {% if is_granted('ROLE_MOD_TAB_ADMINDRSOFTFRPRODUCTWIZARDCONFIGURATOR_DELETE') %}
+                                    {% if 'ROLE_MOD_TAB_ADMINDRSOFTFRPRODUCTWIZARDCONFIGURATOR_DELETE' in app.user.roles %}
                                         <form method="post"
                                               action="{{ path('admin_drsoft_fr_product_wizard_configurator_delete', {id: configurator.id}) }}"
                                               style="display:inline;"
