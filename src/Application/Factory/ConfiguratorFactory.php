@@ -49,7 +49,7 @@ final class ConfiguratorFactory
         $configurator->setReductionType($dto->reductionType);
 
         if (true === $isNew) {
-            $this->configuratorRepository->save($configurator);
+            $this->configuratorRepository->add($configurator, false);
         }
 
         $this->mapSteps($configurator, $dto->steps);

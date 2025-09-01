@@ -8,14 +8,23 @@ use DrSoftFr\Module\ProductWizard\Entity\Configurator;
 
 interface ConfiguratorRepositoryInterface
 {
+    public function add(Configurator $configurator, bool $flush = true): void;
+
+    public function beginTransaction(): void;
+
     /**
      * @param Configurator[] $configurators
+     * @param bool $flush
      *
      * @return void
      */
-    public function bulkRemove(array $configurators): void;
+    public function bulkRemove(array $configurators, bool $flush = true): void;
 
-    public function flush(): void;
+    public function commit(): void;
 
-    public function save(Configurator $configurator): void;
+    public function remove(Configurator $configurator, bool $flush = true): void;
+
+    public function rollback(): void;
+
+    public function save(): void;
 }

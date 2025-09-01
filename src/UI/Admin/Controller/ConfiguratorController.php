@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace DrSoftFr\Module\ProductWizard\UI\Admin\Controller;
 
-use Doctrine\ORM\EntityManagerInterface;
 use DrSoftFr\Module\ProductWizard\Domain\Repository\ConfiguratorRepositoryInterface;
 use DrSoftFr\Module\ProductWizard\Entity\Configurator;
 use DrSoftFr\Module\ProductWizard\UI\Admin\Grid\Filters\ConfiguratorFilters;
@@ -72,7 +71,7 @@ final class ConfiguratorController extends FrameworkBundleAdminController
             $obj->setActive(true);
         }
 
-        $repository->flush();
+        $repository->save();
         $this->addFlash(
             'success',
             $this->trans(
@@ -109,7 +108,7 @@ final class ConfiguratorController extends FrameworkBundleAdminController
             $obj->setActive(false);
         }
 
-        $repository->flush();
+        $repository->save();
         $this->addFlash(
             'success',
             $this->trans(
@@ -143,8 +142,6 @@ final class ConfiguratorController extends FrameworkBundleAdminController
         }
 
         $repository->bulkRemove($objs);
-        $repository->flush();
-
         $this->addFlash(
             'success',
             $this->trans(
@@ -229,14 +226,12 @@ final class ConfiguratorController extends FrameworkBundleAdminController
      * )
      */
     public function deleteAction(
-        Configurator           $configurator,
-        EntityManagerInterface $em
+        Configurator                    $configurator,
+        ConfiguratorRepositoryInterface $repository
     ): RedirectResponse
     {
         try {
-            $em->remove($configurator);
-            $em->flush();
-
+            $repository->remove($configurator);
             $this->addFlash('success', $this->trans('Deleted scenario', 'Modules.Drsoftfrproductwizard.Success'));
         } catch (Throwable $t) {
             $this->addFlash('error', $this->trans('Error deleting scenario', 'Modules.Drsoftfrproductwizard.Error'));
@@ -253,13 +248,13 @@ final class ConfiguratorController extends FrameworkBundleAdminController
      * )
      */
     public function toggleActiveAction(
-        Configurator           $configurator,
-        EntityManagerInterface $em
+        Configurator                    $configurator,
+        ConfiguratorRepositoryInterface $repository
     ): JsonResponse
     {
         try {
             $configurator->setActive(!$configurator->isActive());
-            $em->flush();
+            $repository->save();
 
             $response = [
                 'status' => true,

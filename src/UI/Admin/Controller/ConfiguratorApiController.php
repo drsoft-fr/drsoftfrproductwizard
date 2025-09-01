@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace DrSoftFr\Module\ProductWizard\UI\Admin\Controller;
 
-use Doctrine\ORM\EntityManagerInterface;
 use DrSoftFr\Module\ProductWizard\Application\Dto\ConfiguratorDto;
 use DrSoftFr\Module\ProductWizard\Domain\Repository\ConfiguratorRepositoryInterface;
 use DrSoftFr\Module\ProductWizard\Entity\Configurator;
@@ -86,10 +85,10 @@ final class ConfiguratorApiController extends FrameworkBundleAdminController
      * )
      */
     public function saveAction(
-        Request                $request,
-        ConfiguratorNormalizer $normalizer,
-        ConfiguratorFactory    $factory,
-        EntityManagerInterface $em
+        Request                         $request,
+        ConfiguratorNormalizer          $normalizer,
+        ConfiguratorFactory             $factory,
+        ConfiguratorRepositoryInterface $repository
     ): JsonResponse
     {
         $data = json_decode($request->getContent(), true);
@@ -115,12 +114,12 @@ final class ConfiguratorApiController extends FrameworkBundleAdminController
         }
 
         try {
-            $em->beginTransaction();
+            $repository->beginTransaction();
 
             $configurator = $factory->createOrUpdateFromDto($dto);
 
-            $em->flush();
-            $em->commit();
+            $repository->save();
+            $repository->commit();
 
             $dto = ConfiguratorDto::fromEntity($configurator);
 
@@ -133,7 +132,7 @@ final class ConfiguratorApiController extends FrameworkBundleAdminController
                 ])
             ]);
         } catch (Throwable $t) {
-            $em->rollback();
+            $repository->rollback();
 
             return $this->json([
                 'success' => false,
