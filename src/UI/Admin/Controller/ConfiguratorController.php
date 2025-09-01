@@ -15,6 +15,7 @@ use PrestaShop\PrestaShop\Core\Grid\GridInterface;
 use PrestaShopBundle\Controller\Admin\FrameworkBundleAdminController;
 use PrestaShopBundle\Security\Annotation\AdminSecurity;
 use PrestaShopBundle\Security\Annotation\ModuleActivated;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -155,6 +156,42 @@ final class ConfiguratorController extends FrameworkBundleAdminController
             $this->addFlash('error', $this->trans('Error deleting scenario', 'Modules.Drsoftfrproductwizard.Error'));
         } finally {
             return $this->redirectToRoute(self::PAGE_INDEX_ROUTE);
+        }
+    }
+
+    /**
+     * @AdminSecurity(
+     *     "is_granted('update', request.get('_legacy_controller'))",
+     *     redirectRoute="admin_drsoft_fr_product_wizard_configurator_index",
+     *     message="You do not have permission to toggle the active status of this item."
+     * )
+     */
+    public function toggleActiveAction(
+        Configurator           $configurator,
+        EntityManagerInterface $em
+    ): JsonResponse
+    {
+        try {
+            $configurator->setActive(!$configurator->isActive());
+            $em->flush();
+
+            $response = [
+                'status' => true,
+                'message' => $this->trans(
+                    'The status has been successfully updated.',
+                    'Modules.Drsoftfrproductwizard.Success'
+                ),
+            ];
+        } catch (Throwable $t) {
+            $response = [
+                'status' => false,
+                'message' => $this->trans(
+                    'An error occurred while updating the status.',
+                    'Modules.Drsoftfrproductwizard.Error'
+                ),
+            ];
+        } finally {
+            return $this->json($response);
         }
     }
 

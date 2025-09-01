@@ -103,6 +103,11 @@ final class ConfiguratorQueryBuilder extends AbstractDoctrineQueryBuilder
                 'operator' => 'LIKE',
                 'type' => 'STRING'
             ],
+            'active' => [
+                'alias' => 'dfrpwc',
+                'operator' => '=',
+                'type' => 'INT'
+            ],
             'date_add' => [
                 'alias' => 'dfrpwc',
                 'operator' => null,

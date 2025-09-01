@@ -48,3 +48,15 @@ admin_drsoft_fr_product_wizard_configurator_search:
     _legacy_controller: AdminDrSoftFrProductWizardConfigurator
     gridDefinitionFactoryServiceId: drsoft_fr.module.product_wizard.ui.admin.grid.definition.factory.configurator_grid_definition_factory
     redirectRoute: admin_drsoft_fr_product_wizard_configurator_index
+
+admin_drsoft_fr_product_wizard_configurator_toggle_active:
+  path: /{id}/toggle-active
+  methods: [ POST ]
+  defaults:
+    _controller: DrSoftFr\Module\ProductWizard\UI\Admin\Controller\ConfiguratorController::toggleActiveAction
+    _legacy_controller: AdminDrSoftFrProductWizardConfigurator
+    _legacy_link: AdminDrSoftFrProductWizardConfigurator:toggleActive
+    _legacy_parameters:
+      id: id
+  requirements:
+    id: \d+

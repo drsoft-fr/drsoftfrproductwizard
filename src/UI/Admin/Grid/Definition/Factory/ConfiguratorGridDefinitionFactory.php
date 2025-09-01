@@ -17,12 +17,14 @@ use PrestaShop\PrestaShop\Core\Grid\Column\Type\Common\DataColumn;
 use PrestaShop\PrestaShop\Core\Grid\Column\Type\Common\DateTimeColumn;
 use PrestaShop\PrestaShop\Core\Grid\Column\Type\Common\HtmlColumn;
 use PrestaShop\PrestaShop\Core\Grid\Column\Type\Common\IdentifierColumn;
+use PrestaShop\PrestaShop\Core\Grid\Column\Type\Common\ToggleColumn;
 use PrestaShop\PrestaShop\Core\Grid\Definition\Factory\AbstractGridDefinitionFactory;
 use PrestaShop\PrestaShop\Core\Grid\Filter\Filter;
 use PrestaShop\PrestaShop\Core\Grid\Filter\FilterCollection;
 use PrestaShop\PrestaShop\Core\Hook\HookDispatcherInterface;
 use PrestaShopBundle\Form\Admin\Type\DateRangeType;
 use PrestaShopBundle\Form\Admin\Type\SearchAndResetType;
+use PrestaShopBundle\Form\Admin\Type\YesAndNoChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\HttpFoundation\Request;
@@ -105,6 +107,15 @@ final class ConfiguratorGridDefinitionFactory extends AbstractGridDefinitionFact
                     'field' => 'shortcode',
                 ])
             )
+            ->add((new ToggleColumn('active'))
+                ->setName($this->trans('Is active', [], 'Modules.Drsoftfrproductwizard.Admin'))
+                ->setOptions([
+                    'field' => 'active',
+                    'primary_field' => 'id',
+                    'route' => 'admin_drsoft_fr_product_wizard_configurator_toggle_active',
+                    'route_param_name' => 'id',
+                ])
+            )
             ->add(
                 (new DateTimeColumn('date_add'))
                     ->setName($this->trans('Date', [], 'Admin.Global'))
@@ -184,6 +195,10 @@ final class ConfiguratorGridDefinitionFactory extends AbstractGridDefinitionFact
                             'placeholder' => $this->trans('Search configurator name', [], 'Modules.Drsoftfrproductwizard.Admin'),
                         ],
                     ])
+            )
+            ->add(
+                (new Filter('active', YesAndNoChoiceType::class))
+                    ->setAssociatedColumn('active')
             )
             ->add(
                 (new Filter('date_add', DateRangeType::class))
