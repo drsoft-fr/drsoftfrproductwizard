@@ -23,7 +23,7 @@ class Step
      * @var int $id
      *
      * @ORM\Id
-     * @ORM\Column(name="id_step", type="integer", nullable=false, options={"unsigned"=true})
+     * @ORM\Column(type="integer", nullable=false, options={"unsigned"=true})
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     private $id = 0;
@@ -31,21 +31,21 @@ class Step
     /**
      * @var bool $active
      *
-     * @ORM\Column(name="active", type="boolean", nullable=false, options={"default":1, "unsigned"=true})
+     * @ORM\Column(type="boolean", nullable=false, options={"default":1, "unsigned"=true})
      */
     private $active = true;
 
     /**
      * @var string $label
      *
-     * @ORM\Column(name="label", type="string", length=255, nullable=false)
+     * @ORM\Column(type="string", length=255, nullable=false)
      */
     private $label = '';
 
     /**
      * @var string|null $description
      *
-     * @ORM\Column(name="description", type="text", nullable=true)
+     * @ORM\Column(type="text", nullable=true)
      */
     private ?string $description = null;
 
@@ -53,7 +53,7 @@ class Step
      * @var Configurator $configurator
      *
      * @ORM\ManyToOne(targetEntity="DrSoftFr\Module\ProductWizard\Entity\Configurator", inversedBy="steps")
-     * @ORM\JoinColumn(name="id_configurator", referencedColumnName="id_configurator", nullable=false, onDelete="CASCADE")
+     * @ORM\JoinColumn(name="id_configurator", referencedColumnName="id", nullable=false, onDelete="CASCADE")
      */
     private $configurator;
 
@@ -67,42 +67,42 @@ class Step
     /**
      * @var int $position
      *
-     * @ORM\Column(name="position", type="integer", nullable=false, options={"default":0, "unsigned"=true})
+     * @ORM\Column(type="integer", nullable=false, options={"default":0, "unsigned"=true})
      */
     private $position = 0;
 
     /**
      * @var float $reduction
      *
-     * @ORM\Column(name="reduction", type="float", nullable=false, options={"default":0})
+     * @ORM\Column(type="float", nullable=false, options={"default":0})
      */
     private $reduction = 0.0;
 
     /**
      * @var bool $reductionTax TAX included ?
      *
-     * @ORM\Column(name="reduction_tax", type="boolean", nullable=false, options={"default":1, "unsigned"=true})
+     * @ORM\Column(type="boolean", nullable=false, options={"default":1, "unsigned"=true})
      */
     private $reductionTax = true;
 
     /**
      * @var string $reductionType percentage OR amount ('amount' | 'percentage')
      *
-     * @ORM\Column(name="reduction_type", type="string", nullable=false, options={"default":"amount"}, columnDefinition="ENUM('amount','percentage')")
+     * @ORM\Column(type="string", nullable=false, options={"default":"amount"}, columnDefinition="ENUM('amount','percentage')")
      */
     private $reductionType = 'amount';
 
     /**
      * @var ?DateTimeInterface $dateAdd creation date
      *
-     * @ORM\Column(name="date_add", type="datetime", nullable=false)
+     * @ORM\Column(type="datetime", nullable=false)
      */
     private $dateAdd;
 
     /**
      * @var ?DateTimeInterface $dateUpd last modification date
      *
-     * @ORM\Column(name="date_upd", type="datetime", options={"default": "CURRENT_TIMESTAMP"}, nullable=false)
+     * @ORM\Column(type="datetime", options={"default": "CURRENT_TIMESTAMP"}, nullable=false)
      */
     private $dateUpd;
 
