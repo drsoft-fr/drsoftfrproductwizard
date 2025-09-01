@@ -5,11 +5,13 @@ declare(strict_types=1);
 namespace DrSoftFr\Module\ProductWizard\UI\Admin\Controller;
 
 use Doctrine\ORM\EntityManagerInterface;
-use DrSoftFr\Module\ProductWizard\Domain\Repository\ConfiguratorRepositoryInterface;
 use DrSoftFr\Module\ProductWizard\Entity\Configurator;
+use DrSoftFr\Module\ProductWizard\UI\Admin\Grid\Filters\ConfiguratorFilters;
 use DrSoftFr\PrestaShopModuleHelper\Domain\Asset\Package;
 use DrSoftFr\PrestaShopModuleHelper\Domain\Asset\VersionStrategy\JsonManifestVersionStrategy;
 use drsoftfrproductwizard;
+use PrestaShop\PrestaShop\Core\Grid\GridFactory;
+use PrestaShop\PrestaShop\Core\Grid\GridInterface;
 use PrestaShopBundle\Controller\Admin\FrameworkBundleAdminController;
 use PrestaShopBundle\Security\Annotation\AdminSecurity;
 use PrestaShopBundle\Security\Annotation\ModuleActivated;
@@ -54,19 +56,26 @@ final class ConfiguratorController extends FrameworkBundleAdminController
      * )
      *
      * @param Request $request
-     * @param ConfiguratorRepositoryInterface $repository
+     * @param ConfiguratorFilters $filters
      *
      * @return Response
      */
     public function indexAction(
-        Request                         $request,
-        ConfiguratorRepositoryInterface $repository
+        Request             $request,
+        ConfiguratorFilters $filters
     ): Response
     {
+
+        /** @var GridInterface $grid */
+        $grid = $this
+            ->getGridFactory()
+            ->getGrid($filters);
+
         return $this->render(self::TEMPLATE_FOLDER . 'home/index.html.twig', [
-            'configurators' => $repository->findAll(),
+            'drsoft_fr_product_wizard_configurator_grid' => $this->presentGrid($grid),
             'enableSidebar' => true,
             'help_link' => $this->generateSidebarLink($request->attributes->get('_legacy_controller')),
+            'layoutHeaderToolbarBtn' => $this->getToolbarButtons(),
             'module' => $this->module,
             'manifest' => $this->manifest,
         ]);
@@ -239,5 +248,22 @@ final class ConfiguratorController extends FrameworkBundleAdminController
                 ],
             ],
         ]);
+    }
+
+    protected function getGridFactory(): GridFactory
+    {
+        /** @type GridFactory */
+        return $this->get('drsoft_fr.module.product_wizard.grid.configurator_factory');
+    }
+
+    private function getToolbarButtons(): array
+    {
+        return [
+            'add' => [
+                'desc' => $this->trans('Add new Configurator', 'Modules.Drsoftfrproductwizard.Admin'),
+                'icon' => 'add_circle_outline',
+                'href' => $this->generateUrl('admin_drsoft_fr_product_wizard_configurator_new'),
+            ],
+        ];
     }
 }

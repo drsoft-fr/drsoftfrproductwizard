@@ -1,0 +1,233 @@
+<?php
+
+declare(strict_types=1);
+
+namespace DrSoftFr\Module\ProductWizard\UI\Admin\Grid\Definition\Factory;
+
+use Doctrine\DBAL\Connection;
+use PrestaShop\PrestaShop\Core\Grid\Action\GridActionCollection;
+use PrestaShop\PrestaShop\Core\Grid\Action\ModalOptions;
+use PrestaShop\PrestaShop\Core\Grid\Action\Row\RowActionCollection;
+use PrestaShop\PrestaShop\Core\Grid\Action\Row\Type\LinkRowAction;
+use PrestaShop\PrestaShop\Core\Grid\Action\Row\Type\SubmitRowAction;
+use PrestaShop\PrestaShop\Core\Grid\Action\Type\SimpleGridAction;
+use PrestaShop\PrestaShop\Core\Grid\Column\ColumnCollection;
+use PrestaShop\PrestaShop\Core\Grid\Column\Type\Common\ActionColumn;
+use PrestaShop\PrestaShop\Core\Grid\Column\Type\Common\DataColumn;
+use PrestaShop\PrestaShop\Core\Grid\Column\Type\Common\DateTimeColumn;
+use PrestaShop\PrestaShop\Core\Grid\Column\Type\Common\HtmlColumn;
+use PrestaShop\PrestaShop\Core\Grid\Column\Type\Common\IdentifierColumn;
+use PrestaShop\PrestaShop\Core\Grid\Definition\Factory\AbstractGridDefinitionFactory;
+use PrestaShop\PrestaShop\Core\Grid\Filter\Filter;
+use PrestaShop\PrestaShop\Core\Grid\Filter\FilterCollection;
+use PrestaShop\PrestaShop\Core\Hook\HookDispatcherInterface;
+use PrestaShopBundle\Form\Admin\Type\DateRangeType;
+use PrestaShopBundle\Form\Admin\Type\SearchAndResetType;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\HttpFoundation\Request;
+
+/**
+ * Class ConfiguratorGridDefinitionFactory is responsible for creating Configurator definition.
+ */
+final class ConfiguratorGridDefinitionFactory extends AbstractGridDefinitionFactory
+{
+    const GRID_ID = 'drsoft_fr_product_wizard_configurator_grid';
+
+    /**
+     * @var Connection
+     */
+    protected $connection;
+
+    /**
+     * @var string
+     */
+    protected $dbPrefix;
+
+    /**
+     * @param HookDispatcherInterface|null $hookDispatcher
+     * @param Connection $connection
+     * @param string $dbPrefix
+     */
+    public function __construct(
+        HookDispatcherInterface $hookDispatcher = null,
+        Connection              $connection,
+        string                  $dbPrefix
+    )
+    {
+        parent::__construct($hookDispatcher);
+
+        $this->connection = $connection;
+        $this->dbPrefix = $dbPrefix;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function getId(): string
+    {
+        return self::GRID_ID;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function getName(): string
+    {
+        return $this->trans(
+            'Configurator',
+            [],
+            'Modules.Drsoftfrproductwizard.Admin'
+        );
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function getColumns()
+    {
+        return (new ColumnCollection())
+            ->add((new IdentifierColumn('id'))
+                ->setName($this->trans('ID', [], 'Modules.Drsoftfrproductwizard.Admin'))
+                ->setOptions([
+                    'identifier_field' => 'id',
+                ])
+            )
+            ->add((new DataColumn('name'))
+                ->setName($this->trans('Name', [], 'Modules.Drsoftfrproductwizard.Admin'))
+                ->setOptions([
+                    'field' => 'name',
+                ])
+            )
+            ->add((new HtmlColumn('shortcode'))
+                ->setName($this->trans('Shortcode', [], 'Modules.Drsoftfrproductwizard.Admin'))
+                ->setOptions([
+                    'field' => 'shortcode',
+                ])
+            )
+            ->add(
+                (new DateTimeColumn('date_add'))
+                    ->setName($this->trans('Date', [], 'Admin.Global'))
+                    ->setOptions([
+                        'format' => 'Y-m-d H:i',
+                        'field' => 'date_add',
+                    ])
+            )
+            ->add(
+                (new DateTimeColumn('date_upd'))
+                    ->setName($this->trans('Date', [], 'Admin.Global'))
+                    ->setOptions([
+                        'format' => 'Y-m-d H:i',
+                        'field' => 'date_add',
+                    ])
+            )
+            ->add((new ActionColumn('actions'))
+                ->setName($this->trans('Actions', [], 'Admin.Global'))
+                ->setOptions([
+                    'actions' => (new RowActionCollection())
+                        ->add((new LinkRowAction('edit'))
+                            ->setName($this->trans('Edit', [], 'Admin.Actions'))
+                            ->setIcon('edit')
+                            ->setOptions([
+                                'route' => 'admin_drsoft_fr_product_wizard_configurator_edit',
+                                'route_param_name' => 'id',
+                                'route_param_field' => 'id',
+                                'clickable_row' => true,
+                            ])
+                        )
+                        ->add((new SubmitRowAction('delete'))
+                            ->setName($this->trans('Delete', [], 'Admin.Actions'))
+                            ->setIcon('delete')
+                            ->setOptions([
+                                'method' => Request::METHOD_DELETE,
+                                'route' => 'admin_drsoft_fr_product_wizard_configurator_delete',
+                                'route_param_name' => 'id',
+                                'route_param_field' => 'id',
+                                'confirm_message' => $this->trans(
+                                    'Delete selected item?',
+                                    [],
+                                    'Admin.Notifications.Warning'
+                                ),
+                                'modal_options' => new ModalOptions([
+                                    'title' => $this->trans('Delete selection', [], 'Admin.Actions'),
+                                    'confirm_button_label' => $this->trans('Delete', [], 'Admin.Actions'),
+                                    'confirm_button_class' => 'btn-danger',
+                                    'close_button_label' => $this->trans('Cancel', [], 'Admin.Actions'),
+                                ]),
+                            ])
+                        )
+                ])
+            );
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function getFilters()
+    {
+        return (new FilterCollection())
+            ->add((new Filter('id', NumberType::class))
+                ->setAssociatedColumn('id')
+                ->setTypeOptions([
+                    'required' => false,
+                    'attr' => [
+                        'placeholder' => $this->trans('ID', [], 'Modules.Drsoftfrproductwizard.Admin'),
+                    ],
+                ])
+            )
+            ->add(
+                (new Filter('name', TextType::class))
+                    ->setAssociatedColumn('name')
+                    ->setTypeOptions([
+                        'required' => false,
+                        'attr' => [
+                            'placeholder' => $this->trans('Search configurator name', [], 'Modules.Drsoftfrproductwizard.Admin'),
+                        ],
+                    ])
+            )
+            ->add(
+                (new Filter('date_add', DateRangeType::class))
+                    ->setTypeOptions([
+                        'required' => false,
+                    ])
+                    ->setAssociatedColumn('date_add')
+            )
+            ->add(
+                (new Filter('date_upd', DateRangeType::class))
+                    ->setTypeOptions([
+                        'required' => false,
+                    ])
+                    ->setAssociatedColumn('date_upd')
+            )
+            ->add((new Filter('actions', SearchAndResetType::class))
+                ->setTypeOptions([
+                    'reset_route' => 'admin_common_reset_search_by_filter_id',
+                    'reset_route_params' => [
+                        'filterId' => self::GRID_ID,
+                    ],
+                    'redirect_route' => 'admin_drsoft_fr_product_wizard_configurator_index',
+                ])
+                ->setAssociatedColumn('actions')
+            );
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function getGridActions()
+    {
+        return (new GridActionCollection())
+            ->add((new SimpleGridAction('common_refresh_list'))
+                ->setName($this->trans('Refresh list', [], 'Admin.Advparameters.Feature'))
+                ->setIcon('refresh')
+            )
+            ->add((new SimpleGridAction('common_show_query'))
+                ->setName($this->trans('Show SQL query', [], 'Admin.Actions'))
+                ->setIcon('code')
+            )
+            ->add((new SimpleGridAction('common_export_sql_manager'))
+                ->setName($this->trans('Export to SQL Manager', [], 'Admin.Actions'))
+                ->setIcon('storage')
+            );
+    }
+}

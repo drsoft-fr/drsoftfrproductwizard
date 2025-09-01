@@ -1,5 +1,6 @@
 imports:
   - { resource: ../common.yml }
+  - { resource: services/configurator.yml }
 
 services:
   DrSoftFr\Module\ProductWizard\UI\Admin\Controller\ConfiguratorController:

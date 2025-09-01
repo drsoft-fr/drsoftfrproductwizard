@@ -5,12 +5,19 @@ import vue from '@vitejs/plugin-vue'
 import Components from 'unplugin-vue-components/vite'
 import { PrimeVueResolver } from '@primevue/auto-import-resolver'
 
+const psRootDir = resolve(__dirname, '../../../admin-dev/themes/new-theme')
+const psJsDir = resolve(psRootDir, './js')
+
 export default defineConfig({
   build: {
     manifest: true,
     rollupOptions: {
       external: ['prestashop', '$', 'jquery'],
       input: {
+        'admin-configurator-home': resolve(
+          __dirname,
+          'src/js/admin/configurator/home/index.js',
+        ),
         'admin-configurator-form': resolve(
           __dirname,
           'src/js/admin/configurator/form/index.js',
@@ -50,6 +57,9 @@ export default defineConfig({
   ],
   resolve: {
     alias: {
+      '@app': resolve(psJsDir, './app'),
+      '@components': resolve(psJsDir, './components'),
+      '@PSTypes': resolve(psJsDir, './types'),
       '@': fileURLToPath(new URL('./src', import.meta.url)),
     },
   },

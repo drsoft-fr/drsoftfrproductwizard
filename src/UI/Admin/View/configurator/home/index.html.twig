@@ -3,59 +3,19 @@
 {% block main %}
     <div class="row justify-content-center">
         <div class="col">
-            <div class="card">
-                <h1 class="card-header">Scénarios de configuration</h1>
-                <div class="card-body card-block">
-                    {% if 'ROLE_MOD_TAB_ADMINDRSOFTFRPRODUCTWIZARDCONFIGURATOR_CREATE' in app.user.roles %}
-                        <a class="btn btn-primary mb-3"
-                           href="{{ path('admin_drsoft_fr_product_wizard_configurator_new') }}">Ajouter un
-                            scénario</a>
-                    {% endif %}
-                    <table class="table">
-                        <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Nom</th>
-                            <th>Actif</th>
-                            <th>Shortcode</th>
-                            <th>Créé le</th>
-                            <th>Actions</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {% for configurator in configurators %}
-                            <tr>
-                                <td>{{ configurator.id }}</td>
-                                <td>{{ configurator.name }}</td>
-                                <td>{% if configurator.active %}Oui{% else %}Non{% endif %}</td>
-                                <td>[drsoft-fr-product-wizard id="{{ configurator.id }}"]</td>
-                                <td>{{ configurator.dateAdd|date('d/m/Y H:i') }}</td>
-                                <td>
-                                    {% if 'ROLE_MOD_TAB_ADMINDRSOFTFRPRODUCTWIZARDCONFIGURATOR_UPDATE' in app.user.roles %}
-                                        <a href="{{ path('admin_drsoft_fr_product_wizard_configurator_edit', {id: configurator.id}) }}"
-                                           class="btn btn-sm btn-warning">Éditer</a>
-                                    {% endif %}
-                                    {% if 'ROLE_MOD_TAB_ADMINDRSOFTFRPRODUCTWIZARDCONFIGURATOR_DELETE' in app.user.roles %}
-                                        <form method="post"
-                                              action="{{ path('admin_drsoft_fr_product_wizard_configurator_delete', {id: configurator.id}) }}"
-                                              style="display:inline;"
-                                              onsubmit="return confirm('Supprimer ce scénario ?');">
-                                            <input type="hidden" name="_token"
-                                                   value="{{ csrf_token('delete' ~ configurator.id) }}">
-                                            <button class="btn btn-sm btn-danger">Supprimer</button>
-                                        </form>
-                                    {% endif %}
-                                </td>
-                            </tr>
-                        {% else %}
-                            <tr>
-                                <td colspan="4" class="text-center">Aucun scénario créé.</td>
-                            </tr>
-                        {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+            {% include '@PrestaShop/Admin/Common/Grid/grid_panel.html.twig' with {'grid': drsoft_fr_product_wizard_configurator_grid} %}
         </div>
     </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+
+    <script src="{{ asset('themes/default/js/bundle/pagination.js') }}"></script>
+
+    {% if manifest is defined %}
+        <script type="module"
+                src="{{ asset('../modules/drsoftfrproductwizard/views/' ~ manifest.url('src/js/admin/configurator/home/index.js', 'admin-configurator-home')['file']) }}"
+                async defer></script>
+    {% endif %}
 {% endblock %}
