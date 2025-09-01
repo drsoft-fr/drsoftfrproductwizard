@@ -21,10 +21,9 @@ use PrestaShopBundle\Security\Annotation\ModuleActivated;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Throwable;
 
 /**
- * Class ConfiguratorApiController.
- *
  * @ModuleActivated(moduleName="drsoftfrproductwizard", redirectRoute="admin_module_manage")
  */
 final class ConfiguratorApiController extends FrameworkBundleAdminController
@@ -40,18 +39,11 @@ final class ConfiguratorApiController extends FrameworkBundleAdminController
     }
 
     /**
-     * Get Configurator Data
-     *
      * @AdminSecurity(
      *     "is_granted(['read'], request.get('_legacy_controller'))",
      *     redirectRoute="admin_drsoft_fr_product_wizard_configurator_index",
      *     message="You do not have permission to read this."
      * )
-     *
-     * @param Request $request
-     * @param ConfiguratorRepositoryInterface $repository
-     *
-     * @return JsonResponse
      */
     public function getAction(
         Request                         $request,
@@ -61,7 +53,7 @@ final class ConfiguratorApiController extends FrameworkBundleAdminController
     {
         $configuratorId = $request->query->get('configuratorId');
 
-        if (empty($configuratorId)) {
+        if (true === empty($configuratorId)) {
             return $this->json([
                 'success' => false,
                 'message' => 'Invalid request data',
@@ -87,20 +79,11 @@ final class ConfiguratorApiController extends FrameworkBundleAdminController
     }
 
     /**
-     * Save Configurator
-     *
      * @AdminSecurity(
      *     "is_granted(['update', 'create'], request.get('_legacy_controller'))",
      *     redirectRoute="admin_drsoft_fr_product_wizard_configurator_index",
      *     message="You do not have permission to save this."
      * )
-     *
-     * @param Request $request
-     * @param ConfiguratorNormalizer $normalizer
-     * @param ConfiguratorFactory $factory
-     * @param EntityManagerInterface $em
-     *
-     * @return JsonResponse
      */
     public function saveAction(
         Request                $request,
@@ -111,20 +94,20 @@ final class ConfiguratorApiController extends FrameworkBundleAdminController
     {
         $data = json_decode($request->getContent(), true);
 
-        if (!isset($data['configurator'])) {
+        if (false === isset($data['configurator'])) {
             return $this->json([
                 'success' => false,
                 'message' => 'Invalid request data',
             ], Response::HTTP_BAD_REQUEST);
         }
 
-        $dto = $normalizer->denormalize($data['configurator']);
-
         try {
+            $dto = $normalizer->denormalize($data['configurator']);
+
             $validator = new ConfiguratorValidator();
 
             $validator->validate($dto);
-        } catch (\Throwable $t) {
+        } catch (Throwable $t) {
             return $this->json([
                 'success' => false,
                 'message' => $t->getMessage()
@@ -149,7 +132,7 @@ final class ConfiguratorApiController extends FrameworkBundleAdminController
                     'id' => $configurator->getId(),
                 ])
             ]);
-        } catch (\Throwable $t) {
+        } catch (Throwable $t) {
             $em->rollback();
 
             return $this->json([
@@ -160,32 +143,33 @@ final class ConfiguratorApiController extends FrameworkBundleAdminController
     }
 
     /**
-     * Search products by name
-     *
      * @AdminSecurity(
      *     "is_granted(['read'], request.get('_legacy_controller'))",
      *     redirectRoute="admin_drsoft_fr_product_wizard_configurator_index",
      *     message="You do not have permission to access this."
      * )
-     *
-     * @param Request $request
-     * @param ProductRepository $repository
-     *
-     * @return JsonResponse
      */
-    public function productSearchAction(Request $request, ProductRepository $repository): JsonResponse
+    public function productSearchAction(
+        Request           $request,
+        ProductRepository $repository
+    ): JsonResponse
     {
         try {
             $q = $request->query->get('q');
 
-            if (empty($q)) {
+            if (true === empty($q)) {
                 return $this->json([
                     'success' => true,
                     'items' => []
                 ]);
             }
 
-            $results = $repository->searchProducts(pSQL($q), new LanguageId($this->languageId), new ShopId($this->shopId), 20);
+            $results = $repository->searchProducts(
+                pSQL($q),
+                new LanguageId($this->languageId),
+                new ShopId($this->shopId),
+                20
+            );
 
             return $this->json([
                 'success' => true,
@@ -196,7 +180,7 @@ final class ConfiguratorApiController extends FrameworkBundleAdminController
                     ];
                 }, $results)
             ]);
-        } catch (\Throwable $t) {
+        } catch (Throwable $t) {
             return $this->json([
                 'success' => false,
                 'message' => 'Error searching products: ' . $t->getMessage(),
@@ -205,20 +189,16 @@ final class ConfiguratorApiController extends FrameworkBundleAdminController
     }
 
     /**
-     * Get product
-     *
      * @AdminSecurity(
      *     "is_granted(['read'], request.get('_legacy_controller'))",
      *     redirectRoute="admin_drsoft_fr_product_wizard_configurator_index",
      *     message="You do not have permission to access this."
      * )
-     *
-     * @param Request $request
-     * @param ProductRepository $repository
-     *
-     * @return JsonResponse
      */
-    public function getProductAction(Request $request, ProductRepository $repository): JsonResponse
+    public function getProductAction(
+        Request           $request,
+        ProductRepository $repository
+    ): JsonResponse
     {
         try {
             $productId = $request->query->getInt('product-id');
@@ -232,7 +212,7 @@ final class ConfiguratorApiController extends FrameworkBundleAdminController
                 'success' => true,
                 'product' => $productData
             ]);
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             return $this->json([
                 'success' => false,
                 'message' => 'Error fetching product: ' . $e->getMessage(),

@@ -22,8 +22,6 @@ use Symfony\Component\HttpFoundation\Response;
 use Throwable;
 
 /**
- * Class ConfiguratorController.
- *
  * @ModuleActivated(moduleName="drsoftfrproductwizard", redirectRoute="admin_module_manage")
  */
 final class ConfiguratorController extends FrameworkBundleAdminController
@@ -32,10 +30,7 @@ final class ConfiguratorController extends FrameworkBundleAdminController
     const PAGE_INDEX_ROUTE = 'admin_drsoft_fr_product_wizard_configurator_index';
     const TEMPLATE_FOLDER = '@Modules/drsoftfrproductwizard/src/UI/Admin/View/configurator/';
 
-    /**
-     * @var Package
-     */
-    private $manifest;
+    private Package $manifest;
 
     public function __construct(
         private readonly drsoftfrproductwizard $module
@@ -56,11 +51,6 @@ final class ConfiguratorController extends FrameworkBundleAdminController
      *     redirectRoute="admin_module_manage",
      *     message="Access denied."
      * )
-     *
-     * @param Request $request
-     * @param ConfiguratorFilters $filters
-     *
-     * @return Response
      */
     public function indexAction(
         Request             $request,
@@ -88,8 +78,6 @@ final class ConfiguratorController extends FrameworkBundleAdminController
      *     redirectRoute="admin_drsoft_fr_product_wizard_configurator_index",
      *     message="You do not have permission to create this."
      * )
-     *
-     * @return Response
      */
     public function newAction(): Response
     {
@@ -104,17 +92,11 @@ final class ConfiguratorController extends FrameworkBundleAdminController
     }
 
     /**
-     * Edit Configurator
-     *
      * @AdminSecurity(
      *     "is_granted('update', request.get('_legacy_controller'))",
      *     redirectRoute="admin_drsoft_fr_product_wizard_configurator_index",
      *     message="You do not have permission to edit this."
      * )
-     *
-     * @param Configurator $configurator
-     *
-     * @return Response
      */
     public function editAction(Configurator $configurator): Response
     {
@@ -129,23 +111,16 @@ final class ConfiguratorController extends FrameworkBundleAdminController
     }
 
     /**
-     * Delete Configurator
-     *
      * @AdminSecurity(
      *     "is_granted('delete', request.get('_legacy_controller'))",
      *     redirectRoute="admin_drsoft_fr_product_wizard_configurator_index",
      *     message="You do not have permission to delete this."
      * )
-     *
-     * @param Configurator $configurator
-     * @param EntityManagerInterface $em
-     *
-     * @return RedirectResponse
      */
     public function deleteAction(
         Configurator           $configurator,
         EntityManagerInterface $em
-    ): Response
+    ): RedirectResponse
     {
         try {
             $em->remove($configurator);
