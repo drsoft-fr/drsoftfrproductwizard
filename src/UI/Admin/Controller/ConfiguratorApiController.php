@@ -28,6 +28,7 @@ use Throwable;
 final class ConfiguratorApiController extends FrameworkBundleAdminController
 {
     const TAB_CLASS_NAME = 'AdminDrSoftFrProductWizardConfiguratorApi';
+    private const PAGE_EDIT_ROUTE = 'admin_drsoft_fr_product_wizard_configurator_edit';
 
     public function __construct(
         private readonly int $languageId,
@@ -127,7 +128,7 @@ final class ConfiguratorApiController extends FrameworkBundleAdminController
                 'success' => true,
                 'message' => $dto->id ? 'Configurator created successfully' : 'Configurator updated successfully',
                 'configurator' => $normalizer->normalize($dto),
-                'route' => $this->generateUrl('admin_drsoft_fr_product_wizard_configurator_edit', [
+                'route' => $this->generateUrl(self::PAGE_EDIT_ROUTE, [
                     'id' => $configurator->getId(),
                 ])
             ]);

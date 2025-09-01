@@ -27,9 +27,15 @@ use Throwable;
 final class ConfiguratorController extends FrameworkBundleAdminController
 {
     const TAB_CLASS_NAME = 'AdminDrSoftFrProductWizardConfigurator';
-    const PAGE_INDEX_ROUTE = 'admin_drsoft_fr_product_wizard_configurator_index';
-    const TEMPLATE_FOLDER = '@Modules/drsoftfrproductwizard/src/UI/Admin/View/configurator/';
+    private const PAGE_INDEX_ROUTE = 'admin_drsoft_fr_product_wizard_configurator_index';
+    private const PAGE_CREATE_ROUTE = 'admin_drsoft_fr_product_wizard_configurator_create';
+    private const PAGE_API_GET_ROUTE = 'admin_drsoft_fr_product_wizard_configurator_api_get';
+    private const PAGE_API_SAVE_ROUTE = 'admin_drsoft_fr_product_wizard_configurator_api_save';
+    private const PAGE_API_PRODUCT_SEARCH_ROUTE = 'admin_drsoft_fr_product_wizard_configurator_api_product_search';
+    private const PAGE_API_PRODUCT_ROUTE = 'admin_drsoft_fr_product_wizard_configurator_api_product';
+    private const TEMPLATE_FOLDER = '@Modules/drsoftfrproductwizard/src/UI/Admin/View/configurator/';
     private const BULK_PARAMETER_NAME = 'drsoft_fr_product_wizard_configurator_grid_bulk';
+    private const GRID_CONFIGURATOR_FACTORY = 'drsoft_fr.module.product_wizard.grid.configurator_factory';
 
     private Package $manifest;
 
@@ -297,11 +303,11 @@ final class ConfiguratorController extends FrameworkBundleAdminController
         \Media::addJsDef([
             'drsoftfrproductwizard' => [
                 'routes' => [
-                    'home' => $this->generateUrl('admin_drsoft_fr_product_wizard_configurator_index'),
-                    'get' => $this->generateUrl('admin_drsoft_fr_product_wizard_configurator_api_get'),
-                    'save' => $this->generateUrl('admin_drsoft_fr_product_wizard_configurator_api_save'),
-                    'product_search' => $this->generateUrl('admin_drsoft_fr_product_wizard_configurator_api_product_search'),
-                    'product' => $this->generateUrl('admin_drsoft_fr_product_wizard_configurator_api_product'),
+                    'home' => $this->generateUrl(self::PAGE_INDEX_ROUTE),
+                    'get' => $this->generateUrl(self::PAGE_API_GET_ROUTE),
+                    'save' => $this->generateUrl(self::PAGE_API_SAVE_ROUTE),
+                    'product_search' => $this->generateUrl(self::PAGE_API_PRODUCT_SEARCH_ROUTE),
+                    'product' => $this->generateUrl(self::PAGE_API_PRODUCT_ROUTE),
                 ],
                 'messages' => [
                     'Modules.Drsoftfrproductwizard.Admin' => [
@@ -391,7 +397,7 @@ final class ConfiguratorController extends FrameworkBundleAdminController
     protected function getGridFactory(): GridFactory
     {
         /** @type GridFactory */
-        return $this->get('drsoft_fr.module.product_wizard.grid.configurator_factory');
+        return $this->get(self::GRID_CONFIGURATOR_FACTORY);
     }
 
     private function getToolbarButtons(): array
@@ -400,7 +406,7 @@ final class ConfiguratorController extends FrameworkBundleAdminController
             'add' => [
                 'desc' => $this->trans('Add new Configurator', 'Modules.Drsoftfrproductwizard.Admin'),
                 'icon' => 'add_circle_outline',
-                'href' => $this->generateUrl('admin_drsoft_fr_product_wizard_configurator_create'),
+                'href' => $this->generateUrl(self::PAGE_CREATE_ROUTE),
             ],
         ];
     }
