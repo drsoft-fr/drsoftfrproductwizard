@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace DrSoftFr\Module\ProductWizard\UI\Admin\Grid\Definition\Factory;
 
 use Doctrine\DBAL\Connection;
+use PrestaShop\PrestaShop\Core\Grid\Action\Bulk\BulkActionCollection;
+use PrestaShop\PrestaShop\Core\Grid\Action\Bulk\Type\SubmitBulkAction;
 use PrestaShop\PrestaShop\Core\Grid\Action\GridActionCollection;
 use PrestaShop\PrestaShop\Core\Grid\Action\ModalOptions;
 use PrestaShop\PrestaShop\Core\Grid\Action\Row\RowActionCollection;
@@ -13,6 +15,7 @@ use PrestaShop\PrestaShop\Core\Grid\Action\Row\Type\SubmitRowAction;
 use PrestaShop\PrestaShop\Core\Grid\Action\Type\SimpleGridAction;
 use PrestaShop\PrestaShop\Core\Grid\Column\ColumnCollection;
 use PrestaShop\PrestaShop\Core\Grid\Column\Type\Common\ActionColumn;
+use PrestaShop\PrestaShop\Core\Grid\Column\Type\Common\BulkActionColumn;
 use PrestaShop\PrestaShop\Core\Grid\Column\Type\Common\DataColumn;
 use PrestaShop\PrestaShop\Core\Grid\Column\Type\Common\DateTimeColumn;
 use PrestaShop\PrestaShop\Core\Grid\Column\Type\Common\HtmlColumn;
@@ -89,6 +92,11 @@ final class ConfiguratorGridDefinitionFactory extends AbstractGridDefinitionFact
     protected function getColumns()
     {
         return (new ColumnCollection())
+            ->add((new BulkActionColumn('bulk'))
+                ->setOptions([
+                    'bulk_field' => 'id',
+                ])
+            )
             ->add((new IdentifierColumn('id'))
                 ->setName($this->trans('ID', [], 'Modules.Drsoftfrproductwizard.Admin'))
                 ->setOptions([
@@ -223,6 +231,53 @@ final class ConfiguratorGridDefinitionFactory extends AbstractGridDefinitionFact
                     'redirect_route' => 'admin_drsoft_fr_product_wizard_configurator_index',
                 ])
                 ->setAssociatedColumn('actions')
+            );
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function getBulkActions(): BulkActionCollection
+    {
+        return (new BulkActionCollection())
+            ->add((new SubmitBulkAction('enable_bulk'))
+                ->setName($this->trans('Enable selected', [], 'Modules.Drsoftfrproductwizard.Actions'))
+                ->setOptions([
+                    'submit_route' => 'admin_drsoft_fr_product_wizard_configurator_bulk_enable',
+                    'confirm_message' => $this->trans('Enable selected items?', [], 'Modules.Drsoftfrproductwizard.Warning'),
+                    'modal_options' => new ModalOptions([
+                        'title' => $this->trans('Enable selection', [], 'Modules.Drsoftfrproductwizard.Actions'),
+                        'confirm_button_label' => $this->trans('Enable', [], 'Modules.Drsoftfrproductwizard.Actions'),
+                        'confirm_button_class' => 'btn-success',
+                        'close_button_label' => $this->trans('Cancel', [], 'Admin.Actions'),
+                    ]),
+                ])
+            )
+            ->add((new SubmitBulkAction('disable_bulk'))
+                ->setName($this->trans('Disable selected', [], 'Modules.Drsoftfrproductwizard.Actions'))
+                ->setOptions([
+                    'submit_route' => 'admin_drsoft_fr_product_wizard_configurator_bulk_disable',
+                    'confirm_message' => $this->trans('Disable selected items?', [], 'Modules.Drsoftfrproductwizard.Warning'),
+                    'modal_options' => new ModalOptions([
+                        'title' => $this->trans('Disable selection', [], 'Modules.Drsoftfrproductwizard.Actions'),
+                        'confirm_button_label' => $this->trans('Disable', [], 'Modules.Drsoftfrproductwizard.Actions'),
+                        'confirm_button_class' => 'btn-warning',
+                        'close_button_label' => $this->trans('Cancel', [], 'Admin.Actions'),
+                    ]),
+                ])
+            )
+            ->add((new SubmitBulkAction('delete_bulk'))
+                ->setName($this->trans('Delete selected', [], 'Admin.Actions'))
+                ->setOptions([
+                    'submit_route' => 'admin_drsoft_fr_product_wizard_configurator_bulk_delete',
+                    'confirm_message' => $this->trans('Delete selected items?', [], 'Admin.Notifications.Warning'),
+                    'modal_options' => new ModalOptions([
+                        'title' => $this->trans('Delete selection', [], 'Modules.Drsoftfrproductwizard.Actions'),
+                        'confirm_button_label' => $this->trans('Delete', [], 'Modules.Drsoftfrproductwizard.Actions'),
+                        'confirm_button_class' => 'btn-danger',
+                        'close_button_label' => $this->trans('Cancel', [], 'Admin.Actions'),
+                    ]),
+                ])
             );
     }
 

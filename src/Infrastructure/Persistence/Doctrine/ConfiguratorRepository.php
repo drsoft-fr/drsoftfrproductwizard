@@ -16,6 +16,21 @@ use DrSoftFr\Module\ProductWizard\Entity\Configurator;
  */
 class ConfiguratorRepository extends EntityRepository implements ConfiguratorRepositoryInterface
 {
+    /**
+     * {@inerhitDoc}
+     */
+    public function bulkRemove(array $configurators): void
+    {
+        foreach ($configurators as $configurator) {
+            $this->_em->remove($configurator);
+        }
+    }
+
+    public function flush(): void
+    {
+        $this->_em->flush();
+    }
+
     public function save(Configurator $configurator): void
     {
         $this->_em->persist($configurator);

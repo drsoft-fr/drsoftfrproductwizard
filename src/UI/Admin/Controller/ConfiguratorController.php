@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace DrSoftFr\Module\ProductWizard\UI\Admin\Controller;
 
 use Doctrine\ORM\EntityManagerInterface;
+use DrSoftFr\Module\ProductWizard\Domain\Repository\ConfiguratorRepositoryInterface;
 use DrSoftFr\Module\ProductWizard\Entity\Configurator;
 use DrSoftFr\Module\ProductWizard\UI\Admin\Grid\Filters\ConfiguratorFilters;
 use DrSoftFr\PrestaShopModuleHelper\Domain\Asset\Package;
@@ -29,6 +30,7 @@ final class ConfiguratorController extends FrameworkBundleAdminController
     const TAB_CLASS_NAME = 'AdminDrSoftFrProductWizardConfigurator';
     const PAGE_INDEX_ROUTE = 'admin_drsoft_fr_product_wizard_configurator_index';
     const TEMPLATE_FOLDER = '@Modules/drsoftfrproductwizard/src/UI/Admin/View/configurator/';
+    private const BULK_PARAMETER_NAME = 'drsoft_fr_product_wizard_configurator_grid_bulk';
 
     private Package $manifest;
 
@@ -43,6 +45,115 @@ final class ConfiguratorController extends FrameworkBundleAdminController
                 _PS_MODULE_DIR_ . '/drsoftfrproductwizard/views/.vite/manifest.json'
             )
         );
+    }
+
+    /**
+     * @AdminSecurity(
+     *     "is_granted('update', request.get('_legacy_controller'))",
+     *     redirectRoute="admin_drsoft_fr_product_wizard_configurator_index",
+     *     message="You do not have permission to edit this."
+     * )
+     */
+    public function bulkEnableAction(
+        Request                         $request,
+        ConfiguratorRepositoryInterface $repository
+    ): RedirectResponse
+    {
+        $ids = $request->request->get(self::BULK_PARAMETER_NAME);;
+
+        /** @var Configurator[] $configurators */
+        $objs = $repository->findById($ids);
+
+        if (true === empty($objs)) {
+            return $this->cannotFindObjRedirect();
+        }
+
+        foreach ($objs as $obj) {
+            $obj->setActive(true);
+        }
+
+        $repository->flush();
+        $this->addFlash(
+            'success',
+            $this->trans(
+                'The selection has been successfully enabled.',
+                'Modules.Drsoftfrproductwizard.Success'
+            )
+        );
+
+        return $this->redirectToRoute(self::PAGE_INDEX_ROUTE);
+    }
+
+    /**
+     * @AdminSecurity(
+     *     "is_granted('update', request.get('_legacy_controller'))",
+     *     redirectRoute="admin_drsoft_fr_product_wizard_configurator_index",
+     *     message="You do not have permission to edit this."
+     * )
+     */
+    public function bulkDisableAction(
+        Request                         $request,
+        ConfiguratorRepositoryInterface $repository
+    ): RedirectResponse
+    {
+        $ids = $request->request->get(self::BULK_PARAMETER_NAME);;
+
+        /** @var Configurator[] $configurators */
+        $objs = $repository->findById($ids);
+
+        if (true === empty($objs)) {
+            return $this->cannotFindObjRedirect();
+        }
+
+        foreach ($objs as $obj) {
+            $obj->setActive(false);
+        }
+
+        $repository->flush();
+        $this->addFlash(
+            'success',
+            $this->trans(
+                'The selection has been successfully disabled.',
+                'Modules.Drsoftfrproductwizard.Success'
+            )
+        );
+
+        return $this->redirectToRoute(self::PAGE_INDEX_ROUTE);
+    }
+
+    /**
+     * @AdminSecurity(
+     *     "is_granted('delete', request.get('_legacy_controller'))",
+     *     redirectRoute="admin_drsoft_fr_product_wizard_configurator_index",
+     *     message="You do not have permission to delete this."
+     * )
+     */
+    public function bulkDeleteAction(
+        Request                         $request,
+        ConfiguratorRepositoryInterface $repository
+    ): RedirectResponse
+    {
+        $ids = $request->request->get(self::BULK_PARAMETER_NAME);;
+
+        /** @var Configurator[] $configurators */
+        $objs = $repository->findById($ids);
+
+        if (true === empty($objs)) {
+            return $this->cannotFindObjRedirect();
+        }
+
+        $repository->bulkRemove($objs);
+        $repository->flush();
+
+        $this->addFlash(
+            'success',
+            $this->trans(
+                'The selection has been successfully deleted.',
+                'Modules.Drsoftfrproductwizard.Success'
+            )
+        );
+
+        return $this->redirectToRoute(self::PAGE_INDEX_ROUTE);
     }
 
     /**
@@ -168,6 +279,22 @@ final class ConfiguratorController extends FrameworkBundleAdminController
         } finally {
             return $this->json($response);
         }
+    }
+
+    /**
+     * Display error message when obj cannot be found and redirect to index page.
+     */
+    private function cannotFindObjRedirect(): RedirectResponse
+    {
+        $this->addFlash(
+            'error',
+            $this->trans(
+                'Cannot find obj',
+                'Modules.Drsoftfrproductwizard.Error'
+            )
+        );
+
+        return $this->redirectToRoute(self::PAGE_INDEX_ROUTE);
     }
 
     private function defineJsProps(): void

@@ -60,3 +60,27 @@ admin_drsoft_fr_product_wizard_configurator_toggle_active:
       id: id
   requirements:
     id: \d+
+
+admin_drsoft_fr_product_wizard_configurator_bulk_enable:
+  path: /bulk-enable
+  methods: [ POST ]
+  defaults:
+    _controller: DrSoftFr\Module\ProductWizard\UI\Admin\Controller\ConfiguratorController::bulkEnableAction
+    _legacy_controller: AdminDrSoftFrProductWizardConfigurator
+    _legacy_link: AdminDrSoftFrProductWizardConfigurator:bulkEnable
+
+admin_drsoft_fr_product_wizard_configurator_bulk_delete:
+  path: /bulk-delete
+  methods: [ POST ]
+  defaults:
+    _controller: DrSoftFr\Module\ProductWizard\UI\Admin\Controller\ConfiguratorController::bulkDeleteAction
+    _legacy_controller: AdminDrSoftFrProductWizardConfigurator
+    _legacy_link: AdminDrSoftFrProductWizardConfigurator:bulkDelete
+
+admin_drsoft_fr_product_wizard_configurator_bulk_disable:
+  path: /bulk-disable
+  methods: [ POST ]
+  defaults:
+    _controller: DrSoftFr\Module\ProductWizard\UI\Admin\Controller\ConfiguratorController::bulkDisableAction
+    _legacy_controller: AdminDrSoftFrProductWizardConfigurator
+    _legacy_link: AdminDrSoftFrProductWizardConfigurator:bulkDisable
