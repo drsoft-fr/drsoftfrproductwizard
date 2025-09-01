@@ -79,7 +79,7 @@ final class ConfiguratorController extends FrameworkBundleAdminController
      *     message="You do not have permission to create this."
      * )
      */
-    public function newAction(): Response
+    public function createAction(): Response
     {
         $this->defineJsProps();
 
@@ -278,7 +278,7 @@ final class ConfiguratorController extends FrameworkBundleAdminController
             'add' => [
                 'desc' => $this->trans('Add new Configurator', 'Modules.Drsoftfrproductwizard.Admin'),
                 'icon' => 'add_circle_outline',
-                'href' => $this->generateUrl('admin_drsoft_fr_product_wizard_configurator_new'),
+                'href' => $this->generateUrl('admin_drsoft_fr_product_wizard_configurator_create'),
             ],
         ];
     }

@@ -8,13 +8,13 @@ admin_drsoft_fr_product_wizard_configurator_index:
       - AdminDrSoftFrProductWizardConfigurator
       - AdminDrSoftFrProductWizardConfigurator:index
 
-admin_drsoft_fr_product_wizard_configurator_new:
+admin_drsoft_fr_product_wizard_configurator_create:
   path: /new
   methods: [ GET, POST ]
   defaults:
-    _controller: DrSoftFr\Module\ProductWizard\UI\Admin\Controller\ConfiguratorController::newAction
+    _controller: DrSoftFr\Module\ProductWizard\UI\Admin\Controller\ConfiguratorController::createAction
     _legacy_controller: AdminDrSoftFrProductWizardConfigurator
-    _legacy_link: AdminDrSoftFrProductWizardConfigurator:new
+    _legacy_link: AdminDrSoftFrProductWizardConfigurator:create
 
 admin_drsoft_fr_product_wizard_configurator_edit:
   path: /{id}/edit
