@@ -30,7 +30,7 @@ admin_drsoft_fr_product_wizard_configurator_edit:
 
 admin_drsoft_fr_product_wizard_configurator_delete:
   path: /{id}/delete
-  methods: [ GET, POST ]
+  methods: [ DELETE ]
   defaults:
     _controller: DrSoftFr\Module\ProductWizard\UI\Admin\Controller\ConfiguratorController::deleteAction
     _legacy_controller: AdminDrSoftFrProductWizardConfigurator

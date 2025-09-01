@@ -18,6 +18,7 @@ use PrestaShopBundle\Security\Annotation\ModuleActivated;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Throwable;
 
 /**
  * Class ConfiguratorController.
@@ -65,7 +66,6 @@ final class ConfiguratorController extends FrameworkBundleAdminController
         ConfiguratorFilters $filters
     ): Response
     {
-
         /** @var GridInterface $grid */
         $grid = $this
             ->getGridFactory()
@@ -138,20 +138,24 @@ final class ConfiguratorController extends FrameworkBundleAdminController
      *
      * @param Configurator $configurator
      * @param EntityManagerInterface $em
-     * @param Request $request
      *
      * @return RedirectResponse
      */
-    public function deleteAction(Configurator $configurator, EntityManagerInterface $em, Request $request): Response
+    public function deleteAction(
+        Configurator           $configurator,
+        EntityManagerInterface $em
+    ): Response
     {
-        if ($this->isCsrfTokenValid('delete' . $configurator->getId(), $request->request->get('_token'))) {
+        try {
             $em->remove($configurator);
             $em->flush();
 
             $this->addFlash('success', $this->trans('Deleted scenario', 'Modules.Drsoftfrproductwizard.Success'));
+        } catch (Throwable $t) {
+            $this->addFlash('error', $this->trans('Error deleting scenario', 'Modules.Drsoftfrproductwizard.Error'));
+        } finally {
+            return $this->redirectToRoute(self::PAGE_INDEX_ROUTE);
         }
-
-        return $this->redirectToRoute(self::PAGE_INDEX_ROUTE);
     }
 
     private function defineJsProps(): void
