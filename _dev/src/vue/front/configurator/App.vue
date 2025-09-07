@@ -39,17 +39,11 @@ function calculateTotalPrice() {
     }
 
     total += selection.price_amount * (selection.quantity || 1)
-
-    if (false === configurator.value.has_discount) {
-      continue
-    }
-
     regularTotal += selection.regular_price_amount * (selection.quantity || 1)
   }
 
   totalPrice.value = total
-  regularTotalPrice.value =
-    true === configurator.value.has_discount ? regularTotal : total
+  regularTotalPrice.value = regularTotal
 }
 
 async function fetchConfigurator() {

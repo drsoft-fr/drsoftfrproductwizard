@@ -30,7 +30,7 @@ const $t = inject('$t')
   <div class="mt-3">
     <div>{{ $t('Total') }}</div>
     <div
-      v-if="true === configurator.has_discount"
+      v-if="regularTotalPrice !== totalPrice"
       class="price-without-reduction"
     >
       {{ formatPrice(regularTotalPrice) }}
