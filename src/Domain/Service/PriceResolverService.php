@@ -21,9 +21,9 @@ final class PriceResolverService
 {
     final public static function get(ProductChoiceDto $productChoiceDto, StepDto $stepDto, ConfiguratorDto $configuratorDto, ProductLazyArray $product = null): array
     {
-        $reduction = 0;
-        $reductionType = 'amount';
-        $reductionTax = true;
+        $reduction = $productChoiceDto->reduction;
+        $reductionType = $productChoiceDto->reductionType;
+        $reductionTax = $productChoiceDto->reductionTax;
         $price = '';
         $regularPrice = '';
         $hasDiscount = false;
@@ -31,118 +31,132 @@ final class PriceResolverService
         $regularPriceAmount = 0.0;
 
         if ($product === null) {
-            return [
-                'reduction' => $productChoiceDto->reduction,
-                'reduction_type' => $productChoiceDto->reductionType,
-                'reduction_tax' => $productChoiceDto->reductionTax,
-                'price' => $price,
-                'regular_price' => $regularPrice,
-                'has_discount' => $hasDiscount,
-                'price_amount' => $priceAmount,
-                'regular_price_amount' => $regularPriceAmount,
-            ];
+            return self::buildResponse(
+                $price,
+                $regularPrice,
+                $priceAmount,
+                $regularPriceAmount,
+                $hasDiscount,
+                $reduction,
+                $reductionType,
+                $reductionTax
+            );
+
         }
+
+        [$reduction, $reductionTax, $reductionType, $hasDiscount] = self::pickReduction(
+            $productChoiceDto,
+            $stepDto,
+            $configuratorDto
+        );
 
         $price = $product->price;
         $regularPrice = $product->regular_price;
         $priceAmount = $product->price_amount;
         $regularPriceAmount = $product->regular_price_amount;
 
-        if (0 < $productChoiceDto->reduction) {
-            $reduction = $productChoiceDto->reduction;
-            $reductionType = $productChoiceDto->reductionType;
-            $reductionTax = $productChoiceDto->reductionTax;
-            $hasDiscount = true;
-        } elseif (0 < $stepDto->reduction) {
-            $reduction = $stepDto->reduction;
-            $reductionType = $stepDto->reductionType;
-            $reductionTax = $stepDto->reductionTax;
-            $hasDiscount = true;
-        } elseif (0 < $configuratorDto->reduction) {
-            $reduction = $configuratorDto->reduction;
-            $reductionType = $configuratorDto->reductionType;
-            $reductionTax = $configuratorDto->reductionTax;
-            $hasDiscount = true;
-        }
-
         if ($reduction <= $product->reduction) {
-            return [
-                'has_discount' => $product->has_discount,
-                'reduction' => $product->reduction,
-                'reduction_type' => $product->discount_type,
-                'reduction_tax' => $product->specific_prices['reduction_tax'] ?? true,
-                'price' => $price,
-                'regular_price' => $regularPrice,
-                'price_amount' => $priceAmount,
-                'regular_price_amount' => $regularPriceAmount,
-            ];
+            return self::buildResponse(
+                $price,
+                $regularPrice,
+                $priceAmount,
+                $regularPriceAmount,
+                $product->has_discount,
+                $product->reduction,
+                $product->discount_type,
+                !!$product->specific_prices['reduction_tax']
+            );
         }
 
         $priceFormatter = new PriceFormatter();
 
         if (ReductionType::PERCENTAGE === $reductionType) {
-            $reduction = $reduction / 100;
-            $reduction = $priceAmount * $reduction;
-            $priceAmount = $priceAmount - $reduction;
+            $reduction = ($priceAmount * ($reduction / 100));
+            $priceAmount -= $reduction;
             $price = $priceFormatter->format($priceAmount);
 
-            return [
-                'has_discount' => $hasDiscount,
-                'reduction' => $reduction,
-                'reduction_type' => $reductionType,
-                'reduction_tax' => $reductionTax,
-                'price' => $price,
-                'regular_price' => $regularPrice,
-                'price_amount' => $priceAmount,
-                'regular_price_amount' => $regularPriceAmount,
-            ];
+            return self::buildResponse(
+                $price,
+                $regularPrice,
+                $priceAmount,
+                $regularPriceAmount,
+                $hasDiscount,
+                $reduction,
+                $reductionType,
+                $reductionTax
+            );
         }
-
 
         $context = Context::getContext();
-        $groupId = Context::getContext()->customer->id_default_group;
-        $group = new Group($groupId);
-        $useTax = !$group->price_display_method;
+        $useTax = !Group::getCurrent()->price_display_method;
 
         if ($useTax === $reductionTax) {
-            $priceAmount = $priceAmount - $reduction;
+            $priceAmount -= $reduction;
             $price = $priceFormatter->format($priceAmount);
 
-            return [
-                'has_discount' => $hasDiscount,
-                'reduction' => $reduction,
-                'reduction_type' => $reductionType,
-                'reduction_tax' => $reductionTax,
-                'price' => $price,
-                'regular_price' => $regularPrice,
-                'price_amount' => $priceAmount,
-                'regular_price_amount' => $regularPriceAmount,
-            ];
+            return self::buildResponse(
+                $price,
+                $regularPrice,
+                $priceAmount,
+                $regularPriceAmount,
+                $hasDiscount,
+                $reduction,
+                $reductionType,
+                $reductionTax
+            );
         }
 
-        if (is_object($context->cart) && $context->cart->{Configuration::get('PS_TAX_ADDRESS_TYPE')} != null) {
-            $addressId = $context->cart->{Configuration::get('PS_TAX_ADDRESS_TYPE')};
-            $address = new Address($addressId);
-        } else {
-            $address = new Address();
-        }
-
-        $taxManager = TaxManagerFactory::getManager(
-            $address,
-            Product::getIdTaxRulesGroupByIdProduct((int)$product->id_product, $context)
-        );
-
-        $product_tax_calculator = $taxManager->getTaxCalculator();
-
-        if (false === $useTax && true === $reductionTax) {
-            $reduction = $product_tax_calculator->removeTaxes($reduction);
-        } else {
-            $reduction = $product_tax_calculator->addTaxes($reduction);
-        }
-
-        $priceAmount = $priceAmount - $reduction;
+        $address = self::resolveAddress($context);
+        $productId = (int)$product->id_product;
+        $reduction = self::alignReductionToPriceTaxMode($reduction, $useTax, $reductionTax, $address, $productId, $context);
+        $priceAmount -= $reduction;
         $price = $priceFormatter->format($priceAmount);
 
+        return self::buildResponse(
+            $price,
+            $regularPrice,
+            $priceAmount,
+            $regularPriceAmount,
+            $hasDiscount,
+            $reduction,
+            $reductionType,
+            $reductionTax
+        );
+    }
+
+    private static function pickReduction(
+        ProductChoiceDto $productChoiceDto,
+        StepDto          $stepDto,
+        ConfiguratorDto  $configuratorDto
+    ): array
+    {
+        if ($productChoiceDto->reduction > 0) {
+            return [$productChoiceDto->reduction, $productChoiceDto->reductionTax, $productChoiceDto->reductionType, true];
+        }
+
+        if ($stepDto->reduction > 0) {
+            return [$stepDto->reduction, $stepDto->reductionTax, $stepDto->reductionType, true];
+        }
+
+        if ($configuratorDto->reduction > 0) {
+            return [$configuratorDto->reduction, $configuratorDto->reductionTax, $configuratorDto->reductionType, true];
+        }
+
+        return [$productChoiceDto->reduction, $productChoiceDto->reductionTax, $productChoiceDto->reductionType, false];
+    }
+
+
+    private static function buildResponse(
+        string $price,
+        string $regularPrice,
+        float  $priceAmount,
+        float  $regularPriceAmount,
+        bool   $hasDiscount,
+        float  $reduction,
+        string $reductionType,
+        bool   $reductionTax
+    ): array
+    {
         return [
             'has_discount' => $hasDiscount,
             'reduction' => $reduction,
@@ -153,5 +167,42 @@ final class PriceResolverService
             'price_amount' => $priceAmount,
             'regular_price_amount' => $regularPriceAmount,
         ];
+    }
+
+    private static function resolveAddress(Context $context): Address
+    {
+        if (is_object($context->cart) && $context->cart->{Configuration::get('PS_TAX_ADDRESS_TYPE')} !== null) {
+            $addressId = $context->cart->{Configuration::get('PS_TAX_ADDRESS_TYPE')};
+            return new Address((int)$addressId);
+        }
+
+        return new Address();
+    }
+
+    private static function alignReductionToPriceTaxMode(
+        float   $reduction,
+        bool    $useTax,
+        bool    $reductionTax,
+        Address $address,
+        int     $productId,
+        Context $context
+    ): float
+    {
+        $taxManager = TaxManagerFactory::getManager(
+            $address,
+            Product::getIdTaxRulesGroupByIdProduct($productId, $context)
+        );
+
+        $calculator = $taxManager->getTaxCalculator();
+
+        if ($useTax === false && $reductionTax === true) {
+            return $calculator->removeTaxes($reduction);
+        }
+
+        if ($useTax === true && $reductionTax === false) {
+            return $calculator->addTaxes($reduction);
+        }
+
+        return $reduction;
     }
 }
