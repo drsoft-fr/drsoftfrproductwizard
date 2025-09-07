@@ -98,7 +98,9 @@ function closeAlert() {
 
 provide('activeStepIndex', activeStepIndex)
 provide('configurator', configurator)
+provide('loading', loading)
 provide('selections', selections)
+provide('showAlert', showAlert)
 provide('steps', steps)
 provide('totalPrice', totalPrice)
 </script>
