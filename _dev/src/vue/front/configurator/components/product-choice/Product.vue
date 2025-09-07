@@ -24,8 +24,14 @@ const emit = defineEmits(['onSelect'])
     />
     <div class="card-body">
       <h4 class="card-title">{{ choice.product.name }}</h4>
+      <template v-if="true === choice.has_discount">
+        <p class="card-text product-price-without-reduction">
+          {{ choice.regular_price }}
+        </p>
+      </template>
+
       <p class="card-text product-price">
-        {{ choice.product.price }}
+        {{ choice.price }}
       </p>
 
       <div
@@ -60,5 +66,10 @@ const emit = defineEmits(['onSelect'])
   color: var(--bs-primary);
   font-size: 1.2rem;
   font-weight: bold;
+}
+
+.product-price-without-reduction {
+  color: var(--bs-secondary);
+  text-decoration: line-through;
 }
 </style>

@@ -10,6 +10,7 @@ use DrSoftFr\Module\ProductWizard\Application\Dto\ProductChoiceDto;
 use DrSoftFr\Module\ProductWizard\Application\Dto\StepDto;
 use DrSoftFr\Module\ProductWizard\Application\Exception\Configurator\ConfiguratorNotFoundException;
 use DrSoftFr\Module\ProductWizard\Domain\Repository\ConfiguratorRepositoryInterface;
+use DrSoftFr\Module\ProductWizard\Domain\Service\PriceResolverService;
 use DrSoftFr\Module\ProductWizard\Domain\Service\QuantityRuleApplier;
 use DrSoftFr\Module\ProductWizard\Domain\ValueObject\Configurator\ConfiguratorId;
 use DrSoftFr\Module\ProductWizard\Domain\ValueObject\ProductChoice\QuantityRule;
@@ -84,7 +85,7 @@ final class ConfiguratorPresenter
                 continue;
             }
 
-            $steps[] = $this->retrieveStep($step);
+            $steps[] = $this->retrieveStep($step, $configurator);
         }
 
         usort($steps, function ($a, $b) {
@@ -95,9 +96,12 @@ final class ConfiguratorPresenter
         return $steps;
     }
 
-    private function retrieveStep(StepDto $step): array
+    private function retrieveStep(
+        StepDto         $step,
+        ConfiguratorDto $configurator
+    ): array
     {
-        $choices = $this->retrieveChoices($step);
+        $choices = $this->retrieveChoices($step, $configurator);
 
         return [
             'id' => $step->id,
@@ -108,7 +112,10 @@ final class ConfiguratorPresenter
         ];
     }
 
-    private function retrieveChoices(StepDto $step): array
+    private function retrieveChoices(
+        StepDto         $step,
+        ConfiguratorDto $configurator
+    ): array
     {
         $choices = [];
 
@@ -131,7 +138,7 @@ final class ConfiguratorPresenter
                 continue;
             }
 
-            $choices[] = $this->retrieveChoice($choice, $step, $presenter, $presentationSettings, $assembler);
+            $choices[] = $this->retrieveChoice($choice, $step, $configurator, $presenter, $presentationSettings, $assembler);
         }
 
         usort($choices, function ($a, $b) {
@@ -144,6 +151,7 @@ final class ConfiguratorPresenter
     private function retrieveChoice(
         ProductChoiceDto            $choice,
         StepDto                     $step,
+        ConfiguratorDto             $configurator,
         ProductPresenter            $presenter,
         ProductPresentationSettings $presentationSettings,
         ProductAssembler            $assembler
@@ -159,6 +167,7 @@ final class ConfiguratorPresenter
         }
 
         $quantityRuleApplier = new QuantityRuleApplier();
+        $priceResolver = PriceResolverService::get($choice, $step, $configurator, $productInfo);
 
         return [
             'id' => $choice->id,
@@ -168,6 +177,14 @@ final class ConfiguratorPresenter
             'isDefault' => $choice->isDefault,
             'displayConditions' => $choice->displayConditions,
             'quantityRule' => $choice->quantityRule,
+            'price' => $priceResolver['price'],
+            'regular_price' => $priceResolver['regular_price'],
+            'price_amount' => $priceResolver['price_amount'],
+            'regular_price_amount' => $priceResolver['regular_price_amount'],
+            'has_discount' => $priceResolver['has_discount'],
+            'reduction' => $priceResolver['reduction'],
+            'reductionTax' => $priceResolver['reduction_tax'],
+            'reductionType' => $priceResolver['reduction_type'],
             'product' => $productInfo,
             'variants' => $variants,
             'combinations' => $combinations,
