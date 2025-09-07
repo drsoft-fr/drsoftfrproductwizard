@@ -16,6 +16,7 @@ const configurator = ref(null)
 const loading = ref(true)
 const selections = ref([])
 const steps = ref([])
+const regularTotalPrice = ref(0)
 const totalPrice = ref(0)
 
 const alert = reactive({ show: false, type: 'info', message: '' })
@@ -26,20 +27,29 @@ watch(selections, calculateTotalPrice, { deep: true })
 
 function calculateTotalPrice() {
   let total = 0
+  let regularTotal = 0
 
   for (const selection of selections.value) {
     if (null === selection.productId) {
       continue
     }
 
-    if (!selection.product || !selection.product.price_amount) {
+    if (!selection.product || !selection.price_amount) {
       continue
     }
 
-    total += selection.product.price_amount * (selection.quantity || 1)
+    total += selection.price_amount * (selection.quantity || 1)
+
+    if (false === configurator.value.has_discount) {
+      continue
+    }
+
+    regularTotal += selection.regular_price_amount * (selection.quantity || 1)
   }
 
   totalPrice.value = total
+  regularTotalPrice.value =
+    true === configurator.value.has_discount ? regularTotal : total
 }
 
 async function fetchConfigurator() {
@@ -103,6 +113,7 @@ provide('selections', selections)
 provide('showAlert', showAlert)
 provide('steps', steps)
 provide('totalPrice', totalPrice)
+provide('regularTotalPrice', regularTotalPrice)
 </script>
 
 <template>

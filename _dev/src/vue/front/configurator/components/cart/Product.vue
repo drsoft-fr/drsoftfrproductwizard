@@ -21,9 +21,16 @@ const $t = inject('$t')
       <span>{{ choice.quantity }}</span>
     </div>
   </div>
+  <div v-if="true === choice.has_discount" class="price-without-discount">
+    {{ formatPrice(choice.regular_price_amount * choice.quantity) }}
+  </div>
   <div>
-    {{ formatPrice(product.price_amount * choice.quantity) }}
+    {{ formatPrice(choice.price_amount * choice.quantity) }}
   </div>
 </template>
 
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+.price-without-discount {
+  text-decoration: line-through;
+}
+</style>

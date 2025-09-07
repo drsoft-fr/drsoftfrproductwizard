@@ -2,8 +2,10 @@
 import { inject } from 'vue'
 import Product from '@/vue/front/configurator/components/cart/Product.vue'
 
+const configurator = inject('configurator')
 const formatPrice = inject('formatPrice')
 const selections = inject('selections')
+const regularTotalPrice = inject('regularTotalPrice')
 const totalPrice = inject('totalPrice')
 const $t = inject('$t')
 </script>
@@ -27,7 +29,13 @@ const $t = inject('$t')
   </TransitionGroup>
   <div class="mt-3">
     <div>{{ $t('Total') }}</div>
-    <div>{{ formatPrice(totalPrice) }}</div>
+    <div
+      v-if="true === configurator.has_discount"
+      class="price-without-reduction"
+    >
+      {{ formatPrice(regularTotalPrice) }}
+    </div>
+    <div class="price">{{ formatPrice(totalPrice) }}</div>
   </div>
 </template>
 
@@ -40,5 +48,16 @@ ul {
     padding: 1rem 0;
     border-bottom: 1px solid var(--bs-border-color);
   }
+}
+
+.price {
+  color: var(--bs-primary);
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+.price-without-reduction {
+  color: var(--bs-secondary);
+  text-decoration: line-through;
 }
 </style>

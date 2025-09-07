@@ -39,6 +39,8 @@ final class ConfiguratorPresenter
      */
     private $repository;
 
+    private $hasDiscount = false;
+
     public function __construct(
         ConfiguratorRepositoryInterface $repository
     )
@@ -72,6 +74,7 @@ final class ConfiguratorPresenter
                 'name' => $dto->name,
                 'description' => $dto->description,
                 'steps' => $this->retrieveSteps($dto),
+                'has_discount' => $this->hasDiscount,
             ],
         ];
     }
@@ -168,6 +171,10 @@ final class ConfiguratorPresenter
 
         $quantityRuleApplier = new QuantityRuleApplier();
         $priceResolver = PriceResolverService::get($choice, $step, $configurator, $productInfo);
+
+        if (true === $priceResolver['has_discount']) {
+            $this->hasDiscount = true;
+        }
 
         return [
             'id' => $choice->id,
