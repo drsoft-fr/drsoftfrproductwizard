@@ -103,6 +103,7 @@ watch(steps, checkValidity, { deep: true })
             <ToggleSwitch
               inputId="configurator-reduction-tax"
               v-model="store.reduction_tax"
+              :disabled="'percentage' === store.reduction_type"
             />
           </div>
         </div>

@@ -189,6 +189,7 @@ const toggleMenu = (event) => {
         <ToggleSwitch
           :inputId="`step-reduction-tax-${stepId}`"
           v-model="step.reduction_tax"
+          :disabled="'percentage' === step.reduction_type"
         />
       </div>
     </div>

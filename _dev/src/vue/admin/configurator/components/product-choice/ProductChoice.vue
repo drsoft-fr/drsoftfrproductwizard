@@ -241,6 +241,7 @@ const handleConditionChange = (event) => {
         <ToggleSwitch
           :inputId="`pc-reduction-tax-${productChoiceId}`"
           v-model="productChoice.reduction_tax"
+          :disabled="'percentage' === productChoice.reduction_type"
         />
       </div>
     </div>
