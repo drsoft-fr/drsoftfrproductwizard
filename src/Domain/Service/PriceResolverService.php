@@ -72,6 +72,11 @@ final class PriceResolverService
 
         if (ReductionType::PERCENTAGE === $reductionType) {
             $reduction = ($priceAmount * ($reduction / 100));
+
+            if ($reduction > $priceAmount) {
+                $reduction = $priceAmount;
+            }
+
             $priceAmount -= $reduction;
             $price = $priceFormatter->format($priceAmount);
 
@@ -91,6 +96,11 @@ final class PriceResolverService
         $useTax = !Group::getCurrent()->price_display_method;
 
         if ($useTax === $reductionTax) {
+
+            if ($reduction > $priceAmount) {
+                $reduction = $priceAmount;
+            }
+
             $priceAmount -= $reduction;
             $price = $priceFormatter->format($priceAmount);
 
@@ -109,6 +119,11 @@ final class PriceResolverService
         $address = self::resolveAddress($context);
         $productId = (int)$product->id_product;
         $reduction = self::alignReductionToPriceTaxMode($reduction, $useTax, $reductionTax, $address, $productId, $context);
+
+        if ($reduction > $priceAmount) {
+            $reduction = $priceAmount;
+        }
+
         $priceAmount -= $reduction;
         $price = $priceFormatter->format($priceAmount);
 
