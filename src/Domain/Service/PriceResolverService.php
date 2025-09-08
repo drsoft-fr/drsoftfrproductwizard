@@ -50,21 +50,29 @@ final class PriceResolverService
             $configuratorDto
         );
 
-        $price = $product->price;
-        $regularPrice = $product->regular_price;
-        $priceAmount = $product->price_amount;
-        $regularPriceAmount = $product->regular_price_amount;
+        self::overridePriceFieldsFromProduct($product, $price, $regularPrice, $priceAmount, $regularPriceAmount);
 
-        if ($reduction <= $product->reduction) {
+        $productReduction = $product->reduction ?? 0;
+
+        if ($reduction <= $productReduction) {
+            $hasDiscount = $product->has_discount ?? $hasDiscount;
+            $reduction = $product->reduction ?? $reduction;
+            $reductionType = $product->discount_type ?? $reductionType;
+            $hasReductionTaxFlag = !empty($product->specific_prices['reduction_tax']);
+
+            if ($hasReductionTaxFlag) {
+                $reductionTax = (bool)$product->specific_prices['reduction_tax'];
+            }
+
             return self::buildResponse(
                 $price,
                 $regularPrice,
                 $priceAmount,
                 $regularPriceAmount,
-                $product->has_discount,
-                $product->reduction,
-                $product->discount_type,
-                !!$product->specific_prices['reduction_tax']
+                $hasDiscount,
+                $reduction,
+                $reductionType,
+                $reductionTax
             );
         }
 
@@ -219,5 +227,30 @@ final class PriceResolverService
         }
 
         return $reduction;
+    }
+
+    private static function overridePriceFieldsFromProduct(
+        ProductLazyArray $product,
+        string           &$price,
+        string           &$regularPrice,
+        float            &$priceAmount,
+        float            &$regularPriceAmount
+    ): void
+    {
+        if (true === isset($product->price)) {
+            $price = $product->price;
+        }
+
+        if (true === isset($product->regular_price)) {
+            $regularPrice = $product->regular_price;
+        }
+
+        if (true === isset($product->price_amount)) {
+            $priceAmount = (float)$product->price_amount;
+        }
+
+        if (true === isset($product->regular_price_amount)) {
+            $regularPriceAmount = (float)$product->regular_price_amount;
+        }
     }
 }
