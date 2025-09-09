@@ -169,7 +169,7 @@ final class ConfiguratorPresenter
         $variants = [];
 
         foreach ($combinations as $combination) {
-            $variants[] = $this->retrieveProduct($productId, $presenter, $presentationSettings, $assembler, $combination['id']);
+            $variants[] = $this->retrieveProduct($productId, $presenter, $presentationSettings, $assembler, (int)$combination['id']);
         }
 
         $quantityRuleApplier = new QuantityRuleApplier();
@@ -217,7 +217,7 @@ final class ConfiguratorPresenter
             'id_product' => $productId,
         ];
 
-        if (null !== $productAttributeId) {
+        if (false === empty($productAttributeId)) {
             $props['id_product_attribute'] = $productAttributeId;
         }
 
