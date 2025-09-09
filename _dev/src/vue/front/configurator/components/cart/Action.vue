@@ -8,6 +8,8 @@ const $t = inject('$t')
 function handleClick() {
   addToCart()
 }
+
+const steps = inject('steps')
 </script>
 
 <template>
@@ -15,12 +17,15 @@ function handleClick() {
     <button
       type="button"
       class="btn btn-primary btn-lg btn-block"
-      :disabled="selections.length === 0"
+      :disabled="selections.length < steps.length"
       @click="handleClick"
     >
       <i class="cart-btn-icon">&#128722;</i> {{ $t('Add to Cart') }}
     </button>
-    <div v-if="selections.length > 0" class="alert alert-info mt-3 text-center">
+    <div
+      v-if="selections.length < steps.length"
+      class="alert alert-info mt-3 text-center"
+    >
       <small>{{
         $t('Please complete all steps before adding to cart.')
       }}</small>
