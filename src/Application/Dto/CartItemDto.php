@@ -6,7 +6,7 @@ final class CartItemDto
 {
     public function __construct(
         public int $productChoiceId,
-        public int $stepid,
+        public int $stepId,
         public int $productId,
         public int $combinationId,
         public int $quantity,
@@ -18,7 +18,7 @@ final class CartItemDto
     {
         return new self(
             (int)$data['productChoiceId'],
-            (int)$data['stepid'],
+            (int)$data['stepId'],
             (int)$data['productId'],
             (int)$data['combinationId'],
             (int)$data['quantity'],
