@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use DrSoftFr\Module\ProductWizard\Application\Dto\CartDto;
 use DrSoftFr\Module\ProductWizard\Application\Exception\Configurator\ConfiguratorNotFoundException;
 use DrSoftFr\Module\ProductWizard\Domain\Exception\Configurator\ConfiguratorConstraintException;
 use DrSoftFr\Module\ProductWizard\Domain\ValueObject\Configurator\ConfiguratorId;
@@ -125,27 +126,15 @@ final class DrsoftfrproductwizardAjaxModuleFrontController extends ModuleFrontCo
         try {
             $data = json_decode(Tools::getValue('data', '{}'), true);
 
-            if (!isset($data['items']) || !is_array($data['items'])) {
-                $this->sendErrorResponse('Invalid data format');
-            }
-
-            $selections = array_values(array_filter((array)$data['items']));
-            $configuratorId = (int)$data['configuratorId'] ?? 0;
-
-            if (true === empty($configuratorId)) {
-                $this->sendErrorResponse('Invalid configuratorId');
-            }
-
-            $validationError = $this->validateSelections($selections);
+            $dto = CartDto::fromArray($data);
+            $validationError = $this->validateCartDto($dto);
 
             if (null !== $validationError) {
                 $this->sendErrorResponse($validationError);
             }
 
-            // Get the cart
             $cart = $this->context->cart;
 
-            // Create a new cart if it doesn't exist
             if (!Validate::isLoadedObject($cart)) {
                 $cart = new Cart();
                 $cart->id_currency = (int)$this->context->currency->id;
@@ -170,10 +159,11 @@ final class DrsoftfrproductwizardAjaxModuleFrontController extends ModuleFrontCo
 
             // Add products to cart
             $addedProducts = [];
-            foreach ($selections as $selection) {
-                $productId = (int)$selection['productId'];
-                $combinationId = isset($selection['combinationId']) ? (int)$selection['combinationId'] : 0;
-                $quantity = max(1, (int)$selection['quantity']);
+
+            foreach ($dto->items as $itemDto) {
+                $productId = $itemDto->productId;
+                $combinationId = $itemDto->combinationId;
+                $quantity = max(1, $itemDto->quantity);
 
                 $result = $cart->updateQty(
                     $quantity,
@@ -183,7 +173,7 @@ final class DrsoftfrproductwizardAjaxModuleFrontController extends ModuleFrontCo
 
                 if ($result) {
                     $addedProducts[] = [
-                        'id' => $productId,
+                        'productId' => $productId,
                         'combinationId' => $combinationId,
                         'quantity' => $quantity,
                     ];
@@ -208,29 +198,38 @@ final class DrsoftfrproductwizardAjaxModuleFrontController extends ModuleFrontCo
     /**
      * Validate given selections (products, quantities and combinations)
      *
-     * @param array $selections
+     * @param CartDto $dto
      *
      * @return string|null Error message if invalid, null if ok
      */
-    private function validateSelections(array $selections): ?string
+    private function validateCartDto(CartDto $dto): ?string
     {
-        if (true === empty($selections)) {
+        if (true === empty($dto->configuratorId)) {
+            return $this->trans('Invalid configuratorId.', [], 'Modules.Drsoftfrproductwizard.Error');
+        }
+
+        if (true === empty($dto->items)) {
             return $this->trans('No products selected.', [], 'Modules.Drsoftfrproductwizard.Error');
         }
 
-        foreach ($selections as $s) {
-            if (false === isset($s['productId'])) {
-                return $this->trans('Invalid selection format.', [], 'Modules.Drsoftfrproductwizard.Error');
+        foreach ($dto->items as $itemDto) {
+            if (true === empty($itemDto->productId)) {
+                return $this->trans('Invalid product ID.', [], 'Modules.Drsoftfrproductwizard.Error');
             }
 
-            $productId = (int)$s['productId'];
-            $quantity = isset($s['quantity']) ? (int)$s['quantity'] : 0;
-
-            if ($productId <= 0 || $quantity <= 0) {
-                return $this->trans('Invalid product or quantity.', [], 'Modules.Drsoftfrproductwizard.Error');
+            if (true === empty($itemDto->quantity)) {
+                return $this->trans('Invalid quantity.', [], 'Modules.Drsoftfrproductwizard.Error');
             }
 
-            $product = new Product($productId, true, (int)$this->context->language->id);
+            if (true === empty($itemDto->productChoiceId)) {
+                return $this->trans('Invalid product choice ID.', [], 'Modules.Drsoftfrproductwizard.Error');
+            }
+
+            if (true === empty($itemDto->stepId)) {
+                return $this->trans('Invalid step ID.', [], 'Modules.Drsoftfrproductwizard.Error');
+            }
+
+            $product = new Product($itemDto->productId, true, (int)$this->context->language->id);
 
             if (!Validate::isLoadedObject($product) || !$product->active) {
                 return $this->trans('A selected product is not available anymore.', [], 'Modules.Drsoftfrproductwizard.Error');
