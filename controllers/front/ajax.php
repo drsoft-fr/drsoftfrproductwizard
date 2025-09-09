@@ -104,35 +104,6 @@ final class DrsoftfrproductwizardAjaxModuleFrontController extends ModuleFrontCo
         Tools::redirect('/index.php?controller=404');
     }
 
-    /**
-     * Sends an error response for an AJAX request.
-     *
-     * @param string $message The message key.
-     *
-     * @return void
-     */
-    private function sendErrorResponse(string $message): void
-    {
-        try {
-            http_response_code(400);
-
-            $this->ajaxRender(json_encode([
-                'success' => false,
-                'message' => $message,
-            ]));
-        } catch (Throwable $t) {
-            http_response_code(400);
-            header('Cache-Control: no-store, no-cache, must-revalidate, post-check=0, pre-check=0');
-
-            echo json_encode([
-                'success' => false,
-                'message' => 'An error occurred during Ajax processing.'
-            ]);
-        } finally {
-            die;
-        }
-    }
-
     private function addToCartAction(): void
     {
         try {
@@ -210,160 +181,49 @@ final class DrsoftfrproductwizardAjaxModuleFrontController extends ModuleFrontCo
         }
     }
 
-    /**
-     * Validate given selections (products, quantities and combinations)
-     *
-     * @param CartDto $dto
-     *
-     * @return string|null Error message if invalid, null if ok
-     */
-    private function validateCartDto(CartDto $dto): ?string
+    private function getConfiguratorAction(): void
     {
-        if (true === empty($dto->configuratorId)) {
-            return $this->trans('Invalid configuratorId.', [], 'Modules.Drsoftfrproductwizard.Error');
+        try {
+            $configuratorId = (int)Tools::getValue('slug', 0);
+
+            if (empty($configuratorId)) {
+                $this->sendErrorResponse(
+                    $this
+                        ->context
+                        ->getTranslator()
+                        ->trans(
+                            'Invalid configurator ID.',
+                            [],
+                            'Modules.Drsoftfrproductwizard.Error'
+                        )
+                );
+            }
+
+            try {
+                $presenter = $this->getPresenter();
+
+                $this->ajaxRender(json_encode(
+                    $presenter->present(new ConfiguratorId($configuratorId))
+                ));
+
+                return;
+            } catch (ConfiguratorConstraintException $e) {
+                $this->sendErrorResponse($e->getMessage());
+            } catch (ConfiguratorNotFoundException $e) {
+                $this->sendErrorResponse(
+                    $this
+                        ->context
+                        ->getTranslator()
+                        ->trans(
+                            'Configurator not found',
+                            [],
+                            'Modules.Drsoftfrproductwizard.Error'
+                        )
+                );
+            }
+        } catch (Throwable $t) {
+            $this->sendErrorResponse('Error retrieving configurator information.');
         }
-
-        if (true === empty($dto->items)) {
-            return $this->trans('No products selected.', [], 'Modules.Drsoftfrproductwizard.Error');
-        }
-
-        foreach ($dto->items as $itemDto) {
-            if (true === empty($itemDto->productId)) {
-                return $this->trans('Invalid product ID.', [], 'Modules.Drsoftfrproductwizard.Error');
-            }
-
-            if (true === empty($itemDto->quantity)) {
-                return $this->trans('Invalid quantity.', [], 'Modules.Drsoftfrproductwizard.Error');
-            }
-
-            if (true === empty($itemDto->productChoiceId)) {
-                return $this->trans('Invalid product choice ID.', [], 'Modules.Drsoftfrproductwizard.Error');
-            }
-
-            if (true === empty($itemDto->stepId)) {
-                return $this->trans('Invalid step ID.', [], 'Modules.Drsoftfrproductwizard.Error');
-            }
-
-            $product = new Product($itemDto->productId, true, (int)$this->context->language->id);
-
-            if (!Validate::isLoadedObject($product) || !$product->active) {
-                return $this->trans('A selected product is not available anymore.', [], 'Modules.Drsoftfrproductwizard.Error');
-            }
-        }
-
-        return null;
-    }
-
-    /**
-     * Create or update a CartRule matching the exact selection requirements.
-     * The rule will automatically become not applicable if cart content changes
-     * (thanks to product restrictions with minimal quantities).
-     *
-     * @throws PrestaShopDatabaseException
-     * @throws Exception
-     */
-    private function upsertCartRuleForSelections(Cart $cart, CartDto $cartDto): void
-    {
-        $this->cleanCartRules($cart);
-
-        /** @var Configurator $configurator */
-        $configurator = $this->getRepository()->findOneBy([
-            'id' => $cartDto->configuratorId,
-            'active' => true
-        ]);
-
-        if (null === $configurator) {
-            throw new Exception('Cannot find active Configurator for ID ' . $cartDto->configuratorId);
-        }
-
-        $configuratorDto = ConfiguratorDto::fromEntity($configurator);
-
-        /**
-         * @var array<int, int> $requirements
-         * @var array<int, CartItemDto> $selectionIndex
-         */
-        [$requirements, $selectionIndex] = $this->prepareRequirementsForCartRuleCreation($cartDto);
-
-        if (true === empty($requirements)) {
-            return;
-        }
-
-        ksort($requirements);
-
-        $hash = md5(json_encode($requirements));
-
-        // Prepare presenters to retrieve product lazy arrays (price_amount, reduction, etc.)
-        $assembler = new ProductAssembler($this->context);
-        $presenterFactory = new ProductPresenterFactory($this->context);
-        $presentationSettings = $presenterFactory->getPresentationSettings();
-        $presenter = new ProductPresenter(
-            new ImageRetriever($this->context->link),
-            $this->context->link,
-            new PriceFormatter(),
-            new ProductColorsRetriever(),
-            $this->context->getTranslator()
-        );
-        $code = sprintf('WIZ-%d-%s', $cartDto->configuratorId, $hash);
-        $reduction = 0;
-        $cartRule = $this->createCartRule($cart, $code);
-        $cartRuleId = (int)$cartRule->id;
-
-        foreach ($requirements as $productId => $qtyRequired) {
-            $itemDto = $selectionIndex[$productId] ?? null;
-
-            if (null === $itemDto) {
-                throw new Exception('Cannot find representative selection for product ' . $productId);
-            }
-
-            /**
-             * @var StepDto $stepDto
-             * @var ProductChoiceDto $choiceDto
-             */
-            [$stepDto, $choiceDto] = $this->retrieveStepDtoAndChoiceDtoFromConfiguratorDtoAndCartDto(
-                $itemDto,
-                $configuratorDto
-            );
-
-            if (null === $stepDto || null === $choiceDto) {
-                throw new Exception('Cannot find matching Step/ProductChoice for product ' . $productId);
-            }
-
-            // Present product to get current price and existing reduction
-            $props = [
-                'id_product' => $productId,
-                'id_product_attribute' => $itemDto->combinationId,
-            ];
-            $productLazy = $presenter->present(
-                $presentationSettings,
-                $assembler->assembleProduct($props),
-                $this->context->language
-            );
-
-            $priceResolver = PriceResolverService::get($choiceDto, $stepDto, $configuratorDto, $productLazy);
-
-            if (false === $priceResolver['has_discount'] || true === $priceResolver['is_product_discount']) {
-                continue;
-            }
-
-            $reduction += $priceResolver['reduction'] * $qtyRequired;
-
-            $this->addCartRuleRestrictions($cartRuleId, $productId, $qtyRequired);
-        }
-
-        if (0 >= $reduction) {
-            $cartRule->delete();
-
-            return;
-        }
-
-        $cartRule->reduction_amount = max(0, (float)Tools::ps_round($reduction, 6));
-        $cartRule->update();
-
-        // Apply to current cart
-        $cart->addCartRule($cartRuleId);
-
-        // Clean caches at the end
-        CartRule::cleanCache();
     }
 
     /**
@@ -529,49 +389,189 @@ final class DrsoftfrproductwizardAjaxModuleFrontController extends ModuleFrontCo
         return [$stepDto, $choiceDto];
     }
 
-    private function getConfiguratorAction(): void
+    /**
+     * Sends an error response for an AJAX request.
+     *
+     * @param string $message The message key.
+     *
+     * @return void
+     */
+    private function sendErrorResponse(string $message): void
     {
         try {
-            $configuratorId = (int)Tools::getValue('slug', 0);
+            http_response_code(400);
 
-            if (empty($configuratorId)) {
-                $this->sendErrorResponse(
-                    $this
-                        ->context
-                        ->getTranslator()
-                        ->trans(
-                            'Invalid configurator ID.',
-                            [],
-                            'Modules.Drsoftfrproductwizard.Error'
-                        )
-                );
-            }
-
-            try {
-                $presenter = $this->getPresenter();
-
-                $this->ajaxRender(json_encode(
-                    $presenter->present(new ConfiguratorId($configuratorId))
-                ));
-
-                return;
-            } catch (ConfiguratorConstraintException $e) {
-                $this->sendErrorResponse($e->getMessage());
-            } catch (ConfiguratorNotFoundException $e) {
-                $this->sendErrorResponse(
-                    $this
-                        ->context
-                        ->getTranslator()
-                        ->trans(
-                            'Configurator not found',
-                            [],
-                            'Modules.Drsoftfrproductwizard.Error'
-                        )
-                );
-            }
+            $this->ajaxRender(json_encode([
+                'success' => false,
+                'message' => $message,
+            ]));
         } catch (Throwable $t) {
-            $this->sendErrorResponse('Error retrieving configurator information.');
+            http_response_code(400);
+            header('Cache-Control: no-store, no-cache, must-revalidate, post-check=0, pre-check=0');
+
+            echo json_encode([
+                'success' => false,
+                'message' => 'An error occurred during Ajax processing.'
+            ]);
+        } finally {
+            die;
         }
+    }
+
+    /**
+     * Create or update a CartRule matching the exact selection requirements.
+     * The rule will automatically become not applicable if cart content changes
+     * (thanks to product restrictions with minimal quantities).
+     *
+     * @throws PrestaShopDatabaseException
+     * @throws Exception
+     */
+    private function upsertCartRuleForSelections(Cart $cart, CartDto $cartDto): void
+    {
+        $this->cleanCartRules($cart);
+
+        /** @var Configurator $configurator */
+        $configurator = $this->getRepository()->findOneBy([
+            'id' => $cartDto->configuratorId,
+            'active' => true
+        ]);
+
+        if (null === $configurator) {
+            throw new Exception('Cannot find active Configurator for ID ' . $cartDto->configuratorId);
+        }
+
+        $configuratorDto = ConfiguratorDto::fromEntity($configurator);
+
+        /**
+         * @var array<int, int> $requirements
+         * @var array<int, CartItemDto> $selectionIndex
+         */
+        [$requirements, $selectionIndex] = $this->prepareRequirementsForCartRuleCreation($cartDto);
+
+        if (true === empty($requirements)) {
+            return;
+        }
+
+        ksort($requirements);
+
+        $hash = md5(json_encode($requirements));
+
+        // Prepare presenters to retrieve product lazy arrays (price_amount, reduction, etc.)
+        $assembler = new ProductAssembler($this->context);
+        $presenterFactory = new ProductPresenterFactory($this->context);
+        $presentationSettings = $presenterFactory->getPresentationSettings();
+        $presenter = new ProductPresenter(
+            new ImageRetriever($this->context->link),
+            $this->context->link,
+            new PriceFormatter(),
+            new ProductColorsRetriever(),
+            $this->context->getTranslator()
+        );
+        $code = sprintf('WIZ-%d-%s', $cartDto->configuratorId, $hash);
+        $reduction = 0;
+        $cartRule = $this->createCartRule($cart, $code);
+        $cartRuleId = (int)$cartRule->id;
+
+        foreach ($requirements as $productId => $qtyRequired) {
+            $itemDto = $selectionIndex[$productId] ?? null;
+
+            if (null === $itemDto) {
+                throw new Exception('Cannot find representative selection for product ' . $productId);
+            }
+
+            /**
+             * @var StepDto $stepDto
+             * @var ProductChoiceDto $choiceDto
+             */
+            [$stepDto, $choiceDto] = $this->retrieveStepDtoAndChoiceDtoFromConfiguratorDtoAndCartDto(
+                $itemDto,
+                $configuratorDto
+            );
+
+            if (null === $stepDto || null === $choiceDto) {
+                throw new Exception('Cannot find matching Step/ProductChoice for product ' . $productId);
+            }
+
+            // Present product to get current price and existing reduction
+            $props = [
+                'id_product' => $productId,
+                'id_product_attribute' => $itemDto->combinationId,
+            ];
+            $productLazy = $presenter->present(
+                $presentationSettings,
+                $assembler->assembleProduct($props),
+                $this->context->language
+            );
+
+            $priceResolver = PriceResolverService::get($choiceDto, $stepDto, $configuratorDto, $productLazy);
+
+            if (false === $priceResolver['has_discount'] || true === $priceResolver['is_product_discount']) {
+                continue;
+            }
+
+            $reduction += $priceResolver['reduction'] * $qtyRequired;
+
+            $this->addCartRuleRestrictions($cartRuleId, $productId, $qtyRequired);
+        }
+
+        if (0 >= $reduction) {
+            $cartRule->delete();
+
+            return;
+        }
+
+        $cartRule->reduction_amount = max(0, (float)Tools::ps_round($reduction, 6));
+        $cartRule->update();
+
+        // Apply to current cart
+        $cart->addCartRule($cartRuleId);
+
+        // Clean caches at the end
+        CartRule::cleanCache();
+    }
+
+    /**
+     * Validate given selections (products, quantities and combinations)
+     *
+     * @param CartDto $dto
+     *
+     * @return string|null Error message if invalid, null if ok
+     */
+    private function validateCartDto(CartDto $dto): ?string
+    {
+        if (true === empty($dto->configuratorId)) {
+            return $this->trans('Invalid configuratorId.', [], 'Modules.Drsoftfrproductwizard.Error');
+        }
+
+        if (true === empty($dto->items)) {
+            return $this->trans('No products selected.', [], 'Modules.Drsoftfrproductwizard.Error');
+        }
+
+        foreach ($dto->items as $itemDto) {
+            if (true === empty($itemDto->productId)) {
+                return $this->trans('Invalid product ID.', [], 'Modules.Drsoftfrproductwizard.Error');
+            }
+
+            if (true === empty($itemDto->quantity)) {
+                return $this->trans('Invalid quantity.', [], 'Modules.Drsoftfrproductwizard.Error');
+            }
+
+            if (true === empty($itemDto->productChoiceId)) {
+                return $this->trans('Invalid product choice ID.', [], 'Modules.Drsoftfrproductwizard.Error');
+            }
+
+            if (true === empty($itemDto->stepId)) {
+                return $this->trans('Invalid step ID.', [], 'Modules.Drsoftfrproductwizard.Error');
+            }
+
+            $product = new Product($itemDto->productId, true, (int)$this->context->language->id);
+
+            if (!Validate::isLoadedObject($product) || !$product->active) {
+                return $this->trans('A selected product is not available anymore.', [], 'Modules.Drsoftfrproductwizard.Error');
+            }
+        }
+
+        return null;
     }
 
     /**
