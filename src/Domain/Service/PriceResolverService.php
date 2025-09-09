@@ -21,9 +21,26 @@ use TaxManagerFactory;
 final class PriceResolverService
 {
     /**
+     * @return array{
+     *     has_discount: string,
+     *     reduction: string,
+     *     reduction_type: float,
+     *     reduction_tax: float,
+     *     price: bool,
+     *     regular_price: float,
+     *     price_amount: string,
+     *     regular_price_amount: bool,
+     *     is_product_discount: bool
+     * }
+     *
      * @throws ProductChoiceConstraintException
      */
-    final public static function get(ProductChoiceDto $productChoiceDto, StepDto $stepDto, ConfiguratorDto $configuratorDto, ProductLazyArray $product = null): array
+    final public static function get(
+        ProductChoiceDto $productChoiceDto,
+        StepDto          $stepDto,
+        ConfiguratorDto  $configuratorDto,
+        ProductLazyArray $product = null
+    ): array
     {
         $reduction = $productChoiceDto->reduction;
         $reductionType = $productChoiceDto->reductionType;
@@ -81,7 +98,8 @@ final class PriceResolverService
                 $hasDiscount,
                 $reduction,
                 $reductionType,
-                $reductionTax
+                $reductionTax,
+                true
             );
         }
 
@@ -156,7 +174,19 @@ final class PriceResolverService
         );
     }
 
-
+    /**
+     * @return array{
+     *     has_discount: string,
+     *     reduction: string,
+     *     reduction_type: float,
+     *     reduction_tax: float,
+     *     price: bool,
+     *     regular_price: float,
+     *     price_amount: string,
+     *     regular_price_amount: bool,
+     *     is_product_discount: bool
+     * }
+     */
     private static function buildResponse(
         string $price,
         string $regularPrice,
@@ -165,7 +195,8 @@ final class PriceResolverService
         bool   $hasDiscount,
         float  $reduction,
         string $reductionType,
-        bool   $reductionTax
+        bool   $reductionTax,
+        bool   $isProductDiscount = false
     ): array
     {
         return [
@@ -177,6 +208,7 @@ final class PriceResolverService
             'regular_price' => $regularPrice,
             'price_amount' => $priceAmount,
             'regular_price_amount' => $regularPriceAmount,
+            'is_product_discount' => $isProductDiscount,
         ];
     }
 
