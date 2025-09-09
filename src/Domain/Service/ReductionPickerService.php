@@ -57,7 +57,7 @@ final class ReductionPickerService
     private static function firstPositiveReduction(array $dtoList): ?array
     {
         foreach ($dtoList as $dto) {
-            if (false === isset($dto->reduction) || 0 < $dto->reduction) {
+            if (false === isset($dto->reduction) || 0 >= $dto->reduction) {
                 continue;
             }
 
