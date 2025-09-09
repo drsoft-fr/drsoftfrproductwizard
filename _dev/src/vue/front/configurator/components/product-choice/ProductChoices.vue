@@ -14,7 +14,7 @@ const props = defineProps({
       :key="choice.id"
       :step
       :choice
-      class="col-12 col-sm-6 col-lg-3"
+      class="col-12 col-sm-6 col-lg-4"
     />
   </div>
 </template>
