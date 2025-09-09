@@ -10,6 +10,7 @@ use Context;
 use DrSoftFr\Module\ProductWizard\Application\Dto\ConfiguratorDto;
 use DrSoftFr\Module\ProductWizard\Application\Dto\ProductChoiceDto;
 use DrSoftFr\Module\ProductWizard\Application\Dto\StepDto;
+use DrSoftFr\Module\ProductWizard\Domain\Exception\ProductChoice\ProductChoiceConstraintException;
 use DrSoftFr\Module\ProductWizard\Domain\ValueObject\ProductChoice\ReductionType;
 use Group;
 use PrestaShop\PrestaShop\Adapter\Presenter\Product\ProductLazyArray;
@@ -19,6 +20,9 @@ use TaxManagerFactory;
 
 final class PriceResolverService
 {
+    /**
+     * @throws ProductChoiceConstraintException
+     */
     final public static function get(ProductChoiceDto $productChoiceDto, StepDto $stepDto, ConfiguratorDto $configuratorDto, ProductLazyArray $product = null): array
     {
         $reduction = $productChoiceDto->reduction;
@@ -44,11 +48,16 @@ final class PriceResolverService
 
         }
 
-        [$reduction, $reductionTax, $reductionType, $hasDiscount] = self::pickReduction(
+        $reductionPickerResult = ReductionPickerService::pick(
             $productChoiceDto,
             $stepDto,
             $configuratorDto
         );
+
+        $reduction = $reductionPickerResult['reduction']->getValue();
+        $reductionTax = $reductionPickerResult['reductionTax']->getValue();
+        $reductionType = $reductionPickerResult['reductionType']->getValue();
+        $hasDiscount = $reductionPickerResult['hasReduction'];
 
         self::overridePriceFieldsFromProduct($product, $price, $regularPrice, $priceAmount, $regularPriceAmount);
 
@@ -145,27 +154,6 @@ final class PriceResolverService
             $reductionType,
             $reductionTax
         );
-    }
-
-    private static function pickReduction(
-        ProductChoiceDto $productChoiceDto,
-        StepDto          $stepDto,
-        ConfiguratorDto  $configuratorDto
-    ): array
-    {
-        if ($productChoiceDto->reduction > 0) {
-            return [$productChoiceDto->reduction, $productChoiceDto->reductionTax, $productChoiceDto->reductionType, true];
-        }
-
-        if ($stepDto->reduction > 0) {
-            return [$stepDto->reduction, $stepDto->reductionTax, $stepDto->reductionType, true];
-        }
-
-        if ($configuratorDto->reduction > 0) {
-            return [$configuratorDto->reduction, $configuratorDto->reductionTax, $configuratorDto->reductionType, true];
-        }
-
-        return [$productChoiceDto->reduction, $productChoiceDto->reductionTax, $productChoiceDto->reductionType, false];
     }
 
 

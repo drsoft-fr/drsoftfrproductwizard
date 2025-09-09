@@ -9,6 +9,8 @@ use DrSoftFr\Module\ProductWizard\Application\Dto\ConfiguratorDto;
 use DrSoftFr\Module\ProductWizard\Application\Dto\ProductChoiceDto;
 use DrSoftFr\Module\ProductWizard\Application\Dto\StepDto;
 use DrSoftFr\Module\ProductWizard\Application\Exception\Configurator\ConfiguratorNotFoundException;
+use DrSoftFr\Module\ProductWizard\Domain\Exception\ProductChoice\ProductChoiceConstraintException;
+use DrSoftFr\Module\ProductWizard\Domain\Exception\Step\StepConstraintException;
 use DrSoftFr\Module\ProductWizard\Domain\Repository\ConfiguratorRepositoryInterface;
 use DrSoftFr\Module\ProductWizard\Domain\Service\PriceResolverService;
 use DrSoftFr\Module\ProductWizard\Domain\Service\QuantityRuleApplier;
@@ -148,6 +150,10 @@ final class ConfiguratorPresenter
         return $choices;
     }
 
+    /**
+     * @throws ProductChoiceConstraintException
+     * @throws StepConstraintException
+     */
     private function retrieveChoice(
         ProductChoiceDto            $choice,
         StepDto                     $step,
