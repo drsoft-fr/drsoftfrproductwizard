@@ -24,7 +24,7 @@ async function addToCart() {
         productId: s.productId,
         combinationId: s.combinationId || 0,
         quantity: s.quantity || 1,
-        id: s.id,
+        productChoiceId: s.id,
         stepId: s.stepId,
       }))
 
@@ -39,8 +39,10 @@ async function addToCart() {
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       body: new URLSearchParams({
         action: 'add-to-cart',
-        data: JSON.stringify({ selections: selectedItems }),
-        id: String(configurator?.value?.id || ''),
+        data: JSON.stringify({
+          items: selectedItems,
+          configuratorId: String(configurator?.value?.id || ''),
+        }),
       }),
     })
 

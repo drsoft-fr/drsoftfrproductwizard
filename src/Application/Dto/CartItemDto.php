@@ -8,6 +8,7 @@ final class CartItemDto
         public int $productChoiceId,
         public int $stepid,
         public int $productId,
+        public int $combinationId,
         public int $quantity,
     )
     {
@@ -16,10 +17,11 @@ final class CartItemDto
     public static function fromArray(array $data): self
     {
         return new self(
-            $data['productChoiceId'],
-            $data['stepid'],
-            $data['productId'],
-            $data['quantity'],
+            (int)$data['productChoiceId'],
+            (int)$data['stepid'],
+            (int)$data['productId'],
+            (int)$data['combinationId'],
+            (int)$data['quantity'],
         );
     }
 }

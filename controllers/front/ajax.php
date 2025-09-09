@@ -125,11 +125,17 @@ final class DrsoftfrproductwizardAjaxModuleFrontController extends ModuleFrontCo
         try {
             $data = json_decode(Tools::getValue('data', '{}'), true);
 
-            if (!isset($data['selections']) || !is_array($data['selections'])) {
+            if (!isset($data['items']) || !is_array($data['items'])) {
                 $this->sendErrorResponse('Invalid data format');
             }
 
-            $selections = array_values(array_filter((array)$data['selections']));
+            $selections = array_values(array_filter((array)$data['items']));
+            $configuratorId = (int)$data['configuratorId'] ?? 0;
+
+            if (true === empty($configuratorId)) {
+                $this->sendErrorResponse('Invalid configuratorId');
+            }
+
             $validationError = $this->validateSelections($selections);
 
             if (null !== $validationError) {

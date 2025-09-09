@@ -21,7 +21,7 @@ final class CartDto
         }
 
         return new self(
-            $data['configuratorId'],
+            (int)$data['configuratorId'],
             $arr,
         );
     }
