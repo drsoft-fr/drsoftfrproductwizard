@@ -86,6 +86,13 @@ async function fetchConfigurator() {
   }
 }
 
+function formatPrice(price) {
+  return new Intl.NumberFormat(document.documentElement.lang, {
+    style: 'currency',
+    currency: prestashop.currency.iso_code,
+  }).format(price)
+}
+
 function showAlert(type, message) {
   alert.show = true
   alert.type = type
@@ -102,6 +109,7 @@ function closeAlert() {
 
 provide('activeStepIndex', activeStepIndex)
 provide('configurator', configurator)
+provide('formatPrice', formatPrice)
 provide('loading', loading)
 provide('selections', selections)
 provide('showAlert', showAlert)

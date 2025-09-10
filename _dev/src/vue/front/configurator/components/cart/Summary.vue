@@ -4,15 +4,6 @@ import EmptyChoice from '@/vue/front/configurator/components/cart/EmptyChoice.vu
 import Choices from '@/vue/front/configurator/components/cart/Choices.vue'
 
 const selections = inject('selections')
-
-function formatPrice(price) {
-  return new Intl.NumberFormat(document.documentElement.lang, {
-    style: 'currency',
-    currency: prestashop.currency.iso_code,
-  }).format(price)
-}
-
-provide('formatPrice', formatPrice)
 </script>
 
 <template>
