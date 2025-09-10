@@ -1,5 +1,5 @@
 <script setup>
-import { inject } from 'vue'
+import { computed, inject } from 'vue'
 
 const props = defineProps({
   choice: { type: Object, required: true },
@@ -8,13 +8,30 @@ const props = defineProps({
 
 const formatPrice = inject('formatPrice')
 const $t = inject('$t')
+
+// Combination price impact provided by Product.vue (fallback 0)
+const impact = computed(() => Number(props.choice?.combinationPriceImpact || 0))
+
+const unitRegular = computed(
+  () => (props.choice?.regular_price_amount || 0) + impact.value,
+)
+const unitPrice = computed(
+  () => (props.choice?.price_amount || 0) + impact.value,
+)
+
+const totalRegular = computed(
+  () => unitRegular.value * (props.choice?.quantity || 0),
+)
+const totalPrice = computed(
+  () => unitPrice.value * (props.choice?.quantity || 0),
+)
 </script>
 
 <template>
   <div>
     <div>{{ product.name }}</div>
-    <div v-if="product.combinationName">
-      <span class="badge badge-success">{{ selection.combinationName }}</span>
+    <div v-if="choice.combinationName">
+      <span class="badge bg-success">{{ choice.combinationName }}</span>
     </div>
     <div>
       <span>{{ $t('Quantity') }}:</span>
@@ -22,10 +39,10 @@ const $t = inject('$t')
     </div>
   </div>
   <div v-if="true === choice.has_discount" class="price-without-discount">
-    {{ formatPrice(choice.regular_price_amount * choice.quantity) }}
+    {{ formatPrice(totalRegular) }}
   </div>
   <div>
-    {{ formatPrice(choice.price_amount * choice.quantity) }}
+    {{ formatPrice(totalPrice) }}
   </div>
 </template>
 
