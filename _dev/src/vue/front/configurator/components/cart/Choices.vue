@@ -2,7 +2,6 @@
 import { inject } from 'vue'
 import Product from '@/vue/front/configurator/components/cart/Product.vue'
 
-const configurator = inject('configurator')
 const formatPrice = inject('formatPrice')
 const selections = inject('selections')
 const regularTotalPrice = inject('regularTotalPrice')
