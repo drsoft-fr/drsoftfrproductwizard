@@ -5,11 +5,12 @@ namespace DrSoftFr\Module\ProductWizard\Application\Dto;
 final class CartItemDto
 {
     public function __construct(
-        public int $productChoiceId,
-        public int $stepId,
-        public int $productId,
-        public int $combinationId,
-        public int $quantity,
+        public int    $productChoiceId,
+        public int    $stepId,
+        public int    $productId,
+        public int    $combinationId,
+        public int    $quantity,
+        public string $productName,
     )
     {
     }
@@ -22,6 +23,7 @@ final class CartItemDto
             (int)$data['productId'],
             (int)$data['combinationId'],
             (int)$data['quantity'],
+            strip_tags((string)$data['productName']),
         );
     }
 }

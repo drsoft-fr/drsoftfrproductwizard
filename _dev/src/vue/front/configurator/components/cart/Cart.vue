@@ -26,6 +26,7 @@ async function addToCart() {
         quantity: s.quantity || 1,
         productChoiceId: s.id,
         stepId: s.stepId,
+        productName: s.product.name || '',
       }))
 
     if (selectedItems.length === 0) {

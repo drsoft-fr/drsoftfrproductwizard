@@ -154,13 +154,24 @@ final class DrsoftfrproductwizardAjaxModuleFrontController extends ModuleFrontCo
                     $combinationId
                 );
 
-                if ($result) {
-                    $addedProducts[] = [
-                        'productId' => $productId,
-                        'combinationId' => $combinationId,
-                        'quantity' => $quantity,
-                    ];
+                if (false === $result) {
+                    $this->sendErrorResponse(
+                        $this->trans(
+                            sprintf(
+                                'Product "%s" is currently unavailable and could not be added to your cart.',
+                                var_export($itemDto->productName, true)
+                            ),
+                            [],
+                            'Modules.Drsoftfrproductwizard.Error'
+                        )
+                    );
                 }
+
+                $addedProducts[] = [
+                    'productId' => $productId,
+                    'combinationId' => $combinationId,
+                    'quantity' => $quantity,
+                ];
             }
 
             // Apply discount dictated by configurator hierarchy (ProductChoice > Step > Configurator)
