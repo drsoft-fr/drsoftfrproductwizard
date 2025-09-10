@@ -580,6 +580,25 @@ final class DrsoftfrproductwizardAjaxModuleFrontController extends ModuleFrontCo
             if (!Validate::isLoadedObject($product) || !$product->active) {
                 return $this->trans('A selected product is not available anymore.', [], 'Modules.Drsoftfrproductwizard.Error');
             }
+
+            if ($itemDto->combinationId > 0) {
+                $attributes = $product->getAttributeCombinations($this->context->language->id);
+                $valid = false;
+
+                foreach ($attributes as $attr) {
+                    if ((int)$attr['id_product_attribute'] !== $itemDto->combinationId) {
+                        continue;
+                    }
+
+                    $valid = true;
+
+                    break;
+                }
+
+                if (false === $valid) {
+                    return $this->trans('Invalid product combination.', [], 'Modules.Drsoftfrproductwizard.Error');
+                }
+            }
         }
 
         return null;
