@@ -198,6 +198,10 @@ final class ConfiguratorPresenter
             'stepId' => $step->id,
             'stepLabel' => $step->label,
             'stepPosition' => $step->position,
+            'combinationId' => $productInfo['id_product_attribute'] ?? 0,
+            'combinationName' => '',
+            'combinationPriceImpact' => $productInfo['attribute_price'] ?? 0,
+            'combinationImageUrl' => '',
         ];
     }
 
