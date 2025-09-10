@@ -263,9 +263,11 @@ final class ConfiguratorPresenter
     private function retrieveProductCombination(array &$combinations, Product $product, $combination, ?string $imageUrl): void
     {
         $key = $product->id . '-' . $combination['id_product_attribute'];
+        $attribute = $this->retrieveAttribute($combination);
 
         if (false === empty($combinations[$key])) {
-            $combinations[$key]['attributes'][] = $this->retrieveAttribute($combination);
+            $combinations[$key]['attributeKey'] .= '-' . "#{$attribute['idAttributeGroup']}#{$attribute['idAttribute']}";
+            $combinations[$key]['attributes'][] = $attribute;
 
             return;
         }
@@ -289,8 +291,9 @@ final class ConfiguratorPresenter
             'price' => $combination['price'],
             'minimalQuantity' => $combination['minimal_quantity'],
             'imageUrl' => $combinationImageUrl ?: $imageUrl,
+            'attributeKey' => "#{$attribute['idAttributeGroup']}#{$attribute['idAttribute']}",
             'attributes' => [
-                $this->retrieveAttribute($combination)
+                $attribute
             ]
         ];
     }
