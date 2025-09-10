@@ -1,3 +1,8 @@
+@import 'tailwindcss' prefix(drpw) source("../../../../src/vue/front");
+@plugin "daisyui" {
+  root: '.product-wizard-container';
+}
+
 .product-choice {
   img {
     max-height: 150px;

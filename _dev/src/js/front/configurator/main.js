@@ -1,4 +1,4 @@
-import '@/css/front/configurator/main.scss'
+import '@/css/front/configurator/main.css'
 
 import { createApp } from 'vue'
 import App from '@/vue/front/configurator/App.vue'
