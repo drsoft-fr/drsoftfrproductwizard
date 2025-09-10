@@ -4,6 +4,7 @@ import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import Components from 'unplugin-vue-components/vite'
 import { PrimeVueResolver } from '@primevue/auto-import-resolver'
+import tailwindcss from '@tailwindcss/vite'
 
 const psRootDir = resolve(__dirname, '../../../admin-dev/themes/new-theme')
 const psJsDir = resolve(psRootDir, './js')
@@ -54,6 +55,7 @@ export default defineConfig({
     Components({
       resolvers: [PrimeVueResolver()],
     }),
+    tailwindcss(),
   ],
   resolve: {
     alias: {
