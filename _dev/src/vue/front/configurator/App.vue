@@ -38,8 +38,14 @@ function calculateTotalPrice() {
       continue
     }
 
-    total += selection.price_amount * (selection.quantity || 1)
-    regularTotal += selection.regular_price_amount * (selection.quantity || 1)
+    const combinationPriceImpact = Number(selection.combinationPriceImpact || 0)
+
+    total +=
+      (selection.price_amount + combinationPriceImpact) *
+      (selection.quantity || 1)
+    regularTotal +=
+      (selection.regular_price_amount + combinationPriceImpact) *
+      (selection.quantity || 1)
   }
 
   totalPrice.value = total
