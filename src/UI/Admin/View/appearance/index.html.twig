@@ -14,6 +14,21 @@
 {% block content %}
     <div class="row justify-content-center">
         <div class="col">
+            <nav class="card navbar navbar-expand">
+                <ul class="navbar-nav">
+                    <li>
+                        <a href="{{ path('admin_drsoft_fr_product_wizard_configurator_index') }}" class="nav-link">
+                            {{ 'Home'|trans }}
+                        </a>
+                    </li>
+                    <li>
+                        <span class="nav-link active">
+                            {{ 'Appearance'|trans }}
+                        </span>
+                    </li>
+                </ul>
+            </nav>
+
             {% block drsoft_fr_product_wizard_appearance_form %}
                 {{ form_start(drsoft_fr_product_wizard_appearance_form) }}
                 <div class="card">

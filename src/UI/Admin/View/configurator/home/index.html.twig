@@ -3,6 +3,21 @@
 {% block main %}
     <div class="row justify-content-center">
         <div class="col">
+            <nav class="card navbar navbar-expand">
+                <ul class="navbar-nav">
+                    <li>
+                        <span class="nav-link active">
+                            {{ 'Home'|trans }}
+                        </span>
+                    </li>
+                    <li>
+                        <a href="{{ path('admin_drsoft_fr_product_wizard_appearance_index') }}" class="nav-link">
+                            {{ 'Appearance'|trans }}
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+
             {% include '@PrestaShop/Admin/Common/Grid/grid_panel.html.twig' with {'grid': drsoft_fr_product_wizard_configurator_grid} %}
         </div>
     </div>
