@@ -74,6 +74,37 @@ final class AppearanceConfiguration implements DataConfigurationInterface
         'noise' => false,
     ];
 
+    const CSS_MATCHING_CONFIGURATION = [
+        'color_base_100' => '--color-base-100',
+        'color_base_200' => '--color-base-200',
+        'color_base_300' => '--color-base-300',
+        'color_base_content' => '--color-base-content',
+        'color_primary' => '--color-primary',
+        'color_primary_content' => '--color-primary-content',
+        'color_secondary' => '--color-secondary',
+        'color_secondary_content' => '--color-secondary-content',
+        'color_accent' => '--color-accent',
+        'color_accent_content' => '--color-accent-content',
+        'color_neutral' => '--color-neutral',
+        'color_neutral_content' => '--color-neutral-content',
+        'color_info' => '--color-info',
+        'color_info_content' => '--color-info-content',
+        'color_success' => '--color-success',
+        'color_success_content' => '--color-success-content',
+        'color_warning' => '--color-warning',
+        'color_warning_content' => '--color-warning-content',
+        'color_error' => '--color-error',
+        'color_error_content' => '--color-error-content',
+        'radius_selector' => '--radius-selector',
+        'radius_field' => '--radius-field',
+        'radius_box' => '--radius-box',
+        'size_selector' => '--size-selector',
+        'size_field' => '--size-field',
+        'border' => '--border',
+        'depth' => '--depth',
+        'noise' => '--noise',
+    ];
+
     public function __construct(
         private readonly Configuration $configuration
     )

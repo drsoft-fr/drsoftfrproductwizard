@@ -144,44 +144,16 @@ final class AppearanceController extends FrameworkBundleAdminController
     private function createCssFile(): void
     {
         $configuration = $this->getAppearanceConfiguration()->getConfiguration();
-
         $configuration['depth'] = (int)$configuration['depth'];
         $configuration['noise'] = (int)$configuration['noise'];
-
         $cssFile = _PS_MODULE_DIR_ . $this->module->name . '/views/css/custom.css';
+        $text = ".product-wizard-container{";
 
-        $text = "
-            .product-wizard-container {
-                --color-base-100: {$configuration['color_base_100']};
-                --color-base-200: {$configuration['color_base_200']};
-                --color-base-300: {$configuration['color_base_300']};
-                --color-base-content: {$configuration['color_base_content']};
-                --color-primary: {$configuration['color_primary']};
-                --color-primary-content: {$configuration['color_primary_content']};
-                --color-secondary: {$configuration['color_secondary']};
-                --color-secondary-content: {$configuration['color_secondary_content']};
-                --color-accent: {$configuration['color_accent']};
-                --color-accent-content: {$configuration['color_accent_content']};
-                --color-neutral: {$configuration['color_neutral']};
-                --color-neutral-content: {$configuration['color_neutral_content']};
-                --color-info: {$configuration['color_info']};
-                --color-info-content: {$configuration['color_info_content']};
-                --color-success: {$configuration['color_success']};
-                --color-success-content: {$configuration['color_success_content']};
-                --color-warning: {$configuration['color_warning']};
-                --color-warning-content: {$configuration['color_warning_content']};
-                --color-error: {$configuration['color_error']};
-                --color-error-content: {$configuration['color_error_content']};
-                --radius-selector: {$configuration['radius_selector']};
-                --radius-field: {$configuration['radius_field']};
-                --radius-box: {$configuration['radius_box']};
-                --size-selector: {$configuration['size_selector']};
-                --size-field: {$configuration['size_field']};
-                --border: {$configuration['border']};
-                --depth: {$configuration['depth']};
-                --noise: {$configuration['noise']};
-            }
-        ";
+        foreach ($configuration as $key => $value) {
+            $text .= AppearanceConfiguration::CSS_MATCHING_CONFIGURATION[$key] . ":{$value};";
+        }
+
+        $text .= "}";
 
         file_put_contents($cssFile, $text);
     }
