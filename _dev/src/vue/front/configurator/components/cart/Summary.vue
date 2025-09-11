@@ -9,6 +9,7 @@ const selections = inject('selections')
 <template>
   <Transition name="fade" mode="out-in">
     <Choices v-if="0 < selections.length" :selections />
+
     <EmptyChoice v-else />
   </Transition>
 </template>

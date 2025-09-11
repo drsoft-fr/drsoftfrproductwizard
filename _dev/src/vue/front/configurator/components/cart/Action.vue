@@ -16,15 +16,16 @@ const steps = inject('steps')
   <div>
     <button
       type="button"
-      class="btn btn-primary btn-lg btn-block"
+      class="drpw:btn drpw:btn-primary drpw:btn-lg drpw:btn-block"
       :disabled="selections.length < steps.length"
       @click="handleClick"
     >
-      <i class="cart-btn-icon">&#128722;</i> {{ $t('Add to Cart') }}
+      {{ $t('Add to Cart') }}
     </button>
+
     <div
       v-if="selections.length < steps.length"
-      class="alert alert-info mt-3 text-center"
+      class="drpw:alert drpw:alert-info drpw:mt-3 drpw:text-center drpw:text-info-content!"
     >
       <small>{{
         $t('Please complete all steps before adding to cart.')

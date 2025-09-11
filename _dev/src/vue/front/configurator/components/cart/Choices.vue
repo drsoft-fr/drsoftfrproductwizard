@@ -10,53 +10,64 @@ const $t = inject('$t')
 </script>
 
 <template>
-  <TransitionGroup name="slide-fade" tag="ul">
-    <li v-for="choice in selections" :key="choice.stepId">
-      <div :class="{ 'text-muted': choice.productId }">
-        <span>{{ choice.stepLabel }}</span> - <span>{{ choice.label }}</span
-        ><span v-if="null === choice.productId && 0 < choice.quantity">
-          - <span>{{ $t('Quantity') }}:</span>
-          <span>{{ choice.quantity }}</span></span
-        >
+  <dl class="drpw:space-y-3">
+    <TransitionGroup name="slide-fade">
+      <div v-for="choice in selections" :key="choice.stepId">
+        <template v-if="null === choice.productId">
+          <div class="drpw:flex drpw:items-center drpw:justify-between">
+            <dt>
+              <div>
+                {{ choice.stepLabel }}
+                <span
+                  v-if="1 < choice.quantity"
+                  class="drpw:text-base-content/50"
+                >
+                  x <span>{{ choice.quantity }}</span></span
+                >
+              </div>
+            </dt>
+
+            <dd class="drpw:mb-0!">
+              {{ choice.label }}
+            </dd>
+          </div>
+        </template>
+
+        <template v-else>
+          <div
+            class="drpw:flex drpw:items-center drpw:justify-between drpw:text-base-content/50"
+          >
+            <dt>
+              {{ choice.stepLabel }}
+            </dt>
+
+            <dd class="drpw:mb-0!">
+              {{ choice.label }}
+            </dd>
+          </div>
+
+          <Product :product="choice.product" :choice="choice" />
+        </template>
       </div>
-      <Product
-        v-if="null !== choice.productId"
-        :product="choice.product"
-        :choice="choice"
-      />
-    </li>
-  </TransitionGroup>
-  <div class="mt-3">
-    <div>{{ $t('Total') }}</div>
+    </TransitionGroup>
+
     <div
-      v-if="regularTotalPrice !== totalPrice"
-      class="price-without-reduction"
+      class="drpw:flex drpw:items-center drpw:justify-between drpw:border-t drpw:border-base-300 drpw:pt-4"
     >
-      {{ formatPrice(regularTotalPrice) }}
+      <dt>{{ $t('Total') }}</dt>
+
+      <dd class="drpw:mb-0!">
+        <div
+          v-if="regularTotalPrice !== totalPrice"
+          class="drpw:line-through drpw:text-base-content/50"
+        >
+          {{ formatPrice(regularTotalPrice) }}
+        </div>
+
+        <div class="price">{{ formatPrice(totalPrice) }}</div>
+      </dd>
     </div>
-    <div class="price">{{ formatPrice(totalPrice) }}</div>
-  </div>
+  </dl>
 </template>
 
-<style scoped lang="scss">
-ul {
-  list-style: none;
-  padding: 0;
-
-  li {
-    padding: 1rem 0;
-    border-bottom: 1px solid var(--bs-border-color);
-  }
-}
-
-.price {
-  color: var(--bs-primary);
-  font-size: 1.2rem;
-  font-weight: bold;
-}
-
-.price-without-reduction {
-  color: var(--bs-secondary);
-  text-decoration: line-through;
-}
-</style>
+<style scoped lang="scss"></style>
