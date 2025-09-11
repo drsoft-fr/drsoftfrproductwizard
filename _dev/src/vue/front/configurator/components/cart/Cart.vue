@@ -78,9 +78,11 @@ provide('addToCart', addToCart)
 <template>
   <div>
     <h3 class="drpw:text-right">{{ $t('Your Selection') }}</h3>
+
     <div class="drpw:card drpw:bg-base-100 drpw:shadow-sm">
       <div class="drpw:card-body">
         <Summary />
+
         <Action class="drpw:mt-3" />
       </div>
     </div>

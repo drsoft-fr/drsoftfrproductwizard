@@ -132,8 +132,10 @@ provide('regularTotalPrice', regularTotalPrice)
       :message="alert.message"
       @close="closeAlert"
     />
+
     <Transition name="fade" mode="out-in">
       <Loader v-if="loading" />
+
       <Configurator v-else :activeStepIndex />
     </Transition>
   </div>

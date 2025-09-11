@@ -19,6 +19,7 @@ const $t = inject('$t')
       "
     >
       <h2 v-if="!configurator.description">{{ configurator.name }}</h2>
+
       <span
         class="drpw:badge"
         :class="`
@@ -33,17 +34,21 @@ const $t = inject('$t')
         {{ activeStepIndex + 1 }} / {{ steps.length }}
       </span>
     </div>
+
     <div
       v-if="configurator.description"
       v-html="configurator.description"
     ></div>
+
     <div
       v-if="0 < steps.length"
       class="drpw:grid drpw:grid-cols-1 drpw:lg:grid-cols-3 drpw:gap-5 drpw:border-t drpw:mt-5"
     >
       <Steps class="drpw:lg:mt-5 drpw:lg:col-span-2" />
+
       <Cart class="drpw:lg:mt-5" />
     </div>
+
     <div v-else class="drpw:text-center drpw:alert drpw:alert-info">
       <p class="drpw:text-info-content! drpw:my-0!">
         <i class="empty-icon">&#9888;</i>
