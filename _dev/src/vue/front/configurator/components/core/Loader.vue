@@ -6,9 +6,10 @@ const $t = inject('$t')
 
 <template>
   <div class="text-center p-5">
-    <div class="spinner-border" role="status">
-      <span class="sr-only">{{ $t('Loading...') }}</span>
-    </div>
+    <span
+      class="drpw:loading drpw:loading-spinner drpw:loading-xl"
+      role="status"
+    ></span>
     <p class="mt-3">{{ $t('Loading configurator options...') }}</p>
   </div>
 </template>
