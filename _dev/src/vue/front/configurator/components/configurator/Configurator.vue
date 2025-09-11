@@ -50,7 +50,7 @@ const $t = inject('$t')
     </div>
 
     <div v-else class="drpw:text-center drpw:alert drpw:alert-info">
-      <p class="drpw:text-info-content! drpw:my-0!">
+      <p class="drpw:my-0">
         <i class="empty-icon">&#9888;</i>
         {{ $t('No configuration options available.') }}
       </p>

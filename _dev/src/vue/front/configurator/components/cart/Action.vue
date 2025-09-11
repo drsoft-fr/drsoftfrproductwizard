@@ -25,7 +25,7 @@ const steps = inject('steps')
 
     <div
       v-if="selections.length < steps.length"
-      class="drpw:alert drpw:alert-info drpw:mt-3 drpw:text-center drpw:text-info-content!"
+      class="drpw:alert drpw:alert-info drpw:mt-3 drpw:text-center"
     >
       <small>{{
         $t('Please complete all steps before adding to cart.')
