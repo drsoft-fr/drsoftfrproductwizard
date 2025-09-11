@@ -15,7 +15,7 @@ const steps = inject('steps')
       :active="index === activeStepIndex"
       :completed="index < activeStepIndex && activeStepIndex >= 0"
       :disabled="index > activeStepIndex && activeStepIndex >= 0"
-      :class="0 < index ? 'mt-8' : ''"
+      :class="0 < index ? 'drpw:mt-9' : ''"
     />
   </div>
 </template>

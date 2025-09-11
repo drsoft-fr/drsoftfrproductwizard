@@ -153,7 +153,7 @@ watch(
     <div
       v-for="group in Object.values(attributeGroups)"
       :key="group.id"
-      class="mb-2"
+      class="drpw:mb-3"
     >
       <label class="form-label">{{ group.name }}</label>
       <select
