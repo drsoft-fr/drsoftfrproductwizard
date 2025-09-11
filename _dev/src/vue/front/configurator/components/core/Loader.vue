@@ -5,12 +5,12 @@ const $t = inject('$t')
 </script>
 
 <template>
-  <div class="text-center p-5">
+  <div class="drpw:text-center drpw:p-5">
     <span
       class="drpw:loading drpw:loading-spinner drpw:loading-xl"
       role="status"
     ></span>
-    <p class="mt-3">{{ $t('Loading configurator options...') }}</p>
+    <p class="drpw:mt-3">{{ $t('Loading configurator options...') }}</p>
   </div>
 </template>
 
