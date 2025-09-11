@@ -3,6 +3,7 @@ import { computed, inject } from 'vue'
 
 const props = defineProps({
   choice: { type: Object, required: true },
+  index: { type: Number, required: true },
   product: { type: Object, required: true },
 })
 
@@ -28,26 +29,48 @@ const totalPrice = computed(
 </script>
 
 <template>
-  <div>
-    <div>{{ product.name }}</div>
-    <div v-if="choice.combinationName">
-      <span class="badge bg-success">{{ choice.combinationName }}</span>
-    </div>
-    <div>
-      <span>{{ $t('Quantity') }}:</span>
-      <span>{{ choice.quantity }}</span>
-    </div>
+  <div
+    class="drpw:flex drpw:items-center drpw:justify-between drpw:gap-9 drpw:text-base-content/50"
+    :class="0 < index ? 'drpw:border-t drpw:border-base-200 drpw:pt-3' : ''"
+  >
+    <dt>
+      {{ choice.stepLabel }}
+    </dt>
+
+    <dd class="drpw:mb-0">
+      {{ choice.label }}
+    </dd>
   </div>
-  <div v-if="true === choice.has_discount" class="price-without-discount">
-    {{ formatPrice(totalRegular) }}
-  </div>
-  <div>
-    {{ formatPrice(totalPrice) }}
+
+  <div class="drpw:flex drpw:items-center drpw:justify-between drpw:gap-9">
+    <dt>
+      <div>
+        {{ product.name
+        }}<span v-if="1 < choice.quantity" class="drpw:text-base-content/50">
+          x <span>{{ choice.quantity }}</span></span
+        >
+      </div>
+
+      <div v-if="choice.combinationName">
+        <span class="drpw:text-base-content/50 drpw:text-xs">{{
+          choice.combinationName
+        }}</span>
+      </div>
+    </dt>
+
+    <dd>
+      <div
+        v-if="true === choice.has_discount"
+        class="drpw:line-through drpw:text-base-content/50"
+      >
+        {{ formatPrice(totalRegular) }}
+      </div>
+
+      <div>
+        {{ formatPrice(totalPrice) }}
+      </div>
+    </dd>
   </div>
 </template>
 
-<style scoped lang="scss">
-.price-without-discount {
-  text-decoration: line-through;
-}
-</style>
+<style scoped lang="scss"></style>
