@@ -1,4 +1,4 @@
-@import 'tailwindcss' prefix(drpw) source("../../../../src/vue/front");
+@import 'tailwindcss' prefix(drpw) source("../../../../src/vue/front") important;
 @plugin "daisyui" {
   root: '.product-wizard-container';
 }
