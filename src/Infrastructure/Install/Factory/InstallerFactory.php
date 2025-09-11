@@ -4,20 +4,21 @@ declare(strict_types=1);
 
 namespace DrSoftFr\Module\ProductWizard\Infrastructure\Install\Factory;
 
+use DrSoftFr\Module\ProductWizard\Infrastructure\Configuration\AppearanceConfiguration;
 use DrSoftFr\Module\ProductWizard\Infrastructure\Install\Installer;
+use PrestaShop\PrestaShop\Adapter\Configuration;
 
 /**
  * The InstallerFactory class is responsible for creating instances of the Installer class.
  */
 final class InstallerFactory
 {
-    /**
-     * Create a new Installer instance with a FixturesInstaller and SettingConfiguration.
-     *
-     * @return Installer A new instance of the Installer class.
-     */
     public static function create(): Installer
     {
-        return new Installer();
+        return new Installer(
+            new AppearanceConfiguration(
+                new Configuration()
+            )
+        );
     }
 }

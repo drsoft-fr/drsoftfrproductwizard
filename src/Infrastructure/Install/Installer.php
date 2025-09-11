@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace DrSoftFr\Module\ProductWizard\Infrastructure\Install;
 
+use DrSoftFr\Module\ProductWizard\Infrastructure\Configuration\AppearanceConfiguration;
 use DrSoftFr\PrestaShopModuleHelper\Traits\ExecuteSqlFromFileTrait;
 use Exception;
 use Module;
+use Throwable;
 
 /**
  * Class responsible for modifications needed during installation/uninstallation of the module.
@@ -21,6 +23,12 @@ final class Installer
         'actionOutputHTMLBefore',
         'displayBeforeBodyClosingTag',
     ];
+
+    public function __construct(
+        private readonly AppearanceConfiguration $appearanceConfiguration
+    )
+    {
+    }
 
     /**
      * Module's installation entry point.
@@ -41,6 +49,8 @@ final class Installer
             throw new Exception('An error has occurred while executing the installation SQL resources.');
         }
 
+        $this->appearanceConfiguration->initConfiguration();
+
         return true;
     }
 
@@ -59,6 +69,12 @@ final class Installer
             throw new Exception('Unable to uninstall sql resources from module.');
         }
 
+        try {
+            $this->appearanceConfiguration->removeConfiguration();
+        } catch (Throwable $t) {
+            throw new Exception('An error occurred when deleting the module parameters.');
+        }
+
         return true;
     }
 
@@ -72,5 +88,10 @@ final class Installer
     private function registerHooks(Module $module): bool
     {
         return (bool)$module->registerHook(self::HOOKS);
+    }
+
+    public function getAppearanceConfiguration(): AppearanceConfiguration
+    {
+        return $this->appearanceConfiguration;
     }
 }

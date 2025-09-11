@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use DrSoftFr\Module\ProductWizard\Shared\Logging\ErrorLogger;
+use DrSoftFr\Module\ProductWizard\UI\Admin\Controller\AppearanceController;
 use DrSoftFr\Module\ProductWizard\UI\Admin\Controller\ConfiguratorApiController;
 use DrSoftFr\Module\ProductWizard\UI\Admin\Controller\ConfiguratorController;
 use DrSoftFr\Module\ProductWizard\UI\Hook\Controller\ActionFrontControllerSetMediaController;
@@ -68,6 +69,12 @@ class drsoftfrproductwizard extends Module
             [
                 'class_name' => ConfiguratorApiController::TAB_CLASS_NAME,
                 'name' => 'Configurator API',
+                'parent_class_name' => ConfiguratorController::TAB_CLASS_NAME,
+                'visible' => false,
+            ],
+            [
+                'class_name' => AppearanceController::TAB_CLASS_NAME,
+                'name' => 'Appearance',
                 'parent_class_name' => ConfiguratorController::TAB_CLASS_NAME,
                 'visible' => false,
             ],
@@ -188,7 +195,6 @@ class drsoftfrproductwizard extends Module
      */
     private function handleException(Throwable $t): void
     {
-
         $errorMessage = ErrorLogger::fromThrowable(__METHOD__, __LINE__, $t);
 
         PrestaShopLogger::addLog($errorMessage, 3);

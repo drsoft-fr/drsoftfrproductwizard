@@ -1,0 +1,17 @@
+admin_drsoft_fr_product_wizard_appearance_index:
+  path: /
+  methods: [ GET, POST ]
+  defaults:
+    _controller: DrSoftFr\Module\ProductWizard\UI\Admin\Controller\AppearanceController::indexAction
+    _legacy_controller: AdminDrSoftFrProductWizardAppearance
+    _legacy_link:
+      - AdminDrSoftFrProductWizardAppearance
+      - AdminDrSoftFrProductWizardAppearance:index
+
+admin_drsoft_fr_product_wizard_appearance_reset:
+  path: /reset
+  methods: [ GET ]
+  defaults:
+    _controller: DrSoftFr\Module\ProductWizard\UI\Admin\Controller\AppearanceController::resetAction
+    _legacy_controller: AdminDrSoftFrProductWizardAppearance
+    _legacy_link: AdminDrSoftFrProductWizardAppearance:reset

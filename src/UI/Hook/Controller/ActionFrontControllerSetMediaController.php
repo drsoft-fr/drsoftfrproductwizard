@@ -58,10 +58,17 @@ final class ActionFrontControllerSetMediaController extends AbstractHookControll
     {
         try {
             $path = 'modules/' . $this->module->name . '/views/' . $this->manifest->getUrl('src/js/front/configurator/main.js')['css'][0];
+            $customPath = 'modules/' . $this->module->name . '/views/css/custom.css';
 
             $this->getContext()->controller->registerStylesheet(
                 'modules-' . $this->module->name . '-main',
                 $path,
+                ['media' => 'all', 'priority' => 1000]
+            );
+
+            $this->getContext()->controller->registerStylesheet(
+                'modules-' . $this->module->name . '-custom',
+                $customPath,
                 ['media' => 'all', 'priority' => 1000]
             );
         } catch (Throwable $t) {

@@ -1,0 +1,55 @@
+{% extends '@Modules/drsoftfrproductwizard/src/UI/Admin/View/base.html.twig' %}
+
+{% import '@PrestaShop/Admin/macros.html.twig' as ps %}
+
+{% block stylesheets %}
+    {{ parent() }}
+
+    {% if manifest is defined %}
+        <link href="{{ asset('../modules/drsoftfrproductwizard/views/' ~ manifest.url('src/js/admin/appearance/home/index.js', 'admin-appearance-form')['css'][0]) }}"
+              rel="stylesheet">
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+    <div class="row justify-content-center">
+        <div class="col">
+            {% block drsoft_fr_product_wizard_appearance_form %}
+                {{ form_start(drsoft_fr_product_wizard_appearance_form) }}
+                <div class="card">
+                    <h3 class="card-header">
+                        <i class="material-icons">settings</i>
+                        {{ 'Appearance'|trans }}
+                    </h3>
+
+                    <div class="card-body card-block">
+                        <div class="form-wrapper card-text">
+                            {{ form_errors(drsoft_fr_product_wizard_appearance_form) }}
+
+                            {% block drsoft_fr_product_wizard_appearance_form_rest %}
+                                {{ form_rest(drsoft_fr_product_wizard_appearance_form) }}
+                            {% endblock %}
+                        </div>
+                    </div>
+
+                    <div class="card-footer">
+                        <a href="{{ path('admin_drsoft_fr_product_wizard_appearance_index') }}"
+                           class="btn btn-outline-secondary">
+                            {{ 'Cancel'|trans({}, 'Admin.Actions') }}
+                        </a>
+
+                        <a href="{{ path('admin_drsoft_fr_product_wizard_appearance_reset') }}"
+                           class="btn btn-outline-secondary">
+                            {{ 'Reset default settings'|trans }}
+                        </a>
+
+                        <button class="btn btn-primary float-right js-drsoft-fr-product-wizard-appearance-submit">
+                            {{ 'Save'|trans({}, 'Admin.Actions') }}
+                        </button>
+                    </div>
+                </div>
+                {{ form_end(drsoft_fr_product_wizard_appearance_form) }}
+            {% endblock %}
+        </div>
+    </div>
+{% endblock %}

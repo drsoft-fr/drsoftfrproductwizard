@@ -15,6 +15,10 @@ export default defineConfig({
     rollupOptions: {
       external: ['prestashop', '$', 'jquery'],
       input: {
+        'admin-appearance-home': resolve(
+          __dirname,
+          'src/js/admin/appearance/home/index.js',
+        ),
         'admin-configurator-home': resolve(
           __dirname,
           'src/js/admin/configurator/home/index.js',

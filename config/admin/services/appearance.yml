@@ -1,0 +1,34 @@
+services:
+  # Controller
+  DrSoftFr\Module\ProductWizard\UI\Admin\Controller\AppearanceController:
+    tags: [ 'controller.service_arguments' ]
+    arguments:
+      - '@drsoft_fr.module.product_wizard.module'
+
+  # Form
+  drsoft_fr.module.product_wizard.infrastructure.configuration.appearance_configuration:
+    class: DrSoftFr\Module\ProductWizard\Infrastructure\Configuration\AppearanceConfiguration
+    arguments:
+      - '@prestashop.adapter.legacy.configuration'
+    public: true
+
+  drsoft_fr.module.product_wizard.ui.admin.form.data_provider.appearance_data_provider:
+    class: DrSoftFr\Module\ProductWizard\UI\Admin\Form\DataProvider\AppearanceDataProvider
+    arguments:
+      - '@drsoft_fr.module.product_wizard.infrastructure.configuration.appearance_configuration'
+
+  drsoft_fr.module.product_wizard.form.handler.appearance_handler:
+    class: PrestaShop\PrestaShop\Core\Form\Handler
+    arguments:
+      - '@form.factory'
+      - '@prestashop.core.hook.dispatcher'
+      - '@drsoft_fr.module.product_wizard.ui.admin.form.data_provider.appearance_data_provider'
+      - DrSoftFr\Module\ProductWizard\UI\Admin\Form\AppearanceType
+      - 'DrSoftFrModuleProductWizardAppearance'
+    public: true
+
+  drsoft_fr.module.product_wizard.ui.admin.form.appearance_type:
+    class: DrSoftFr\Module\ProductWizard\UI\Admin\Form\AppearanceType
+    parent: 'form.type.translatable.aware'
+    tags:
+      - { name: form.type }
