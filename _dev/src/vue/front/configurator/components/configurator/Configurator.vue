@@ -10,7 +10,7 @@ const $t = inject('$t')
 </script>
 
 <template>
-  <div :id="'configurator-' + configurator.id">
+  <div :id="'configurator-' + configurator.id" class="configurator-container">
     <div
       :class="
         !configurator.description

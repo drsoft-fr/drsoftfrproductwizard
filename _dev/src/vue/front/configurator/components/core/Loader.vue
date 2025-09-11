@@ -5,7 +5,7 @@ const $t = inject('$t')
 </script>
 
 <template>
-  <div class="drpw:text-center drpw:p-6">
+  <div class="drpw:text-center drpw:p-6 loader-container">
     <span
       class="drpw:loading drpw:loading-spinner drpw:loading-xl"
       role="status"

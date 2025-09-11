@@ -76,7 +76,7 @@ provide('addToCart', addToCart)
 </script>
 
 <template>
-  <div>
+  <div class="cart-container">
     <h3 class="drpw:text-right">{{ $t('Your Selection') }}</h3>
 
     <div class="drpw:card drpw:bg-base-100 drpw:shadow-sm">
