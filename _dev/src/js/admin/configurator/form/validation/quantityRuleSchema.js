@@ -135,27 +135,11 @@ export const QuantityRuleSchema = z
 
         break
       case 'expression':
-        if (false === v.locked) {
-          ctx.addIssue({
-            code: z.ZodIssueCode.custom,
-            message: `Step "${ctx.path[1]}" choice "${ctx.path[3]}": In EXPRESSION mode, locked should be defined.`,
-            path: ['locked'],
-          })
-        }
-
         if (v.sources.length === 0) {
           ctx.addIssue({
             code: z.ZodIssueCode.custom,
             message: `Step "${ctx.path[1]}" choice "${ctx.path[3]}": In EXPRESSION mode, at least one source is required.`,
             path: ['sources'],
-          })
-        }
-
-        if (v.min !== null || v.max !== null) {
-          ctx.addIssue({
-            code: z.ZodIssueCode.custom,
-            message: `Step "${ctx.path[1]}" choice "${ctx.path[3]}": In EXPRESSION mode, min/max should not be defined.`,
-            path: ['min', 'max'],
           })
         }
     }

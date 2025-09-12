@@ -78,12 +78,6 @@ const handleChangeMode = (event) => {
       rule.value.round = 'none'
 
       break
-    case 'expression':
-      rule.value.locked = true
-      rule.value.min = null
-      rule.value.max = null
-
-      break
     case 'fixed':
       rule.value.round = 'none'
 
@@ -135,7 +129,7 @@ const handleChangeMode = (event) => {
           <ToggleSwitch
             :inputId="`qr-locked-${productChoiceId}`"
             v-model="rule.locked"
-            :disabled="rule.mode !== 'fixed'"
+            :disabled="rule.mode === 'none'"
           />
         </div>
 
@@ -177,7 +171,7 @@ const handleChangeMode = (event) => {
             :inputId="`qr-min-${productChoiceId}`"
             v-model.number="rule.min"
             :min="0"
-            :disabled="rule.mode !== 'fixed'"
+            :disabled="rule.mode === 'none'"
           />
         </div>
 
@@ -187,7 +181,7 @@ const handleChangeMode = (event) => {
             :inputId="`qr-max-${productChoiceId}`"
             v-model.number="rule.max"
             :min="0"
-            :disabled="rule.mode !== 'fixed'"
+            :disabled="rule.mode === 'none'"
           />
         </div>
       </div>

@@ -355,13 +355,6 @@ final class ConfiguratorValidator
                 ProductChoiceConstraintException::INVALID_QUANTITY_RULE_LOCKED
             );
         }
-
-        if (false === $qr['locked'] && QuantityRuleMode::EXPRESSION === $qr['mode']) {
-            throw new ProductChoiceConstraintException(
-                sprintf('Step “%s”: Choice “%s”, in EXPRESSION mode, locked should be defined.', $stepDto->label, $dto->label ?: ('#' . ($cIdx + 1))),
-                ProductChoiceConstraintException::INVALID_QUANTITY_RULE_LOCKED
-            );
-        }
     }
 
     /**
@@ -438,9 +431,9 @@ final class ConfiguratorValidator
             }
         }
 
-        if ('fixed' !== $qr['mode'] && (null !== $minQ || null !== $maxQ)) {
+        if (QuantityRuleMode::NONE === $qr['mode'] && (null !== $minQ || null !== $maxQ)) {
             throw new ProductChoiceConstraintException(
-                sprintf('Step “%s”: Choice “%s”, the minimum and maximum quantities can only be set in “FIXED” mode.', $stepDto->label, $dto->label ?: ('#' . ($cIdx + 1))),
+                sprintf('Step “%s”: Choice “%s”, the minimum and maximum quantities can only be set in “FIXED” and "EXPRESSION" mode.', $stepDto->label, $dto->label ?: ('#' . ($cIdx + 1))),
                 ProductChoiceConstraintException::INVALID_QUANTITY_RULE_MIN_MAX_LOGIC
             );
         }
