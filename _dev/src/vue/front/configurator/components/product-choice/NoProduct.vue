@@ -10,7 +10,7 @@ const emit = defineEmits(['onSelect'])
 </script>
 
 <template>
-  <div class="drpw:card drpw:bg-base-100 drpw:shadow-sm">
+  <div class="drpw:card drpw:bg-base-100 drpw:shadow-sm drpw:h-full">
     <div class="drpw:card-body">
       <h4 class="drpw:card-title">{{ choice.label }}</h4>
 
