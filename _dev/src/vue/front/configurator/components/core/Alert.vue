@@ -19,7 +19,11 @@ function emitClose() {
 </script>
 
 <template>
-  <div v-if="show" :class="`drpw:alert drpw:alert-${type}`" role="alert">
+  <div
+    v-if="show"
+    :class="`drpw:alert drpw:alert-${type} drpw:mb-3`"
+    role="alert"
+  >
     <button
       type="button"
       class="drpw:btn drpw:btn-sm"
