@@ -77,7 +77,9 @@ provide('addToCart', addToCart)
 
 <template>
   <div class="cart-container">
-    <div class="drpw:card drpw:bg-base-100 drpw:shadow-sm">
+    <div
+      class="drpw:card drpw:bg-base-100 drpw:shadow-sm drpw:border drpw:border-base-200"
+    >
       <div class="drpw:card-body">
         <h3 class="drpw:card-title">
           {{ $t('Your Selection') }}
