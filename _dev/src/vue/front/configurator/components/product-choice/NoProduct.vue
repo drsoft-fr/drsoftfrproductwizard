@@ -17,7 +17,7 @@ const emit = defineEmits(['onSelect'])
       <div
         v-if="choice.description"
         v-html="choice.description"
-        class="mt-3"
+        class="drpw:mt-3 drpw:grow"
       ></div>
 
       <Quantity :choice />
