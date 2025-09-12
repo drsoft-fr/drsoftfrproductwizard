@@ -28,12 +28,19 @@ final class HtmlSanitizer implements HtmlSanitizerInterface
 
         $raw = trim((string)$html);
 
+        // 1) Normalize NBSP & co. EARLY to prevent &nbsp; from breaking line breaks
+        $raw = self::normalizeNbsp($raw);
+
         // Considers content that does not contain visible text (tags alone, spaces, &nbsp;, etc.) to be “empty.”
         if (self::isHtmlVisuallyEmpty($raw)) {
             return null;
         }
 
+        // 2) Purify
         $clean = \Tools::purifyHTML($raw, null, true);
+
+        // 3) Re-normalize in case purify has re-encoded
+        $clean = self::normalizeNbsp($clean);
 
         // Revalidate after purification to handle cases such as <p><br></p>, &nbsp;, etc.
         if (self::isHtmlVisuallyEmpty($clean)) {
@@ -59,5 +66,19 @@ final class HtmlSanitizer implements HtmlSanitizerInterface
         $text = trim(html_entity_decode(strip_tags((string)$normalized), ENT_QUOTES | ENT_HTML5));
 
         return '' === $text;
+    }
+
+    /**
+     * Replaces all NBSP/zero-width variants with single spaces.
+     * Does NOT compact spaces (no loss of alignment).
+     */
+    private static function normalizeNbsp(string $html): string
+    {
+        // 1) Decode & and &#160; as U+00A0
+        $decoded = html_entity_decode($html, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+
+        // 2) Replaces NBSP + zero-width characters with a normal space
+        //    \x{00A0} NBSP, \x{200B}/\x{200C}/\x{200D} zero-width, \x{FEFF} BOM
+        return preg_replace('/[\x{00A0}\x{200B}\x{200C}\x{200D}\x{FEFF}]/u', ' ', $decoded);
     }
 }
