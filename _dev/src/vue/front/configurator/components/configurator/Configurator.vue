@@ -44,9 +44,9 @@ const $t = inject('$t')
       v-if="0 < steps.length"
       class="drpw:grid drpw:grid-cols-1 drpw:lg:grid-cols-3 drpw:gap-3 drpw:border-t drpw:border-base-300 drpw:mt-6"
     >
-      <Steps class="drpw:lg:mt-6 drpw:lg:col-span-2" />
+      <Steps class="drpw:mt-6 drpw:lg:col-span-2" />
 
-      <Cart class="drpw:mt-9 drpw:lg:mt-6" />
+      <Cart class="drpw:mt-6" />
     </div>
 
     <div v-else class="drpw:text-center drpw:alert drpw:alert-info">
