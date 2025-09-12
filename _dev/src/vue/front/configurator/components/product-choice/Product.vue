@@ -13,6 +13,7 @@ const props = defineProps({
 const emit = defineEmits(['onSelect'])
 
 const formatPrice = inject('formatPrice')
+const selected = inject('selected')
 
 const matchedCombination = ref(null)
 
@@ -20,7 +21,10 @@ provide('matchedCombination', matchedCombination)
 </script>
 
 <template>
-  <div class="drpw:card drpw:bg-base-100 drpw:shadow-sm drpw:h-full">
+  <div
+    class="drpw:card drpw:bg-base-100 drpw:shadow-sm drpw:h-full drpw:transition drpw:border"
+    :class="true === selected ? 'drpw:border-success' : 'drpw:border-base-100'"
+  >
     <figure>
       <img
         :src="
