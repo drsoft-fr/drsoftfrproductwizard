@@ -59,8 +59,6 @@ function handleSelect(choice) {
 
   applyRulesFromStep(steps.value, selections.value, stepIndex)
 
-  // @TODO recalculer le prix total
-
   if (
     stepIndex === activeStepIndex.value &&
     stepIndex < steps.value.length - 1
@@ -84,7 +82,6 @@ provide('disabled', disabled)
       choice.id
     "
     class="product-choice"
-    :class="{ selected: selected }"
   >
     <Product
       v-if="choice.product"
@@ -97,16 +94,4 @@ provide('disabled', disabled)
   </div>
 </template>
 
-<style scoped lang="scss">
-.product-choice .card {
-  transition: all 0.25s ease-in-out;
-}
-
-.product-choice:hover .card {
-  box-shadow: var(--bs-box-shadow);
-}
-
-.product-choice.selected .card {
-  border-color: var(--bs-success);
-}
-</style>
+<style scoped lang="scss"></style>
