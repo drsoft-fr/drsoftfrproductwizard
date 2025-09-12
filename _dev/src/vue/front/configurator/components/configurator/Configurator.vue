@@ -11,29 +11,7 @@ const $t = inject('$t')
 
 <template>
   <div :id="'configurator-' + configurator.id" class="configurator-container">
-    <div
-      :class="
-        !configurator.description
-          ? 'drpw:flex drpw:justify-between drpw:items-center'
-          : ''
-      "
-    >
-      <h2 v-if="!configurator.description">{{ configurator.name }}</h2>
-
-      <span
-        class="drpw:badge"
-        :class="`
-          ${
-            activeStepIndex === steps.length
-              ? 'drpw:badge-success'
-              : 'drpw:badge-warning'
-          }
-            ${configurator.description ? 'drpw:pull-right' : ''}
-            `"
-      >
-        {{ activeStepIndex }} / {{ steps.length }}
-      </span>
-    </div>
+    <h2 v-if="!configurator.description">{{ configurator.name }}</h2>
 
     <div
       v-if="configurator.description"
@@ -42,11 +20,31 @@ const $t = inject('$t')
 
     <div
       v-if="0 < steps.length"
-      class="drpw:grid drpw:grid-cols-1 drpw:lg:grid-cols-3 drpw:gap-3 drpw:border-t drpw:border-base-300 drpw:mt-6"
+      class="drpw:border-t drpw:border-base-300 drpw:mt-6"
     >
-      <Steps class="drpw:mt-6 drpw:lg:col-span-2" />
+      <ul class="drpw:steps drpw:mt-6 drpw:w-full">
+        <li
+          v-for="(step, index) in steps"
+          class="drpw:step"
+          :class="
+            index < activeStepIndex
+              ? 'drpw:step-success'
+              : index === activeStepIndex
+                ? 'drpw:step-primary'
+                : ''
+          "
+        >
+          {{ step.label }}
+        </li>
+      </ul>
 
-      <Cart class="drpw:mt-6" />
+      <div
+        class="drpw:grid drpw:grid-cols-1 drpw:lg:grid-cols-3 drpw:gap-3 drpw:mt-3"
+      >
+        <Steps class="drpw:lg:col-span-2" />
+
+        <Cart />
+      </div>
     </div>
 
     <div v-else class="drpw:text-center drpw:alert drpw:alert-info">

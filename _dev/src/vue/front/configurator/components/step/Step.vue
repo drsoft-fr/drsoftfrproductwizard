@@ -72,8 +72,8 @@ provide('selectedChoice', selectedChoice)
           <i aria-hidden="true">✓</i>
         </div>
 
-        <div v-else-if="active" class="drpw:badge drpw:badge-info">
-          <i aria-hidden="true">✓</i>
+        <div v-else-if="active" class="drpw:badge drpw:badge-primary">
+          <span>{{ stepIndex + 1 }}</span>
         </div>
 
         <div v-else class="drpw:badge drpw:badge-neutral">
