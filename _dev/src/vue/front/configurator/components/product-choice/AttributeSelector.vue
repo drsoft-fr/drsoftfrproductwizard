@@ -149,16 +149,21 @@ watch(
 </script>
 
 <template>
-  <div v-if="hasCombinations">
+  <div v-if="hasCombinations" class="drpw:mt-3">
     <label
       v-for="(group, index) in Object.values(attributeGroups)"
       :key="group.id"
-      :class="0 < index ? 'drpw:mt-3' : ''"
-      class="drpw:select drpw:w-full"
+      :class="0 < index ? 'drpw:mt-6' : ''"
+      class="drpw:floating-label drpw:w-full drpw:mb-0"
+      :for="`step-${choice.stepId}__choice-${choice.id}__attribute-group-${group.id}`"
     >
-      <span class="drpw:label">{{ group.name }}</span>
+      <span>{{ group.name }}</span>
 
-      <select v-model.number="selectedAttributes[group.id]">
+      <select
+        v-model.number="selectedAttributes[group.id]"
+        class="drpw:input"
+        :id="`step-${choice.stepId}__choice-${choice.id}__attribute-group-${group.id}`"
+      >
         <option
           v-for="attr in group.attributes"
           :key="attr.id"
