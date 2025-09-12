@@ -24,14 +24,14 @@ const $t = inject('$t')
         class="drpw:badge"
         :class="`
           ${
-            activeStepIndex === steps.length - 1
+            activeStepIndex === steps.length
               ? 'drpw:badge-success'
               : 'drpw:badge-warning'
           }
             ${configurator.description ? 'drpw:pull-right' : ''}
             `"
       >
-        {{ activeStepIndex + 1 }} / {{ steps.length }}
+        {{ activeStepIndex }} / {{ steps.length }}
       </span>
     </div>
 

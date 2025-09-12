@@ -59,10 +59,7 @@ function handleSelect(choice) {
 
   applyRulesFromStep(steps.value, selections.value, stepIndex)
 
-  if (
-    stepIndex === activeStepIndex.value &&
-    stepIndex < steps.value.length - 1
-  ) {
+  if (stepIndex === activeStepIndex.value) {
     activeStepIndex.value++
   }
 }
