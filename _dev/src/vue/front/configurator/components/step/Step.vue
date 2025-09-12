@@ -55,8 +55,8 @@ provide('selectedChoice', selectedChoice)
 <template>
   <div
     :id="'configurator-' + configurator.id + '__step-' + step.id"
-    class="step-container drpw:collapse drpw:collapse-plus drpw:bg-base-200 drpw:border drpw:border-base-300"
-    :class="`${true === disabled ? ' drpw:opacity-50' : ''}`"
+    class="step-container drpw:collapse drpw:collapse-arrow drpw:bg-base-200 drpw:border drpw:border-base-300"
+    :class="`${true === disabled ? ' drpw:opacity-25' : ''}`"
   >
     <input
       type="radio"

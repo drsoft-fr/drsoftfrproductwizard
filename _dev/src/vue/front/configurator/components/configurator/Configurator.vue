@@ -42,7 +42,7 @@ const $t = inject('$t')
 
     <div
       v-if="0 < steps.length"
-      class="drpw:grid drpw:grid-cols-1 drpw:lg:grid-cols-3 drpw:gap-6 drpw:border-t drpw:mt-6"
+      class="drpw:grid drpw:grid-cols-1 drpw:lg:grid-cols-3 drpw:gap-3 drpw:border-t drpw:border-base-300 drpw:mt-6"
     >
       <Steps class="drpw:lg:mt-6 drpw:lg:col-span-2" />
 
