@@ -46,7 +46,7 @@ const $t = inject('$t')
     >
       <Steps class="drpw:lg:mt-6 drpw:lg:col-span-2" />
 
-      <Cart class="drpw:lg:mt-6" />
+      <Cart class="drpw:mt-9 drpw:lg:mt-6" />
     </div>
 
     <div v-else class="drpw:text-center drpw:alert drpw:alert-info">
