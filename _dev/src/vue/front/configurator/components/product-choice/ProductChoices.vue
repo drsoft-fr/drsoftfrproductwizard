@@ -8,14 +8,10 @@ const props = defineProps({
 </script>
 
 <template>
-  <div>
-    <ProductChoice
-      v-for="choice in choices"
-      :key="choice.id"
-      :step
-      :choice
-      class="col-12 col-sm-6 col-lg-4"
-    />
+  <div
+    class="product-choices-container drpw:grid drpw:grid-cols-1 drpw:sm:grid-cols-2 drpw:lg:grid-cols-3 drpw:gap-3"
+  >
+    <ProductChoice v-for="choice in choices" :key="choice.id" :step :choice />
   </div>
 </template>
 
