@@ -149,17 +149,16 @@ watch(
 </script>
 
 <template>
-  <div v-if="hasCombinations" class="product-attributes mt-3">
-    <div
-      v-for="group in Object.values(attributeGroups)"
+  <div v-if="hasCombinations">
+    <label
+      v-for="(group, index) in Object.values(attributeGroups)"
       :key="group.id"
-      class="drpw:mb-3"
+      :class="0 < index ? 'drpw:mt-3' : ''"
+      class="drpw:select"
     >
-      <label class="form-label">{{ group.name }}</label>
-      <select
-        class="form-select form-select-sm"
-        v-model.number="selectedAttributes[group.id]"
-      >
+      <span class="drpw:label">{{ group.name }}</span>
+
+      <select v-model.number="selectedAttributes[group.id]">
         <option
           v-for="attr in group.attributes"
           :key="attr.id"
@@ -168,15 +167,15 @@ watch(
           {{ attr.name }}
         </option>
       </select>
-    </div>
-    <div v-if="!matchedCombination" class="text-danger small mt-1">
+    </label>
+
+    <div
+      v-if="!matchedCombination"
+      class="drpw:text-danger drpw:text-sm drpw:mt-3"
+    >
       {{ $t('This variant is not available') }}
     </div>
   </div>
 </template>
 
-<style scoped lang="scss">
-.product-attributes label {
-  font-weight: 600;
-}
-</style>
+<style scoped lang="scss"></style>
