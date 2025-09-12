@@ -61,7 +61,7 @@ const decrement = () => {
           {{ $t('Quantity:') }}
         </label>
 
-        <div class="drpw:input">
+        <div class="drpw:input drpw:w-full">
           <button
             type="button"
             class="drpw:btn drpw:btn-neutral drpw:btn-sm"

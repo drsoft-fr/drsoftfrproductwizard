@@ -154,7 +154,7 @@ watch(
       v-for="(group, index) in Object.values(attributeGroups)"
       :key="group.id"
       :class="0 < index ? 'drpw:mt-3' : ''"
-      class="drpw:select"
+      class="drpw:select drpw:w-full"
     >
       <span class="drpw:label">{{ group.name }}</span>
 
