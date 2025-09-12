@@ -7,7 +7,7 @@ const steps = inject('steps')
 </script>
 
 <template>
-  <div>
+  <div class="steps-container">
     <Step
       v-for="(step, index) in steps"
       :step

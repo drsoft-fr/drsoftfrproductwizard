@@ -55,93 +55,53 @@ provide('selectedChoice', selectedChoice)
 <template>
   <div
     :id="'configurator-' + configurator.id + '__step-' + step.id"
-    class="step-container"
-    :class="{ active: active, completed: completed, disabled: disabled }"
+    class="step-container drpw:collapse drpw:collapse-plus drpw:bg-base-200 drpw:border drpw:border-base-300"
+    :class="`${true === disabled ? ' drpw:opacity-50' : ''}`"
   >
-    <div @click="handleToggleStep" class="step-header">
-      <div class="step-number">
-        <Transition name="slide-fade" mode="out-in">
-          <span v-if="completed" class="fa fa-check" aria-hidden="true"></span>
-          <span v-else>{{ stepIndex + 1 }}</span>
-        </Transition>
-      </div>
-      <h3 class="step-title">{{ step.label }}</h3>
-      <div class="step-toggle">
-        <Transition name="fade" mode="out-in">
-          <span v-if="active" class="fa fa-arrow-up" aria-hidden="true"></span>
-          <span v-else class="fa fa-arrow-down" aria-hidden="true"></span>
-        </Transition>
+    <input
+      type="radio"
+      name="step-accordion"
+      :checked="active"
+      @click="handleToggleStep"
+      :disabled
+    />
+
+    <div class="drpw:flex drpw:collapse-title drpw:items-center">
+      <Transition name="slide-fade" mode="out-in">
+        <div v-if="completed" class="drpw:badge drpw:badge-success">
+          <i aria-hidden="true">✓</i>
+        </div>
+
+        <div v-else-if="active" class="drpw:badge drpw:badge-info">
+          <i aria-hidden="true">✓</i>
+        </div>
+
+        <div v-else class="drpw:badge drpw:badge-neutral">
+          <span>{{ stepIndex + 1 }}</span>
+        </div>
+      </Transition>
+
+      <h3 class="drpw:ml-3 drpw:mb-0">{{ step.label }}</h3>
+    </div>
+
+    <div class="drpw:collapse-content step-content" v-show="active">
+      <div
+        v-if="step.description"
+        v-html="step.description"
+        class="drpw:my-3"
+      ></div>
+
+      <ProductChoices
+        v-if="0 < filteredChoices.length"
+        :step
+        :choices="filteredChoices"
+      />
+
+      <div v-else class="drpw:text-center drpw:alert drpw:alert-info">
+        <p>{{ $t('No options available for this step.') }}</p>
       </div>
     </div>
-    <Transition name="height-fade" mode="out-in">
-      <div class="step-content" v-show="active">
-        <div
-          v-if="step.description"
-          v-html="step.description"
-          class="my-3"
-        ></div>
-
-        <ProductChoices
-          v-if="0 < filteredChoices.length"
-          :step
-          :choices="filteredChoices"
-          class="product-choices row g-3"
-        />
-        <div v-else class="text-center alert alert-info">
-          <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
-          <p>{{ $t('No options available for this step.') }}</p>
-        </div>
-      </div>
-    </Transition>
   </div>
 </template>
 
-<style scoped lang="scss">
-.step-container {
-  transition: opacity 0.3s ease-in-out 0.1s;
-
-  .step-header {
-    display: flex;
-    cursor: pointer;
-
-    .step-title {
-      flex-grow: 1;
-    }
-  }
-
-  .step-number {
-    align-items: center;
-    background-color: var(--bs-gray);
-    border-radius: 50%;
-    color: var(--bs-light);
-    display: flex;
-    height: 30px;
-    justify-content: center;
-    margin-right: 1rem;
-    transition: background-color 0.3s ease-in-out 0.1s;
-    width: 30px;
-  }
-
-  .step-toggle {
-    align-self: center;
-  }
-
-  &.active {
-    .step-number {
-      background-color: var(--bs-primary);
-      color: var(--bs-light);
-    }
-  }
-
-  &.completed {
-    .step-number {
-      background-color: var(--bs-success);
-    }
-  }
-
-  &.disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-  }
-}
-</style>
+<style scoped lang="scss"></style>
