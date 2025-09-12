@@ -55,25 +55,26 @@ const decrement = () => {
 
 <template>
   <template v-if="'none' !== rule.mode">
-    <div class="product-quantity mt-3">
+    <div class="drpw:mt-3">
       <template v-if="false === locked">
-        <label :for="`pc-${choice.id}__quantity-input`" class="form-label">{{
-          $t('Quantity:')
-        }}</label>
-        <div class="quantity-input-group">
+        <label :for="`pc-${choice.id}__quantity-input`" class="drpw:hidden">
+          {{ $t('Quantity:') }}
+        </label>
+
+        <div class="drpw:input">
           <button
             type="button"
-            class="btn btn-outline-secondary btn-sm"
+            class="drpw:btn drpw:btn-neutral drpw:btn-sm"
             @click="decrement"
             :disabled="choice.quantity <= min"
           >
-            <i class="fa fa-minus" aria-hidden="true"></i>
+            -
           </button>
 
           <input
             type="number"
             :id="`pc-${choice.id}__quantity-input`"
-            class="form-control"
+            class="drpw:text-center"
             :value="choice.quantity"
             :min="min"
             :max="max"
@@ -82,29 +83,21 @@ const decrement = () => {
 
           <button
             type="button"
-            class="btn btn-outline-secondary btn-sm"
+            class="drpw:btn drpw:btn-neutral drpw:btn-sm"
             @click="increment"
           >
-            <i class="fa fa-plus" aria-hidden="true"></i>
+            +
           </button>
         </div>
       </template>
+
       <template v-else>
-        <div class="form-label">{{ $t('Quantity:') }}</div>
-        <div class="form-control text-center">x {{ choice.quantity }}</div>
+        <div class="drpw:input">
+          <div class="drpw:mx-auto">x {{ choice.quantity }}</div>
+        </div>
       </template>
     </div>
   </template>
 </template>
 
-<style scoped lang="scss">
-.quantity-input-group {
-  display: flex;
-}
-
-.quantity-input-group input {
-  border-width: 1px 0;
-  flex: auto;
-  text-align: center;
-}
-</style>
+<style scoped lang="scss"></style>
