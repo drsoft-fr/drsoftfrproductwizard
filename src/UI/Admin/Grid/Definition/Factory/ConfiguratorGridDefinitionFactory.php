@@ -12,6 +12,7 @@ use PrestaShop\PrestaShop\Core\Grid\Action\ModalOptions;
 use PrestaShop\PrestaShop\Core\Grid\Action\Row\RowActionCollection;
 use PrestaShop\PrestaShop\Core\Grid\Action\Row\Type\LinkRowAction;
 use PrestaShop\PrestaShop\Core\Grid\Action\Row\Type\SubmitRowAction;
+use PrestaShop\PrestaShop\Core\Grid\Action\Type\LinkGridAction;
 use PrestaShop\PrestaShop\Core\Grid\Action\Type\SimpleGridAction;
 use PrestaShop\PrestaShop\Core\Grid\Column\ColumnCollection;
 use PrestaShop\PrestaShop\Core\Grid\Column\Type\Common\ActionColumn;
@@ -163,6 +164,15 @@ final class ConfiguratorGridDefinitionFactory extends AbstractGridDefinitionFact
                                 'route_param_field' => 'id',
                             ])
                         )
+                        ->add((new LinkRowAction('export'))
+                            ->setName($this->trans('Export', [], 'Admin.Actions'))
+                            ->setIcon('file_download')
+                            ->setOptions([
+                                'route' => 'admin_drsoft_fr_product_wizard_configurator_export',
+                                'route_param_name' => 'id',
+                                'route_param_field' => 'id',
+                            ])
+                        )
                         ->add((new SubmitRowAction('delete'))
                             ->setName($this->trans('Delete', [], 'Admin.Actions'))
                             ->setIcon('delete')
@@ -307,6 +317,13 @@ final class ConfiguratorGridDefinitionFactory extends AbstractGridDefinitionFact
             ->add((new SimpleGridAction('common_export_sql_manager'))
                 ->setName($this->trans('Export to SQL Manager', [], 'Admin.Actions'))
                 ->setIcon('storage')
+            )
+            ->add((new LinkGridAction('import_configurator'))
+                ->setName($this->trans('Import', [], 'Modules.Drsoftfrproductwizard.Admin'))
+                ->setIcon('file_upload')
+                ->setOptions([
+                    'route' => 'admin_drsoft_fr_product_wizard_configurator_import_form',
+                ])
             );
     }
 }

@@ -4,7 +4,11 @@ declare(strict_types=1);
 
 namespace DrSoftFr\Module\ProductWizard\UI\Admin\Controller;
 
+use DrSoftFr\Module\ProductWizard\Application\Port\Security\HtmlSanitizerInterface;
 use DrSoftFr\Module\ProductWizard\Domain\Repository\ConfiguratorRepositoryInterface;
+use DrSoftFr\Module\ProductWizard\Domain\ValueObject\ProductChoice\DisplayCondition;
+use DrSoftFr\Module\ProductWizard\Domain\ValueObject\ProductChoice\QuantityRule;
+use DrSoftFr\Module\ProductWizard\Domain\ValueObject\ProductChoice\ReductionType;
 use DrSoftFr\Module\ProductWizard\Entity\Configurator;
 use DrSoftFr\Module\ProductWizard\Entity\Step;
 use DrSoftFr\Module\ProductWizard\Entity\ProductChoice;
@@ -318,6 +322,144 @@ final class ConfiguratorController extends FrameworkBundleAdminController
 
     /**
      * @AdminSecurity(
+     *     "is_granted(['read'], request.get('_legacy_controller'))",
+     *     redirectRoute="admin_module_manage",
+     *     message="Access denied."
+     * )
+     */
+    public function exportAction(Configurator $configurator): Response
+    {
+        $data = $configurator->toArray();
+        $data = $this->exportNormalizeDates($data);
+        $payload = [
+            'module' => $this->module->name,
+            'entity' => 'configurator',
+            'version' => $this->module->version,
+            'exported_at' => (new \DateTimeImmutable())->format('c'),
+            'data' => $data,
+        ];
+        $filename = sprintf('configurator-%d-%s.json', $configurator->getId(), preg_replace('/[^A-Za-z0-9_-]+/', '-', $configurator->getName()));
+        $response = new JsonResponse($payload, 200, []);
+
+        $response->headers->set('Content-Disposition', 'attachment; filename="' . $filename . '"');
+
+        return $response;
+    }
+
+    /**
+     * @AdminSecurity(
+     *     "is_granted(['create'], request.get('_legacy_controller'))",
+     *     redirectRoute="admin_drsoft_fr_product_wizard_configurator_index",
+     *     message="You do not have permission to import this."
+     * )
+     */
+    public function importFormAction(): Response
+    {
+        return $this->render(self::TEMPLATE_FOLDER . 'import/index.html.twig', [
+            'return_url' => $this->generateUrl(self::PAGE_INDEX_ROUTE),
+            'module' => $this->module,
+        ]);
+    }
+
+    /**
+     * @AdminSecurity(
+     *     "is_granted(['create'], request.get('_legacy_controller'))",
+     *     redirectRoute="admin_drsoft_fr_product_wizard_configurator_index",
+     *     message="You do not have permission to import this."
+     * )
+     */
+    public function importHandleAction(
+        Request                         $request,
+        ConfiguratorRepositoryInterface $repository,
+        HtmlSanitizerInterface          $htmlSanitizer
+    ): RedirectResponse
+    {
+        $file = $request->files->get('import_file');
+
+        if (!$file) {
+            $this->addFlash('error', $this->trans('No file uploaded', 'Modules.Drsoftfrproductwizard.Error'));
+
+            return $this->redirectToRoute('admin_drsoft_fr_product_wizard_configurator_import_form');
+        }
+
+        try {
+            $content = file_get_contents($file->getPathname());
+            $json = json_decode($content, true, 512, JSON_THROW_ON_ERROR);
+
+            if (!isset($json['data']) || !is_array($json['data'])) {
+                throw new \RuntimeException('Invalid file content');
+            }
+
+            $data = $json['data'];
+
+            $new = new Configurator();
+
+            $new->setActive(false);
+            $new->setName(strip_tags(($data['name'] ?? 'Imported configurator')));
+            $new->setDescription($htmlSanitizer->sanitize($data['description'] ?? null));
+            $new->setReduction((float)($data['reduction'] ?? 0));
+            $new->setReductionTax((bool)($data['reduction_tax'] ?? true));
+            $new->setReductionType((string)($data['reduction_type'] ?? ReductionType::AMOUNT));
+
+            if (!empty($data['steps']) && is_array($data['steps'])) {
+                foreach ($data['steps'] as $stepData) {
+                    $step = new Step();
+
+                    $step->setActive((bool)($stepData['active'] ?? true));
+                    $step->setLabel(strip_tags((string)($stepData['label'] ?? '')));
+                    $step->setDescription($htmlSanitizer->sanitize($stepData['description'] ?? null));
+                    $step->setPosition((int)($stepData['position'] ?? 0));
+                    $step->setReduction((float)($stepData['reduction'] ?? 0));
+                    $step->setReductionTax((bool)($stepData['reduction_tax'] ?? true));
+                    $step->setReductionType((string)($stepData['reduction_type'] ?? ReductionType::AMOUNT));
+
+                    $new->addStep($step);
+
+                    if (!empty($stepData['product_choices']) && is_array($stepData['product_choices'])) {
+                        foreach ($stepData['product_choices'] as $choiceData) {
+                            $choice = new ProductChoice();
+
+                            $choice->setActive((bool)($choiceData['active'] ?? true));
+                            $choice->setLabel(strip_tags((string)($choiceData['label'] ?? '')));
+                            $choice->setDescription($htmlSanitizer->sanitize($choiceData['description'] ?? null));
+                            $choice->setProductId(isset($choiceData['product_id']) ? (int)$choiceData['product_id'] : null);
+                            $choice->setIsDefault((bool)($choiceData['is_default'] ?? false));
+                            $choice->setReduction((float)($choiceData['reduction'] ?? 0));
+                            $choice->setReductionTax((bool)($choiceData['reduction_tax'] ?? true));
+                            $choice->setReductionType((string)($choiceData['reduction_type'] ?? ReductionType::AMOUNT));
+
+                            // display_conditions as raw arrays to setter expecting DisplayCondition objects
+                            if (!empty($choiceData['display_conditions']) && is_array($choiceData['display_conditions'])) {
+                                $conditions = [];
+
+                                foreach ($choiceData['display_conditions'] as $cond) {
+                                    $conditions[] = DisplayCondition::fromArray($cond ?: []);
+                                }
+
+                                $choice->setDisplayConditions($conditions);
+                            }
+
+                            if (isset($choiceData['quantity_rule']) && is_array($choiceData['quantity_rule'])) {
+                                $choice->setQuantityRule(QuantityRule::fromArray($choiceData['quantity_rule']));
+                            }
+
+                            $step->addProductChoice($choice);
+                        }
+                    }
+                }
+            }
+
+            $repository->add($new);
+            $this->addFlash('success', $this->trans('Configurator imported successfully', 'Modules.Drsoftfrproductwizard.Success'));
+        } catch (\Throwable $t) {
+            $this->addFlash('error', $this->trans('Error importing configurator', 'Modules.Drsoftfrproductwizard.Error'));
+        }
+
+        return $this->redirectToRoute(self::PAGE_INDEX_ROUTE);
+    }
+
+    /**
+     * @AdminSecurity(
      *     "is_granted('update', request.get('_legacy_controller'))",
      *     redirectRoute="admin_drsoft_fr_product_wizard_configurator_index",
      *     message="You do not have permission to toggle the active status of this item."
@@ -366,6 +508,29 @@ final class ConfiguratorController extends FrameworkBundleAdminController
         );
 
         return $this->redirectToRoute(self::PAGE_INDEX_ROUTE);
+    }
+
+    private function exportNormalizeDates(array $data): array
+    {
+        foreach (['date_add', 'date_upd'] as $k) {
+            if (isset($data[$k]) && $data[$k] instanceof \DateTimeInterface) {
+                $data[$k] = $data[$k]->format('c');
+            }
+        }
+
+        if (isset($data['steps']) && is_array($data['steps'])) {
+            foreach ($data['steps'] as $i => $step) {
+                $data['steps'][$i] = $this->exportNormalizeDates($step);
+            }
+        }
+
+        if (isset($data['product_choices']) && is_array($data['product_choices'])) {
+            foreach ($data['product_choices'] as $i => $choice) {
+                $data['product_choices'][$i] = $this->exportNormalizeDates($choice);
+            }
+        }
+
+        return $data;
     }
 
     private function defineJsProps(): void
@@ -480,6 +645,11 @@ final class ConfiguratorController extends FrameworkBundleAdminController
                 'desc' => $this->trans('Add new Configurator', 'Modules.Drsoftfrproductwizard.Admin'),
                 'icon' => 'add_circle_outline',
                 'href' => $this->generateUrl(self::PAGE_CREATE_ROUTE),
+            ],
+            'import' => [
+                'desc' => $this->trans('Import', 'Modules.Drsoftfrproductwizard.Admin'),
+                'icon' => 'file_upload',
+                'href' => $this->generateUrl('admin_drsoft_fr_product_wizard_configurator_import_form'),
             ],
         ];
     }
