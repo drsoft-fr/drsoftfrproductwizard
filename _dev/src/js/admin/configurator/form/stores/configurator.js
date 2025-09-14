@@ -103,6 +103,11 @@ export const useConfiguratorStore = defineStore('configurator', {
   },
 
   actions: {
+    // Internal helper: deep clone plain objects/arrays
+    _clone(data) {
+      return JSON.parse(JSON.stringify(data))
+    },
+
     // Initialize store with data from server
     initializeStore(data) {
       this.id = data.id || null
@@ -154,6 +159,54 @@ export const useConfiguratorStore = defineStore('configurator', {
         isCollapsed: false,
         wasCollapsedBeforeDrag: false,
       }
+
+      return newStepId
+    },
+
+    // Duplicate a step (with its product choices)
+    duplicateStep(stepId) {
+      const index = this.steps.findIndex((s) => s.id === stepId)
+
+      if (index === -1) {
+        return null
+      }
+
+      const original = this.steps[index]
+      const newStepId = `virtual-${this.nextTempId--}`
+
+      // Deep clone step
+      const cloned = this._clone(original)
+
+      cloned.id = newStepId
+      cloned.is_virtual = true
+      // position will be fixed later
+
+      // Duplicate product choices with new IDs
+      if (Array.isArray(cloned.product_choices)) {
+        cloned.product_choices = cloned.product_choices.map((choice) => {
+          const newChoice = this._clone(choice)
+
+          newChoice.id = `virtual-${this.nextTempId--}`
+          newChoice.is_virtual = true
+
+          // Keep same product/conditions/quantity rule
+          return newChoice
+        })
+      } else {
+        cloned.product_choices = []
+      }
+
+      // Insert right after original
+      this.steps.splice(index + 1, 0, cloned)
+
+      // Ensure UI state entry exists
+      this.stepUIStates[newStepId] = {
+        isCollapsed: false,
+        wasCollapsedBeforeDrag: false,
+      }
+
+      // Recompute positions
+      this.updateStepPositions()
 
       return newStepId
     },
@@ -280,6 +333,34 @@ export const useConfiguratorStore = defineStore('configurator', {
       })
 
       return newChoiceId
+    },
+
+    // Duplicate a product choice within a step
+    duplicateProductChoice(stepId, choiceId) {
+      const step = this.getStep(stepId)
+
+      if (!step || !Array.isArray(step.product_choices)) {
+        return null
+      }
+
+      const index = step.product_choices.findIndex((c) => c.id === choiceId)
+
+      if (index === -1) {
+        return null
+      }
+
+      const original = step.product_choices[index]
+      const cloned = this._clone(original)
+
+      cloned.id = `virtual-${this.nextTempId--}`
+      cloned.is_virtual = true
+      // Keep same product linkage and rules; do not keep default flag to avoid two defaults
+      cloned.is_default = false
+
+      // Insert right after original
+      step.product_choices.splice(index + 1, 0, cloned)
+
+      return cloned.id
     },
 
     // Remove a product choice

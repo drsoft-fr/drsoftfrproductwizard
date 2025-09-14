@@ -374,6 +374,7 @@ final class ConfiguratorController extends FrameworkBundleAdminController
                         'Description' => $this->trans('Description', 'Modules.Drsoftfrproductwizard.Admin'),
                         'Remember to save so that you can select the newly added items.' => $this->trans('Remember to save so that you can select the newly added items.', 'Modules.Drsoftfrproductwizard.Admin'),
                         'This product selection is new, so you cannot set quantity rule yet. You must register before you can configure the quantity rules.' => $this->trans('This product selection is new, so you cannot set quantity rule yet. You must register before you can configure the quantity rules.', 'Modules.Drsoftfrproductwizard.Admin'),
+                        'Duplicate' => $this->trans('Duplicate', 'Modules.Drsoftfrproductwizard.Admin'),
                     ],
                     'Modules.Drsoftfrproductwizard.Error' => [
                         'Error loading the configurator' => $this->trans('Error loading the configurator', 'Modules.Drsoftfrproductwizard.Error'),
@@ -388,6 +389,8 @@ final class ConfiguratorController extends FrameworkBundleAdminController
                     'Modules.Drsoftfrproductwizard.Success' => [
                         'Configurator successfully saved' => $this->trans('Configurator successfully saved', 'Modules.Drsoftfrproductwizard.Success'),
                         'Success' => $this->trans('Success', 'Modules.Drsoftfrproductwizard.Success'),
+                        'Step duplicated successfully' => $this->trans('Step duplicated successfully', 'Modules.Drsoftfrproductwizard.Success'),
+                        'Product choice duplicated successfully' => $this->trans('Product choice duplicated successfully', 'Modules.Drsoftfrproductwizard.Success'),
                     ],
                 ],
             ],

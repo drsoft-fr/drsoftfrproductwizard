@@ -36,6 +36,20 @@ const stepIndex = computed(() => {
 
 const menuItems = [
   {
+    label: $t('Duplicate'),
+    command: () => {
+      const newId = store.duplicateStep(props.stepId)
+      if (newId) {
+        toast.add({
+          severity: 'success',
+          summary: $t('Success'),
+          detail: $t('Step duplicated successfully'),
+          life: lifetime.value,
+        })
+      }
+    },
+  },
+  {
     label: $t('Delete'),
     command: () => {
       confirm.require({

@@ -28,6 +28,23 @@ const toast = useToast()
 
 const menuItems = [
   {
+    label: $t('Duplicate'),
+    command: () => {
+      const newId = store.duplicateProductChoice(
+        props.stepId,
+        props.productChoiceId,
+      )
+      if (newId) {
+        toast.add({
+          severity: 'success',
+          summary: $t('Success'),
+          detail: $t('Product choice duplicated successfully'),
+          life: lifetime.value,
+        })
+      }
+    },
+  },
+  {
     label: $t('Delete'),
     command: () => {
       confirm.require({
