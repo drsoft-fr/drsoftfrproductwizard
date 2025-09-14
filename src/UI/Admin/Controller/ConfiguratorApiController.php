@@ -29,6 +29,7 @@ final class ConfiguratorApiController extends FrameworkBundleAdminController
 {
     const TAB_CLASS_NAME = 'AdminDrSoftFrProductWizardConfiguratorApi';
     private const PAGE_EDIT_ROUTE = 'admin_drsoft_fr_product_wizard_configurator_edit';
+    private const CONFIGURATOR_REPOSITORY = 'drsoft_fr.module.product_wizard.infrastructure.persistence.doctrine.configurator_repository';
 
     public function __construct(
         private readonly int $languageId,
@@ -86,10 +87,8 @@ final class ConfiguratorApiController extends FrameworkBundleAdminController
      * )
      */
     public function saveAction(
-        Request                         $request,
-        ConfiguratorNormalizer          $normalizer,
-        ConfiguratorFactory             $factory,
-        ConfiguratorRepositoryInterface $repository
+        Request                $request,
+        ConfiguratorNormalizer $normalizer,
     ): JsonResponse
     {
         $data = json_decode($request->getContent(), true);
@@ -100,6 +99,9 @@ final class ConfiguratorApiController extends FrameworkBundleAdminController
                 'message' => 'Invalid request data',
             ], Response::HTTP_BAD_REQUEST);
         }
+
+        $repository = $this->getRepository();
+        $factory = new ConfiguratorFactory($repository);
 
         try {
             $dto = $normalizer->denormalize($data['configurator']);
@@ -218,5 +220,11 @@ final class ConfiguratorApiController extends FrameworkBundleAdminController
                 'message' => 'Error fetching product: ' . $e->getMessage(),
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
+    }
+
+    private function getRepository(): ConfiguratorRepositoryInterface
+    {
+        /** @type ConfiguratorRepositoryInterface */
+        return $this->get(self::CONFIGURATOR_REPOSITORY);
     }
 }
