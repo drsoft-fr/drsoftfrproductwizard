@@ -81,7 +81,9 @@ const handleDelete = (event) => {
 
     <template v-else>
       <Message severity="info" class="my-2">
-        {{ $t('Remember to save so that you can select the newly added items.') }}
+        {{
+          $t('Remember to save so that you can select the newly added items.')
+        }}
       </Message>
 
       <Button severity="info" text @click="addCondition" class="align-bottom">
@@ -104,8 +106,7 @@ const handleDelete = (event) => {
         >
           <Condition
             v-for="(condition, index) in conditions"
-            :key="index"
-            :index
+            :key="`${condition.step}-${condition.choice}`"
             :condition
             :product-choice-id="productChoiceId"
             :step-id="stepId"

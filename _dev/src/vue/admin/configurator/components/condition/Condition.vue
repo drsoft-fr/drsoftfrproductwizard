@@ -6,7 +6,6 @@ const props = defineProps({
   stepId: { type: [String, Number], required: true },
   productChoiceId: { type: [String, Number], required: true },
   condition: { type: Object, required: true },
-  index: { type: Number, required: true },
 })
 
 const $t = inject('$t')
