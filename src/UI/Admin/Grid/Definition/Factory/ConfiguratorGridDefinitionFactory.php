@@ -154,6 +154,15 @@ final class ConfiguratorGridDefinitionFactory extends AbstractGridDefinitionFact
                                 'clickable_row' => true,
                             ])
                         )
+                        ->add((new LinkRowAction('duplicate'))
+                            ->setName($this->trans('Duplicate', [], 'Admin.Actions'))
+                            ->setIcon('content_copy')
+                            ->setOptions([
+                                'route' => 'admin_drsoft_fr_product_wizard_configurator_duplicate',
+                                'route_param_name' => 'id',
+                                'route_param_field' => 'id',
+                            ])
+                        )
                         ->add((new SubmitRowAction('delete'))
                             ->setName($this->trans('Delete', [], 'Admin.Actions'))
                             ->setIcon('delete')

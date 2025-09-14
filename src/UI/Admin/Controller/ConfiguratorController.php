@@ -6,6 +6,8 @@ namespace DrSoftFr\Module\ProductWizard\UI\Admin\Controller;
 
 use DrSoftFr\Module\ProductWizard\Domain\Repository\ConfiguratorRepositoryInterface;
 use DrSoftFr\Module\ProductWizard\Entity\Configurator;
+use DrSoftFr\Module\ProductWizard\Entity\Step;
+use DrSoftFr\Module\ProductWizard\Entity\ProductChoice;
 use DrSoftFr\Module\ProductWizard\UI\Admin\Grid\Filters\ConfiguratorFilters;
 use DrSoftFr\PrestaShopModuleHelper\Domain\Asset\Package;
 use DrSoftFr\PrestaShopModuleHelper\Domain\Asset\VersionStrategy\JsonManifestVersionStrategy;
@@ -241,6 +243,74 @@ final class ConfiguratorController extends FrameworkBundleAdminController
             $this->addFlash('success', $this->trans('Deleted scenario', 'Modules.Drsoftfrproductwizard.Success'));
         } catch (Throwable $t) {
             $this->addFlash('error', $this->trans('Error deleting scenario', 'Modules.Drsoftfrproductwizard.Error'));
+        } finally {
+            return $this->redirectToRoute(self::PAGE_INDEX_ROUTE);
+        }
+    }
+
+    /**
+     * @AdminSecurity(
+     *     "is_granted('create', request.get('_legacy_controller'))",
+     *     redirectRoute="admin_drsoft_fr_product_wizard_configurator_index",
+     *     message="You do not have permission to duplicate this."
+     * )
+     */
+    public function duplicateAction(
+        Configurator                    $configurator,
+        ConfiguratorRepositoryInterface $repository
+    ): RedirectResponse
+    {
+        try {
+            $new = new Configurator();
+
+            $new->setActive(false);
+            $new->setName(sprintf('%s (copie)', $configurator->getName()));
+            $new->setDescription($configurator->getDescription());
+            $new->setReduction($configurator->getReduction());
+            $new->setReductionTax($configurator->isReductionTax());
+            $new->setReductionType($configurator->getReductionType());
+
+            foreach ($configurator->getSteps() as $step) {
+                $newStep = new Step();
+
+                $newStep->setActive($step->isActive());
+                $newStep->setLabel($step->getLabel());
+                $newStep->setDescription($step->getDescription());
+                $newStep->setPosition($step->getPosition());
+                $newStep->setReduction($step->getReduction());
+                $newStep->setReductionTax($step->isReductionTax());
+                $newStep->setReductionType($step->getReductionType());
+
+                $new->addStep($newStep);
+
+                foreach ($step->getProductChoices() as $choice) {
+                    $newChoice = new ProductChoice();
+
+                    $newChoice->setActive($choice->isActive());
+                    $newChoice->setLabel($choice->getLabel());
+                    $newChoice->setDescription($choice->getDescription());
+                    $newChoice->setProductId($choice->getProductId());
+                    $newChoice->setIsDefault($choice->isDefault());
+                    $newChoice->setReduction($choice->getReduction());
+                    $newChoice->setReductionTax($choice->isReductionTax());
+                    $newChoice->setReductionType($choice->getReductionType());
+
+                    if (null !== $choice->getDisplayConditions()) {
+                        $newChoice->setDisplayConditions($choice->getDisplayConditions());
+                    }
+
+                    if (null !== $choice->getQuantityRule()) {
+                        $newChoice->setQuantityRule($choice->getQuantityRule());
+                    }
+
+                    $newStep->addProductChoice($newChoice);
+                }
+            }
+
+            $repository->add($new);
+            $this->addFlash('success', $this->trans('Configurator duplicated successfully', 'Modules.Drsoftfrproductwizard.Success'));
+        } catch (Throwable $t) {
+            $this->addFlash('error', $this->trans('Error duplicating scenario', 'Modules.Drsoftfrproductwizard.Error'));
         } finally {
             return $this->redirectToRoute(self::PAGE_INDEX_ROUTE);
         }
