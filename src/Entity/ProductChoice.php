@@ -133,8 +133,8 @@ class ProductChoice
     {
         $arr = [];
 
-        foreach ($this->getDisplayConditions() as $condition) {
-            $arr[] = $condition->getValue();
+        foreach ($this->getDisplayConditionGroups() as $group) {
+            $arr[] = array_map(static fn(DisplayCondition $c) => $c->getValue(), $group);
         }
 
         return [
@@ -249,46 +249,69 @@ class ProductChoice
     }
 
     /**
-     * @return DisplayCondition[]
+     * Get display condition groups (OR-of-ANDs).
+     * Returns an array of groups; each group is an array of DisplayCondition objects.
+     *
+     * @return DisplayCondition[][]
      *
      * @throws ProductChoiceConstraintException
      * @throws StepConstraintException
      */
-    public function getDisplayConditions(): array
+    public function getDisplayConditionGroups(): array
     {
-        $arr = [];
+        $payload = $this->displayConditions ?: [];
+        $groups = [];
 
-        foreach ($this->displayConditions as $condition) {
-            $arr[] = DisplayCondition::fromArray($condition ?: []);
+        if (!is_array($payload)) {
+            return [];
         }
 
-        return $arr;
+        foreach ($payload as $g) {
+            $group = [];
+
+            foreach (is_array($g) ? $g : [] as $c) {
+                $group[] = DisplayCondition::fromArray($c ?: []);
+            }
+
+            if (!empty($group)) {
+                $groups[] = $group;
+            }
+        }
+
+        return $groups;
     }
 
     /**
-     * @param DisplayCondition[] $displayConditions
+     * Set display condition groups (OR-of-ANDs). Each inner array is a group combined with AND.
+     *
+     * @param DisplayCondition[][] $groups
      *
      * @return $this
      */
-    public function setDisplayConditions(array $displayConditions): ProductChoice
+    public function setDisplayConditionGroups(array $groups): ProductChoice
     {
-        $conditionsMap = [];
-        $uniqueConditions = [];
+        $normalized = [];
 
-        foreach ($displayConditions as $condition) {
-            $value = $condition->getValue();
+        foreach ($groups as $g) {
+            $map = [];
+            $unique = [];
 
-            $key = $value['step'] . '_' . $value['choice'];
+            foreach ($g as $condition) {
+                $value = $condition->getValue();
+                $key = $value['step'] . '_' . $value['choice'];
 
-            if (isset($conditionsMap[$key])) {
-                continue;
+                if (isset($map[$key])) {
+                    continue;
+                }
+
+                $map[$key] = true;
+                $unique[] = $value;
             }
 
-            $conditionsMap[$key] = true;
-            $uniqueConditions[] = $value;
+            $normalized[] = $unique;
         }
 
-        $this->displayConditions = $uniqueConditions;
+        $this->displayConditions = $normalized;
 
         return $this;
     }

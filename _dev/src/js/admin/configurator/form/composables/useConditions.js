@@ -13,12 +13,18 @@ export function useConditions(stepId, productChoiceId) {
   const store = useConfiguratorStore()
 
   /**
-   * Add a new condition
-   *
-   * @returns {Object} - The new condition
+   * Add a new empty condition group and return its index
    */
-  const addCondition = () => {
-    return store.addCondition(stepId, productChoiceId)
+  const addConditionGroup = () => {
+    return store.addConditionGroup(stepId, productChoiceId)
+  }
+
+  /**
+   * Add a new condition into a given group
+   * @param {number} groupIndex
+   */
+  const addCondition = (groupIndex) => {
+    return store.addCondition(stepId, productChoiceId, groupIndex)
   }
 
   // Available steps for conditions (steps with position < current step position)
@@ -37,16 +43,16 @@ export function useConditions(stepId, productChoiceId) {
   // Get the current step position
   const currentStepPosition = computed(() => currentStep.value.position || 0)
 
-  // Get all conditions for the current product choice
-  const conditions = computed(() => {
-    if (
-      !currentProductChoice.value ||
-      !currentProductChoice.value.display_conditions
-    ) {
+  // Get all condition groups for the current product choice
+  const conditionGroups = computed(() => {
+    const dc = currentProductChoice.value?.display_conditions
+
+    if (!Array.isArray(dc)) {
       return []
     }
 
-    return currentProductChoice.value.display_conditions
+    // Expect nested groups (OR-of-ANDs)
+    return dc
   })
 
   /**
@@ -61,9 +67,9 @@ export function useConditions(stepId, productChoiceId) {
   }
 
   /**
-   * Check if the current product choice has any conditions
+   * Check if the current product choice has any condition groups
    */
-  const hasConditions = computed(() => conditions.value.length > 0)
+  const hasConditions = computed(() => conditionGroups.value.length > 0)
 
   /**
    * Check if a choice is valid for conditions
@@ -111,18 +117,13 @@ export function useConditions(stepId, productChoiceId) {
   })
 
   /**
-   * Remove a condition
+   * Remove a condition by group and condition index
    *
-   * @param {String|Number} conditionStepId - The step ID of the condition to remove
-   * @param {String|Number} conditionChoiceId - The choice ID of the condition to remove
+   * @param {number} groupIndex
+   * @param {number} conditionIndex
    */
-  const removeCondition = (conditionStepId, conditionChoiceId) => {
-    store.removeCondition(
-      stepId,
-      productChoiceId,
-      conditionStepId,
-      conditionChoiceId,
-    )
+  const removeCondition = (groupIndex, conditionIndex) => {
+    store.removeCondition(stepId, productChoiceId, groupIndex, conditionIndex)
   }
 
   /**
@@ -154,17 +155,23 @@ export function useConditions(stepId, productChoiceId) {
     condition.choice = null // Reset choice when step changes
   }
 
+  const removeConditionGroup = (groupIndex) => {
+    store.removeConditionGroup(stepId, productChoiceId, groupIndex)
+  }
+
   return {
+    addConditionGroup,
     addCondition,
     availableSteps,
     currentProductChoice,
-    conditions,
+    conditionGroups,
     getAvailableChoices,
     hasConditions,
     isValidChoice,
     isValidStep,
     isVirtual,
     removeCondition,
+    removeConditionGroup,
     updateConditionChoice,
     updateConditionStep,
   }

@@ -299,8 +299,10 @@ final class ConfiguratorController extends FrameworkBundleAdminController
                     $newChoice->setReductionTax($choice->isReductionTax());
                     $newChoice->setReductionType($choice->getReductionType());
 
-                    if (null !== $choice->getDisplayConditions()) {
-                        $newChoice->setDisplayConditions($choice->getDisplayConditions());
+                    $groups = $choice->getDisplayConditionGroups();
+
+                    if (false === empty($groups)) {
+                        $newChoice->setDisplayConditionGroups($groups);
                     }
 
                     if (null !== $choice->getQuantityRule()) {
@@ -428,15 +430,14 @@ final class ConfiguratorController extends FrameworkBundleAdminController
                             $choice->setReductionTax((bool)($choiceData['reduction_tax'] ?? true));
                             $choice->setReductionType((string)($choiceData['reduction_type'] ?? ReductionType::AMOUNT));
 
-                            // display_conditions as raw arrays to setter expecting DisplayCondition objects
-                            if (!empty($choiceData['display_conditions']) && is_array($choiceData['display_conditions'])) {
-                                $conditions = [];
+                            if (false === empty($choiceData['display_conditions']) && is_array($choiceData['display_conditions'])) {
+                                $groups = [];
 
-                                foreach ($choiceData['display_conditions'] as $cond) {
-                                    $conditions[] = DisplayCondition::fromArray($cond ?: []);
+                                foreach ($choiceData['display_conditions'] as $g) {
+                                    $groups[] = array_map(DisplayCondition::fromArray(...), is_array($g) ? $g : []);
                                 }
 
-                                $choice->setDisplayConditions($conditions);
+                                $choice->setDisplayConditionGroups($groups);
                             }
 
                             if (isset($choiceData['quantity_rule']) && is_array($choiceData['quantity_rule'])) {
@@ -610,6 +611,8 @@ final class ConfiguratorController extends FrameworkBundleAdminController
                         'Remember to save so that you can select the newly added items.' => $this->trans('Remember to save so that you can select the newly added items.', 'Modules.Drsoftfrproductwizard.Admin'),
                         'This product selection is new, so you cannot set quantity rule yet. You must register before you can configure the quantity rules.' => $this->trans('This product selection is new, so you cannot set quantity rule yet. You must register before you can configure the quantity rules.', 'Modules.Drsoftfrproductwizard.Admin'),
                         'Duplicate' => $this->trans('Duplicate', 'Modules.Drsoftfrproductwizard.Admin'),
+                        'Add a group' => $this->trans('Add a group', 'Modules.Drsoftfrproductwizard.Admin'),
+                        'Remove group' => $this->trans('Remove group', 'Modules.Drsoftfrproductwizard.Admin'),
                     ],
                     'Modules.Drsoftfrproductwizard.Error' => [
                         'Error loading the configurator' => $this->trans('Error loading the configurator', 'Modules.Drsoftfrproductwizard.Error'),

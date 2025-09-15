@@ -3,6 +3,7 @@
 namespace DrSoftFr\Module\ProductWizard\Application\Dto;
 
 use DrSoftFr\Module\ProductWizard\Domain\Exception\ProductChoice\ProductChoiceConstraintException;
+use DrSoftFr\Module\ProductWizard\Domain\Exception\Step\StepConstraintException;
 use DrSoftFr\Module\ProductWizard\Entity\ProductChoice;
 
 final class ProductChoiceDto
@@ -17,7 +18,7 @@ final class ProductChoiceDto
         public float   $reduction = 0.0,
         public bool    $reductionTax = true,
         public string  $reductionType = 'amount',
-        /** @var array<int, array{step:int, choice:int}> */
+        /** @var array<int, array<int, array{step:int, choice:int}>> OR-of-ANDs */
         public array   $displayConditions = [],
         public array   $quantityRule = [],
     )
@@ -26,13 +27,14 @@ final class ProductChoiceDto
 
     /**
      * @throws ProductChoiceConstraintException
+     * @throws StepConstraintException
      */
     public static function fromEntity(ProductChoice $productChoice): self
     {
         $arr = [];
 
-        foreach ($productChoice->getDisplayConditions() as $displayCondition) {
-            $arr[] = $displayCondition->getValue();
+        foreach ($productChoice->getDisplayConditionGroups() as $group) {
+            $arr[] = array_map(static fn($dc) => $dc->getValue(), $group);
         }
 
         return new self(

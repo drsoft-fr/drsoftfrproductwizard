@@ -63,10 +63,14 @@ final class ConfiguratorNormalizer
                 )
                     ->getValue();
 
-                foreach ($choiceData['display_conditions'] ?? [] as $dcData) {
-                    $choiceDto->displayConditions[] = DisplayCondition::fromArray($dcData)->getValue();
+                $dcInput = $choiceData['display_conditions'] ?? [];
+                $groups = [];
+
+                foreach (is_array($dcInput) ? $dcInput : [] as $g) {
+                    $groups[] = array_map(static fn($c) => DisplayCondition::fromArray($c ?: [])->getValue(), is_array($g) ? $g : []);
                 }
 
+                $choiceDto->displayConditions = $groups;
                 $stepDto->productChoices[] = $choiceDto;
             }
 

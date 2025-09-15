@@ -19,7 +19,10 @@ export const ProductChoiceSchema = z
       .union([z.literal('amount'), z.literal('percentage')])
       .optional()
       .default('amount'),
-    display_conditions: z.array(ConditionSchema).optional().default([]),
+    display_conditions: z
+      .array(z.array(ConditionSchema))
+      .optional()
+      .default([]),
     quantity_rule: z.union([QuantityRuleSchema]),
     is_virtual: z.boolean().optional(),
   })

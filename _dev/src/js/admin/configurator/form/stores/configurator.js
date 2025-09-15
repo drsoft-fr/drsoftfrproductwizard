@@ -319,6 +319,7 @@ export const useConfiguratorStore = defineStore('configurator', {
         reduction: 0,
         reduction_tax: true,
         reduction_type: 'amount',
+        // Nested groups: OR of ANDs
         display_conditions: [],
         quantity_rule: {
           mode: 'fixed',
@@ -376,42 +377,77 @@ export const useConfiguratorStore = defineStore('configurator', {
       )
     },
 
-    // Add a condition to a product choice
-    addCondition(stepId, choiceId) {
+    // Add a new empty condition group (returns index)
+    addConditionGroup(stepId, choiceId) {
+      const choice = this.getProductChoice(stepId, choiceId)
+
+      if (!choice) {
+        return -1
+      }
+
+      if (!Array.isArray(choice.display_conditions)) {
+        choice.display_conditions = []
+      }
+
+      choice.display_conditions.push([])
+
+      return choice.display_conditions.length - 1
+    },
+
+    // Add a condition to a specific group of a product choice
+    addCondition(stepId, choiceId, groupIndex) {
       const choice = this.getProductChoice(stepId, choiceId)
 
       if (!choice) {
         return null
       }
 
-      if (!choice.display_conditions) {
+      if (!Array.isArray(choice.display_conditions)) {
         choice.display_conditions = []
       }
 
-      const newCondition = {
-        step: null,
-        choice: null,
-        is_virtual: true,
+      if (!Array.isArray(choice.display_conditions[groupIndex])) {
+        choice.display_conditions[groupIndex] = []
       }
 
-      choice.display_conditions.push(newCondition)
+      const newCondition = { step: null, choice: null, is_virtual: true }
+
+      choice.display_conditions[groupIndex].push(newCondition)
 
       return newCondition
     },
 
-    // Remove a condition
-    removeCondition(stepId, choiceId, conditionStepId, conditionChoiceId) {
+    // Remove a condition from a group by indices
+    removeCondition(stepId, choiceId, groupIndex, conditionIndex) {
       const choice = this.getProductChoice(stepId, choiceId)
 
-      if (!choice || !choice.display_conditions) {
+      if (!choice || !Array.isArray(choice.display_conditions)) {
         return
       }
 
-      choice.display_conditions = choice.display_conditions.filter(
-        (condition) =>
-          condition.step !== conditionStepId ||
-          condition.choice !== conditionChoiceId,
-      )
+      const group = choice.display_conditions[groupIndex]
+
+      if (!Array.isArray(group)) {
+        return
+      }
+
+      group.splice(conditionIndex, 1)
+
+      // If group becomes empty, remove group
+      if (group.length === 0) {
+        choice.display_conditions.splice(groupIndex, 1)
+      }
+    },
+
+    // Remove a whole condition group
+    removeConditionGroup(stepId, choiceId, groupIndex) {
+      const choice = this.getProductChoice(stepId, choiceId)
+
+      if (!choice || !Array.isArray(choice.display_conditions)) {
+        return
+      }
+
+      choice.display_conditions.splice(groupIndex, 1)
     },
 
     // Update quantity rule of a product choice

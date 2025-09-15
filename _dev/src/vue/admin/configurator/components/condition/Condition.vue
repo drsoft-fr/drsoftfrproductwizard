@@ -6,6 +6,8 @@ const props = defineProps({
   stepId: { type: [String, Number], required: true },
   productChoiceId: { type: [String, Number], required: true },
   condition: { type: Object, required: true },
+  groupIndex: { type: Number, required: true },
+  conditionIndex: { type: Number, required: true },
 })
 
 const $t = inject('$t')
@@ -79,8 +81,7 @@ const handleChoiceChange = (event) => {
 }
 
 const handleRemove = () => {
-  removeCondition(selectedStepId.value, selectedChoiceId.value)
-
+  removeCondition(props.groupIndex, props.conditionIndex)
   emitOnDelete()
 }
 

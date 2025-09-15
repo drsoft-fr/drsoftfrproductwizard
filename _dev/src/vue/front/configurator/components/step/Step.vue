@@ -19,11 +19,16 @@ const selectedChoice = ref(null)
 
 const filteredChoices = computed(() => {
   return props.step.choices.filter((choice) => {
-    if (!choice.displayConditions || choice.displayConditions.length === 0) {
+    const dc = choice.displayConditions
+
+    // Expect nested groups (OR-of-ANDs)
+    const groups = Array.isArray(dc) ? dc : []
+
+    if (groups.length === 0) {
       return true
     }
 
-    return choice.displayConditions.some((condition) => {
+    const predicate = (condition) => {
       const selection = selections.value.find(
         (s) => Number(s.stepId) === Number(condition.step),
       )
@@ -33,7 +38,13 @@ const filteredChoices = computed(() => {
       }
 
       return Number(selection.id) === Number(condition.choice)
-    })
+    }
+
+    // OR of ANDs
+    return groups.some(
+      (group) =>
+        Array.isArray(group) && group.length > 0 && group.every(predicate),
+    )
   })
 })
 

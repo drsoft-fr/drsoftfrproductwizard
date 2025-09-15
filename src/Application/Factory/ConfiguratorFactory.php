@@ -143,10 +143,15 @@ final class ConfiguratorFactory
             $choice->setReduction($choiceDto->reduction);
             $choice->setReductionTax($choiceDto->reductionTax);
             $choice->setReductionType($choiceDto->reductionType);
-            $choice->setDisplayConditions(array_map(
-                DisplayCondition::fromArray(...),
-                $choiceDto->displayConditions
-            ));
+
+            // Map nested groups of display conditions (OR-of-ANDs)
+            $groups = [];
+
+            foreach ($choiceDto->displayConditions as $group) {
+                $groups[] = array_map(DisplayCondition::fromArray(...), $group);
+            }
+
+            $choice->setDisplayConditionGroups($groups);
             $choice->setQuantityRule(QuantityRule::fromArray($choiceDto->quantityRule));
 
             if (true === $isNew) {

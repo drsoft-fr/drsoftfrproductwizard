@@ -46,70 +46,81 @@ export const ConfiguratorSchema = z
         }
         // < Quantity logic
 
-        // > Condition logic
-        const conditions = choice.display_conditions || []
+        // > Condition logic (nested groups: OR of ANDs)
+        const groups = Array.isArray(choice.display_conditions)
+          ? choice.display_conditions
+          : []
 
-        conditions.forEach((cond, k) => {
-          // Find referenced step
-          const refStep = cfg.steps.find(
-            (s) => String(s.id) === String(cond.step),
-          )
-
-          if (!refStep) {
-            ctx.addIssue({
-              code: z.ZodIssueCode.custom,
-              message: `Step "${step.label}" choice "${choice.label}": The condition #${k + 1} reference a non-existent step.`,
-              path: [
-                'steps',
-                idx,
-                'product_choices',
-                cIdx,
-                'display_conditions',
-                k,
-                'step',
-              ],
-            })
-
+        groups.forEach((group, gIdx) => {
+          if (!Array.isArray(group)) {
             return
           }
 
-          if (Number(refStep.position) >= Number(currentPos)) {
-            ctx.addIssue({
-              code: z.ZodIssueCode.custom,
-              message: `Step "${step.label}" choice "${choice.label}": The condition #${k + 1} must reference a previous step.`,
-              path: [
-                'steps',
-                idx,
-                'product_choices',
-                cIdx,
-                'display_conditions',
-                k,
-                'step',
-              ],
-            })
-          }
-
-          const refChoice = Array.isArray(refStep.product_choices)
-            ? refStep.product_choices.find(
-              (c) => String(c.id) === String(cond.choice),
+          group.forEach((cond, kIdx) => {
+            // Find referenced step
+            const refStep = cfg.steps.find(
+              (s) => String(s.id) === String(cond.step),
             )
-            : null
 
-          if (!refChoice) {
-            ctx.addIssue({
-              code: z.ZodIssueCode.custom,
-              message: `Step "${step.label}" choice "${choice.label}": The condition #${k + 1} reference a choice that does not exist in the target step.`,
-              path: [
-                'steps',
-                idx,
-                'product_choices',
-                cIdx,
-                'display_conditions',
-                k,
-                'choice',
-              ],
-            })
-          }
+            if (!refStep) {
+              ctx.addIssue({
+                code: z.ZodIssueCode.custom,
+                message: `Step "${step.label}" choice "${choice.label}": The condition #${kIdx + 1} in group #${gIdx + 1} references a non-existent step.`,
+                path: [
+                  'steps',
+                  idx,
+                  'product_choices',
+                  cIdx,
+                  'display_conditions',
+                  gIdx,
+                  kIdx,
+                  'step',
+                ],
+              })
+
+              return
+            }
+
+            if (Number(refStep.position) >= Number(currentPos)) {
+              ctx.addIssue({
+                code: z.ZodIssueCode.custom,
+                message: `Step "${step.label}" choice "${choice.label}": The condition #${kIdx + 1} in group #${gIdx + 1} must reference a previous step.`,
+                path: [
+                  'steps',
+                  idx,
+                  'product_choices',
+                  cIdx,
+                  'display_conditions',
+                  gIdx,
+                  kIdx,
+                  'step',
+                ],
+              })
+            }
+
+            const refChoice = Array.isArray(refStep.product_choices)
+              ? refStep.product_choices.find(
+                  (c) => String(c.id) === String(cond.choice),
+                )
+              : null
+
+            if (!refChoice) {
+              ctx.addIssue({
+                code: z.ZodIssueCode.custom,
+                message: `Step "${step.label}" choice "${choice.label}": The condition #${kIdx + 1} in group #${gIdx + 1} references a choice that does not exist in the target step.`,
+                path: [
+                  'steps',
+                  idx,
+                  'product_choices',
+                  cIdx,
+                  'display_conditions',
+                  gIdx,
+                  kIdx,
+                  'choice',
+                ],
+              })
+            }
+          })
         })
         // < Condition logic
       })

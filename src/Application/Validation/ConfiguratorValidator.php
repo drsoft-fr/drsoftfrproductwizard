@@ -620,13 +620,15 @@ final class ConfiguratorValidator
             return;
         }
 
-        foreach ($conditions as $dcIdx => $condition) {
-            $this->validateDisplayCondition(
-                $dcIdx,
-                $condition,
-                $stepDto,
-                $configuratorDto
-            );
+        foreach ($conditions as $group) {
+            foreach ($group as $dcIdx => $condition) {
+                $this->validateDisplayCondition(
+                    $dcIdx,
+                    $condition,
+                    $stepDto,
+                    $configuratorDto
+                );
+            }
         }
     }
 
