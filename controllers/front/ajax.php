@@ -11,8 +11,6 @@ use DrSoftFr\Module\ProductWizard\Domain\ValueObject\Configurator\ConfiguratorId
 use DrSoftFr\Module\ProductWizard\UI\Front\Validation\CartValidator;
 use DrSoftFr\Module\ProductWizard\UI\Hook\Presenter\ConfiguratorPresenter;
 
-// @TODO il faut aussi que le client est le droit de voir le produit, ou sinon on masque le choix ?
-
 final class DrsoftfrproductwizardAjaxModuleFrontController extends ModuleFrontController
 {
     private const CART_CREATOR_COMMAND_HANDLER = 'drsoft_fr.module.product_wizard.application.command_handler.create_cart_command_handler';
