@@ -13,6 +13,7 @@ use DrSoftFr\Module\ProductWizard\Entity\Configurator;
 use DrSoftFr\Module\ProductWizard\Domain\Exception\Configurator\ConfiguratorConstraintException;
 use DrSoftFr\Module\ProductWizard\Domain\Repository\ConfiguratorRepositoryInterface;
 use DrSoftFr\Module\ProductWizard\Domain\ValueObject\Configurator\ConfiguratorId;
+use DrSoftFr\Module\ProductWizard\UI\Front\Validation\CartValidator;
 use DrSoftFr\Module\ProductWizard\UI\Hook\Presenter\ConfiguratorPresenter;
 use PrestaShop\PrestaShop\Adapter\Image\ImageRetriever;
 use PrestaShop\PrestaShop\Adapter\Presenter\Product\ProductPresenter;
@@ -25,6 +26,7 @@ final class DrsoftfrproductwizardAjaxModuleFrontController extends ModuleFrontCo
 {
     private const PRESENTER_SERVICE = 'drsoft_fr.module.product_wizard.service.configurator_presenter';
     private const REPOSITORY_SERVICE = 'drsoft_fr.module.product_wizard.infrastructure.persistence.doctrine.configurator_repository';
+    private const VALIDATOR_SERVICE = 'drsoft_fr.module.product_wizard.ui.front.validation.cart_validator';
 
     /**
      * @var null|string
@@ -108,12 +110,14 @@ final class DrsoftfrproductwizardAjaxModuleFrontController extends ModuleFrontCo
     {
         try {
             $data = json_decode(Tools::getValue('data', '{}'), true);
-
             $dto = CartDto::fromArray($data);
-            $validationError = $this->validateCartDto($dto);
 
-            if (null !== $validationError) {
-                $this->sendErrorResponse($validationError);
+            try {
+                $this
+                    ->getValidator()
+                    ->validate($dto);
+            } catch (Throwable $t) {
+                $this->sendErrorResponse($t->getMessage());
             }
 
             $cart = $this->context->cart;
@@ -542,69 +546,6 @@ final class DrsoftfrproductwizardAjaxModuleFrontController extends ModuleFrontCo
     }
 
     /**
-     * Validate given selections (products, quantities and combinations)
-     *
-     * @param CartDto $dto
-     *
-     * @return string|null Error message if invalid, null if ok
-     */
-    private function validateCartDto(CartDto $dto): ?string
-    {
-        if (true === empty($dto->configuratorId)) {
-            return $this->trans('Invalid configuratorId.', [], 'Modules.Drsoftfrproductwizard.Error');
-        }
-
-        if (true === empty($dto->items)) {
-            return $this->trans('No products selected.', [], 'Modules.Drsoftfrproductwizard.Error');
-        }
-
-        foreach ($dto->items as $itemDto) {
-            if (true === empty($itemDto->productId)) {
-                return $this->trans('Invalid product ID.', [], 'Modules.Drsoftfrproductwizard.Error');
-            }
-
-            if (true === empty($itemDto->quantity)) {
-                return $this->trans('Invalid quantity.', [], 'Modules.Drsoftfrproductwizard.Error');
-            }
-
-            if (true === empty($itemDto->productChoiceId)) {
-                return $this->trans('Invalid product choice ID.', [], 'Modules.Drsoftfrproductwizard.Error');
-            }
-
-            if (true === empty($itemDto->stepId)) {
-                return $this->trans('Invalid step ID.', [], 'Modules.Drsoftfrproductwizard.Error');
-            }
-
-            $product = new Product($itemDto->productId, true, (int)$this->context->language->id);
-
-            if (!Validate::isLoadedObject($product) || !$product->active) {
-                return $this->trans('A selected product is not available anymore.', [], 'Modules.Drsoftfrproductwizard.Error');
-            }
-
-            if ($itemDto->combinationId > 0) {
-                $attributes = $product->getAttributeCombinations($this->context->language->id);
-                $valid = false;
-
-                foreach ($attributes as $attr) {
-                    if ((int)$attr['id_product_attribute'] !== $itemDto->combinationId) {
-                        continue;
-                    }
-
-                    $valid = true;
-
-                    break;
-                }
-
-                if (false === $valid) {
-                    return $this->trans('Invalid product combination.', [], 'Modules.Drsoftfrproductwizard.Error');
-                }
-            }
-        }
-
-        return null;
-    }
-
-    /**
      * @throws Exception
      */
     private function getPresenter(): ConfiguratorPresenter
@@ -620,5 +561,14 @@ final class DrsoftfrproductwizardAjaxModuleFrontController extends ModuleFrontCo
     {
         /** @type ConfiguratorRepositoryInterface */
         return $this->get(self::REPOSITORY_SERVICE);
+    }
+
+    /**
+     * @throws Exception
+     */
+    private function getValidator(): CartValidator
+    {
+        /** @type CartValidator */
+        return $this->get(self::VALIDATOR_SERVICE);
     }
 }

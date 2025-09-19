@@ -1,2 +1,12 @@
 imports:
   - { resource: ../common.yml }
+
+services:
+  _defaults:
+    public: true
+
+  drsoft_fr.module.product_wizard.ui.front.validation.cart_validator:
+    class: DrSoftFr\Module\ProductWizard\UI\Front\Validation\CartValidator
+    arguments:
+      - "@=service('prestashop.adapter.legacy.context').getContext().getTranslator()"
+      - '@=service("prestashop.adapter.legacy.context").getContext().language.id'
