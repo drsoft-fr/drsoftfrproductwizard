@@ -43,7 +43,7 @@ final class DrsoftfrproductwizardAjaxModuleFrontController extends ModuleFrontCo
 
             $this->action = Tools::getValue('action', null);
 
-            if (empty($this->action)) {
+            if (true === empty($this->action)) {
                 $this->sendErrorResponse(
                     $this
                         ->context
@@ -118,7 +118,7 @@ final class DrsoftfrproductwizardAjaxModuleFrontController extends ModuleFrontCo
 
             $cart = $this->context->cart;
 
-            if (!Validate::isLoadedObject($cart)) {
+            if (false === Validate::isLoadedObject($cart)) {
                 $cart = new Cart();
                 $cart->id_currency = (int)$this->context->currency->id;
                 $cart->id_guest = (int)$this->context->cookie->id_guest;
@@ -197,7 +197,7 @@ final class DrsoftfrproductwizardAjaxModuleFrontController extends ModuleFrontCo
         try {
             $configuratorId = (int)Tools::getValue('slug', 0);
 
-            if (empty($configuratorId)) {
+            if (true === empty($configuratorId)) {
                 $this->sendErrorResponse(
                     $this
                         ->context
@@ -356,7 +356,7 @@ final class DrsoftfrproductwizardAjaxModuleFrontController extends ModuleFrontCo
             $requirements[$itemDto->productId] += $qty;
 
             // Keep a representative selection row for this product (to access stepId/id/combinationId)
-            if (!isset($selectionIndex[$itemDto->productId])) {
+            if (false === isset($selectionIndex[$itemDto->productId])) {
                 $selectionIndex[$itemDto->productId] = $itemDto;
             }
         }
